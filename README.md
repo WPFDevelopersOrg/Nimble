@@ -5,3 +5,4 @@
 <br/>
 <img src="/Images/2.png"/>
 <img src="/Images/gif.gif"/>
+<a> tencent://message/?uin=697081020&Site=&menu=yes</a>
