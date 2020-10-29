@@ -3,3 +3,5 @@
 ################################################################################
 
 /SoftWareHelper/obj/Debug
+/SoftWareHelper/bin
+/SoftWareHelper/obj/Release/TempPE

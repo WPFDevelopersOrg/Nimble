@@ -23,11 +23,12 @@ namespace SoftWareHelper.Views
             this.Left = desktopWorkingArea.Width - this.Width;
             this.Top = desktopWorkingArea.Height / 2 -(this.Height / 2);
             this.Loaded += Window_Loaded;
-            this.Deactivated += MainWindow_Deactivated;
+            this.Deactivated += MainView_Deactivated;
         }
-        private void MainWindow_Deactivated(object sender, EventArgs e)
+
+        private void MainView_Deactivated(object sender, EventArgs e)
         {
-            MainWindow window = (MainWindow)sender;
+            MainView window = (MainView)sender;
             window.Topmost = true;
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
