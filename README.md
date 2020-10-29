@@ -5,7 +5,7 @@
 <br/>
 
 <br/>
-__重新完善了新的__
-![RUNOOB 新的效果图](/Images/GIFNew.png)
+__重新完善了新的__  
+![新的效果图](https://github.com/yanjinhuagood/SoftWareHelper/tree/master/Images/GIFNew.png)
 <img src="/Images/2.png"/>
 <img src="/Images/gif.gif"/>
