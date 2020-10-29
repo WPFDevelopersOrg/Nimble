@@ -6,6 +6,6 @@
 
 <br/>
 __重新完善了新的__  
-![新的效果图](https://github.com/yanjinhuagood/SoftWareHelper/tree/master/Images/GIFNew.png)
+![新的效果图](https://github.com/yanjinhuagood/SoftWareHelper/tree/master/Images/GIFNew.gif)
 <img src="/Images/2.png"/>
 <img src="/Images/gif.gif"/>
