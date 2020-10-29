@@ -23,9 +23,20 @@ namespace SoftWareHelper.Views
             this.Left = desktopWorkingArea.Width - this.Width;
             this.Top = desktopWorkingArea.Height / 2 -(this.Height / 2);
             this.Loaded += Window_Loaded;
+            this.Deactivated += MainWindow_Deactivated;
+        }
+        private void MainWindow_Deactivated(object sender, EventArgs e)
+        {
+            MainWindow window = (MainWindow)sender;
+            window.Topmost = true;
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            if (Common.IsWin10)
+            {
+                //WindowBlur.SetIsEnabled(this, true);
+                //DataContext = new WindowBlureffect(this, AccentState.ACCENT_ENABLE_ACRYLICBLURBEHIND) { BlurOpacity = 100 };
+            }
             Win32Api.HwndSourceAdd(this);
         }
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)

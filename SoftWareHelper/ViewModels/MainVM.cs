@@ -3,6 +3,7 @@ using SoftWareHelper.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -52,6 +53,14 @@ namespace SoftWareHelper.ViewModels
                 ApplicationList = JsonHelper.Deserialize<ObservableCollection<ApplicationModel>>(json);
             }
 
+        });
+        /// <summary>
+        /// SelectionChangedCommand
+        /// </summary>
+        public ICommand SelectionChangedCommand => new RelayCommand(obj => 
+        {
+            ApplicationModel model = obj as ApplicationModel;
+            Process.Start(model.ExePath);
         });
         #endregion
 

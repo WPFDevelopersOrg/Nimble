@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using SoftWareHelper.Helpers;
+using System.Windows;
 
 namespace SoftWareHelper
 {
@@ -10,6 +11,7 @@ namespace SoftWareHelper
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            Common common = new Common();
         }
     }
 }

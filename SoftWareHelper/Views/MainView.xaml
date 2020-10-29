@@ -7,6 +7,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:vm="clr-namespace:SoftWareHelper.ViewModels"
         xmlns:CustomControls="clr-namespace:SoftWareHelper.CustomControls"
+        xmlns:helpers="clr-namespace:SoftWareHelper.Helpers"
         xmlns:local="clr-namespace:SoftWareHelper.Views"
         mc:Ignorable="d" ResizeMode="NoResize"
         TextOptions.TextFormattingMode="Display" UseLayoutRounding="True"
@@ -54,7 +55,12 @@
                 </Storyboard>
             </DataTemplate.Resources>
             <Border RenderTransformOrigin="0.5,0.5" x:Name="border" 
-                    Margin="4" Cursor="Hand" ToolTip="{Binding Name}">
+                    Margin="4" Cursor="Hand">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseDown">
+                        <i:InvokeCommandAction Command="{Binding DataContext.SelectionChangedCommand,RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"></i:InvokeCommandAction>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
                 <Border.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform ScaleX="1" ScaleY="1"/>
@@ -168,7 +174,7 @@
     </FrameworkElement.Triggers>-->
     <Grid>
         <!--<Rectangle Opacity=".6" Margin="10" Fill="Black" RadiusX="2" RadiusY="2"/>-->
-        <Rectangle Opacity=".8" Margin="10"
+        <Rectangle Opacity=".8" Margin="10,10,0,10"
                    Name="PageGround">
             <Rectangle.Fill>
                 <LinearGradientBrush
@@ -184,15 +190,19 @@
             </Rectangle.Fill>
             <Rectangle.Effect>
                 <DropShadowEffect ShadowDepth="1" BlurRadius="6" Direction="270" Opacity="0.75" Color="#FF211613"/>
+                <!--<BlurEffect KernelType="Gaussian" Radius="60" />-->
             </Rectangle.Effect>
         </Rectangle>
-        <Grid Margin="0,10">
+        
+        <Grid Margin="10,10,0,14">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <CustomControls:SwitchMenu Grid.Row="1" ItemsSource="{Binding ApplicationList}" Orientation="Vertical"
-                                       ItemTemplate="{StaticResource ApplicationTemplate}"></CustomControls:SwitchMenu>
+                                       ItemTemplate="{StaticResource ApplicationTemplate}">
+               
+            </CustomControls:SwitchMenu>
             <Grid Height="20" Background="Transparent" Cursor="SizeAll"  Margin="0,10">
                 <Path Data="{DynamicResource DragPath}" Fill="White" 
                       Stretch="Fill" Width="20" IsHitTestVisible="False"/>
