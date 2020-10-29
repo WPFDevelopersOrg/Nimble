@@ -38,6 +38,12 @@ namespace SoftWareHelper.Views
                 //WindowBlur.SetIsEnabled(this, true);
                 //DataContext = new WindowBlureffect(this, AccentState.ACCENT_ENABLE_ACRYLICBLURBEHIND) { BlurOpacity = 100 };
             }
+            WindowInteropHelper wndHelper = new WindowInteropHelper(this);
+
+            int exStyle = (int)Win32Api.GetWindowLong(wndHelper.Handle, (int)Win32Api.GetWindowLongFields.GWL_EXSTYLE);
+
+            exStyle |= (int)Win32Api.ExtendedWindowStyles.WS_EX_TOOLWINDOW;
+            Win32Api.SetWindowLong(wndHelper.Handle, (int)Win32Api.GetWindowLongFields.GWL_EXSTYLE, (IntPtr)exStyle);
             Win32Api.HwndSourceAdd(this);
         }
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
