@@ -88,6 +88,19 @@
                 </EventTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
+
+        <LinearGradientBrush x:Key="NormalColors"
+				EndPoint="0.5,1"
+				StartPoint="0.5,0">
+            <GradientStop
+					Color="#FF33B9AD"
+					Offset="0" />
+            <GradientStop
+					Color="#FF007ACC"
+					Offset="1" />
+        </LinearGradientBrush>
+
+
     </FrameworkElement.Resources>
     <!--<FrameworkElement.Resources>
         <ResourceDictionary>
@@ -172,41 +185,55 @@
 				Storyboard="{StaticResource Color}" />
         </EventTrigger>
     </FrameworkElement.Triggers>-->
-    <Grid>
+    <Grid  Name="MyGrid">
         <!--<Rectangle Opacity=".6" Margin="10" Fill="Black" RadiusX="2" RadiusY="2"/>-->
         <Rectangle Opacity=".8" Margin="10,10,0,10"
-                   Name="PageGround">
-            <Rectangle.Fill>
-                <LinearGradientBrush
-				EndPoint="0.5,1"
-				StartPoint="0.5,0">
-                    <GradientStop
-					Color="#FF33B9AD"
-					Offset="0" />
-                    <GradientStop
-					Color="#FF007ACC"
-					Offset="1" />
-                </LinearGradientBrush>
-            </Rectangle.Fill>
+                   Name="PageGround" Fill="{DynamicResource NormalColors}">
             <Rectangle.Effect>
                 <DropShadowEffect ShadowDepth="1" BlurRadius="6" Direction="270" Opacity="0.75" Color="#FF211613"/>
                 <!--<BlurEffect KernelType="Gaussian" Radius="60" />-->
             </Rectangle.Effect>
         </Rectangle>
-        
+
         <Grid Margin="10,10,0,14">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
+
             <CustomControls:SwitchMenu Grid.Row="1" ItemsSource="{Binding ApplicationList}" Orientation="Vertical"
                                        ItemTemplate="{StaticResource ApplicationTemplate}">
-               
+
             </CustomControls:SwitchMenu>
-            <Grid Height="20" Background="Transparent" Cursor="SizeAll"  Margin="0,10">
+            <Grid Height="20" Margin="0,10"
+                  Background="Transparent" 
+                  Cursor="SizeAll">
                 <Path Data="{DynamicResource DragPath}" Fill="White" 
                       Stretch="Fill" Width="20" IsHitTestVisible="False"/>
             </Grid>
+            <Border x:Name="borderExit" Width="10" Height="10"
+                    HorizontalAlignment="Right" VerticalAlignment="Top"
+                    Margin="0,4,4,0" Cursor="Hand"
+                    ToolTip="关闭">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseDown">
+                        <i:InvokeCommandAction Command="{Binding DataContext.ExitCommand,RelativeSource={RelativeSource AncestorType=Window}}"></i:InvokeCommandAction>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <Border.Style>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="Visibility" Value="Hidden"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=MyGrid, Path=IsMouseOver}" Value="True">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <Path Data="{DynamicResource ExitPath}" Fill="White" 
+                      Stretch="Fill" Width="10" Height="10"/>
+            </Border>
+
             <Line X1="0" Margin="10,0" Y1="1" X2="80" Y2="1" Stroke="White" VerticalAlignment="Bottom"/>
 
         </Grid>

@@ -132,5 +132,10 @@ namespace SoftWareHelper.Helpers
         public static extern void SetLastError(int dwErrorCode);
         #endregion
 
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool SetForegroundWindow(IntPtr hWnd);
+
     }
 }

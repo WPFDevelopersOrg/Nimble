@@ -62,6 +62,13 @@ namespace SoftWareHelper.ViewModels
             ApplicationModel model = obj as ApplicationModel;
             Process.Start(model.ExePath);
         });
+        /// <summary>
+        /// ExitCommand
+        /// </summary>
+        public ICommand ExitCommand => new RelayCommand(obj=> 
+        {
+            Environment.Exit(-1);
+        });
         #endregion
 
         #region 方法
