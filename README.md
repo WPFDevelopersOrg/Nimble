@@ -19,6 +19,7 @@
 ## __完善__  
 
 
-<img src="Images/GIFNew.gif"/>
+<img src="/Images/GIFNew.gif"/>
+<img src="/Images/GIFMini.gif"/>
 <img src="/Images/2.png"/>
 <img src="/Images/gif.gif"/>
