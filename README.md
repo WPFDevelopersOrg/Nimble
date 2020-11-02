@@ -9,7 +9,7 @@
 
 
 
-## **下载解压后体验 [releases](https://github.com/yanjinhuagood/SoftWareHelper/releases/download/1.0)**   
+## **下载解压后体验 [releases](https://github.com/yanjinhuagood/SoftWareHelper/releases/)**   
 
 
 
