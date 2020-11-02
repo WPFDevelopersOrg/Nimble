@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Management;
 using System.Reflection;
+using System.Security.Permissions;
 using System.Text;
 using System.Windows;
 using System.Windows.Media;
@@ -111,6 +112,9 @@ namespace SoftWareHelper.Helpers
 
 
         #region 获取安装的软件
+        //[RegistryPermissionAttribute(SecurityAction.PermitOnly, Read = @"HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall")]
+        //[RegistryPermissionAttribute(SecurityAction.PermitOnly, Read = @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall")]
+        //[RegistryPermissionAttribute(SecurityAction.PermitOnly, Read = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall")]
         public static ObservableCollection<ApplicationModel> AllApplictionInstalled()
         {
             ObservableCollection<ApplicationModel> applictionArray = new ObservableCollection<ApplicationModel>();
@@ -134,112 +138,21 @@ namespace SoftWareHelper.Helpers
 
 
             RegistryKey key;
-
             // 当前用户
             key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall");
-            foreach (String keyName in key.GetSubKeyNames())
+            if (key != null)
             {
-                using (RegistryKey subkey = key.OpenSubKey(keyName))
+                foreach (String keyName in key.GetSubKeyNames())
                 {
-                    try
+                    using (RegistryKey subkey = key.OpenSubKey(keyName))
                     {
-                        var displayName = subkey.GetValue("DisplayName");
-                        if (displayName != null)
+                        try
                         {
-
-                            if (!SystemApplication.Any(displayName.ToString().Contains))
+                            var displayName = subkey.GetValue("DisplayName");
+                            if (displayName != null)
                             {
-                                var displayPath = subkey.GetValue("DisplayIcon");
 
-                                if (displayPath != null)
-                                {
-                                    model = new ApplicationModel
-                                    {
-                                        Name = displayName.ToString(),
-                                        ExePath = displayPath.ToString(),
-                                        IconPath = ApplicationIcon
-                                    };
-                                    FormModel(model, applictionArray);
-                                }
-                            }
-
-                        }
-                        
-                        
-                    }
-                    catch (Exception ex)
-                    { }
-                }
-            }
-
-            // X86
-            key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall");
-            foreach (String keyName in key.GetSubKeyNames())
-            {
-                using (RegistryKey subkey = key.OpenSubKey(keyName))
-                {
-                    try
-                    {
-                        var displayName = subkey.GetValue("DisplayName");
-                        if (displayName != null)
-                        {
-                            if (!SystemApplication.Any(displayName.ToString().Contains))
-                            {
-                                var displayPath = subkey.GetValue("DisplayIcon");
-
-                                if (displayPath != null)
-                                {
-                                    model = new ApplicationModel
-                                    {
-                                        Name = displayName.ToString(),
-                                        ExePath = displayPath.ToString(),
-                                        IconPath = ApplicationIcon
-                                    };
-                                    FormModel(model, applictionArray);
-                                }
-                            }
-
-                        }
-                        
-                        
-                    }
-                    catch (Exception ex)
-                    { }
-                }
-            }
-
-            // X64
-            key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall");
-            foreach (String keyName in key.GetSubKeyNames())
-            {
-                using (RegistryKey subkey = key.OpenSubKey(keyName))
-                {
-                    try
-                    {
-                        var displayName = subkey.GetValue("DisplayName");
-                        if (displayName != null)
-                        {
-                            if (!SystemApplication.Any(displayName.ToString().Contains))
-                            {
-                                if (displayName.ToString() == "腾讯QQ")
-                                {
-                                    var installLocation = subkey.GetValue("InstallLocation");
-                                    if (installLocation != null)
-                                    {
-                                        if (installLocation != null)
-                                        {
-                                            model = new ApplicationModel
-                                            {
-                                                Name = displayName.ToString(),
-                                                ExePath = Path.Combine(installLocation.ToString(), "Bin/QQ.exe"),
-                                                IconPath = ApplicationIcon
-                                            };
-
-                                            FormModel(model,applictionArray);
-                                        }
-                                    }
-                                }
-                                else
+                                if (!SystemApplication.Any(displayName.ToString().Contains))
                                 {
                                     var displayPath = subkey.GetValue("DisplayIcon");
 
@@ -252,20 +165,122 @@ namespace SoftWareHelper.Helpers
                                             IconPath = ApplicationIcon
                                         };
                                         FormModel(model, applictionArray);
-
                                     }
                                 }
-                                
+
                             }
 
+
                         }
-                        
-                        
+                        catch (Exception ex)
+                        { }
                     }
-                    catch (Exception ex)
-                    { }
                 }
             }
+           
+
+            // X86
+            key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall");
+            if (key != null)
+            {
+                foreach (String keyName in key.GetSubKeyNames())
+                {
+                    using (RegistryKey subkey = key.OpenSubKey(keyName))
+                    {
+                        try
+                        {
+                            var displayName = subkey.GetValue("DisplayName");
+                            if (displayName != null)
+                            {
+                                if (!SystemApplication.Any(displayName.ToString().Contains))
+                                {
+                                    var displayPath = subkey.GetValue("DisplayIcon");
+
+                                    if (displayPath != null)
+                                    {
+                                        model = new ApplicationModel
+                                        {
+                                            Name = displayName.ToString(),
+                                            ExePath = displayPath.ToString(),
+                                            IconPath = ApplicationIcon
+                                        };
+                                        FormModel(model, applictionArray);
+                                    }
+                                }
+
+                            }
+
+
+                        }
+                        catch (Exception ex)
+                        { }
+                    }
+                }
+            }
+            
+
+            // X64
+            key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall");
+            if (key != null)
+            {
+                foreach (String keyName in key.GetSubKeyNames())
+                {
+                    using (RegistryKey subkey = key.OpenSubKey(keyName))
+                    {
+                        try
+                        {
+                            var displayName = subkey.GetValue("DisplayName");
+                            if (displayName != null)
+                            {
+                                if (!SystemApplication.Any(displayName.ToString().Contains))
+                                {
+                                    if (displayName.ToString() == "腾讯QQ")
+                                    {
+                                        var installLocation = subkey.GetValue("InstallLocation");
+                                        if (installLocation != null)
+                                        {
+                                            if (installLocation != null)
+                                            {
+                                                model = new ApplicationModel
+                                                {
+                                                    Name = displayName.ToString(),
+                                                    ExePath = Path.Combine(installLocation.ToString(), "Bin/QQ.exe"),
+                                                    IconPath = ApplicationIcon
+                                                };
+
+                                                FormModel(model, applictionArray);
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        var displayPath = subkey.GetValue("DisplayIcon");
+
+                                        if (displayPath != null)
+                                        {
+                                            model = new ApplicationModel
+                                            {
+                                                Name = displayName.ToString(),
+                                                ExePath = displayPath.ToString(),
+                                                IconPath = ApplicationIcon
+                                            };
+                                            FormModel(model, applictionArray);
+
+                                        }
+                                    }
+
+                                }
+
+                            }
+
+
+                        }
+                        catch (Exception ex)
+                        { }
+                    }
+                }
+            }
+            
 
             return applictionArray;
         }
@@ -275,21 +290,28 @@ namespace SoftWareHelper.Helpers
         #region 文件夹
         public static void TemporaryFile()
         {
-            temporaryFile = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), System.IO.Path.GetFileNameWithoutExtension(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName));
-            if (!System.IO.Directory.Exists(temporaryFile))
+            try
             {
-                System.IO.Directory.CreateDirectory(temporaryFile);
+                temporaryFile = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), System.IO.Path.GetFileNameWithoutExtension(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName));
+                if (!System.IO.Directory.Exists(temporaryFile))
+                {
+                    System.IO.Directory.CreateDirectory(temporaryFile);
+                }
+                temporaryIconFile = System.IO.Path.Combine(temporaryFile, "Icon");
+                if (!System.IO.Directory.Exists(temporaryIconFile))
+                {
+                    System.IO.Directory.CreateDirectory(temporaryIconFile);
+                }
+                temporaryApplicationJson = Path.Combine(temporaryFile, "application.json");
+                ApplicationIcon = Path.Combine(temporaryIconFile, "ApplicationIcon.png");
+                if (!File.Exists(ApplicationIcon))
+                {
+                    SaveImage((BitmapSource)GetSystemIcon(), ApplicationIcon);
+                }
             }
-            temporaryIconFile = System.IO.Path.Combine(temporaryFile,"Icon");
-            if (!System.IO.Directory.Exists(temporaryIconFile))
+            catch (Exception ex)
             {
-                System.IO.Directory.CreateDirectory(temporaryIconFile);
-            }
-            temporaryApplicationJson = Path.Combine(temporaryFile, "application.json");
-            ApplicationIcon = Path.Combine(temporaryIconFile, "ApplicationIcon.png");
-            if (!File.Exists(ApplicationIcon))
-            {
-                SaveImage((BitmapSource)GetSystemIcon(), ApplicationIcon);
+                throw new Exception("创建文件失败");
             }
         }
         #endregion
@@ -300,21 +322,21 @@ namespace SoftWareHelper.Helpers
         {
             System.Drawing.Icon icon = System.Drawing.SystemIcons.Application;
             return System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(
-                icon.Handle, 
+                icon.Handle,
                 new Int32Rect(0, 0, icon.Width, icon.Height),
                 BitmapSizeOptions.FromEmptyOptions());
         }
 
         public static ImageSource GetIcon(string fileName)
         {
-            
+
             System.Drawing.Icon icon = System.Drawing.Icon.ExtractAssociatedIcon(fileName);
             return System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(
                         icon.Handle,
                         new Int32Rect(0, 0, icon.Width, icon.Height),
                         BitmapSizeOptions.FromEmptyOptions());
         }
-        public static void SaveImage(BitmapSource bitmap,string savePath)
+        public static void SaveImage(BitmapSource bitmap, string savePath)
         {
             var encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(bitmap));
@@ -364,7 +386,7 @@ namespace SoftWareHelper.Helpers
                 default:
                     break;
             }
-        } 
+        }
         #endregion
 
     }

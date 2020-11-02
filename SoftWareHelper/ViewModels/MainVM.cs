@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using System.Windows.Input;
 
 namespace SoftWareHelper.ViewModels
@@ -39,20 +40,21 @@ namespace SoftWareHelper.ViewModels
         /// </summary>    
         public ICommand ViewLoaded => new RelayCommand(obj =>
         {
-            
             Common.TemporaryFile();
-            if (!File.Exists(Common.temporaryApplicationJson))
-            {
-                ApplicationList = Common.AllApplictionInstalled();
-                string json = JsonHelper.Serialize(ApplicationList);
-                FileHelper.WriteFile(json, Common.temporaryApplicationJson);
-            }
-            else
-            {
-                string json = FileHelper.ReadFile(Common.temporaryApplicationJson);
-                ApplicationList = JsonHelper.Deserialize<ObservableCollection<ApplicationModel>>(json);
-            }
-
+            ApplicationList = Common.AllApplictionInstalled();
+            string json = JsonHelper.Serialize(ApplicationList);
+            FileHelper.WriteFile(json, Common.temporaryApplicationJson);
+            //if (!File.Exists(Common.temporaryApplicationJson))
+            //{
+            //    ApplicationList = Common.AllApplictionInstalled();
+            //    string json = JsonHelper.Serialize(ApplicationList);
+            //    FileHelper.WriteFile(json, Common.temporaryApplicationJson);
+            //}
+            //else
+            //{
+            //    string json = FileHelper.ReadFile(Common.temporaryApplicationJson);
+            //    ApplicationList = JsonHelper.Deserialize<ObservableCollection<ApplicationModel>>(json);
+            //}
         });
         /// <summary>
         /// SelectionChangedCommand
@@ -67,6 +69,12 @@ namespace SoftWareHelper.ViewModels
         /// </summary>
         public ICommand ExitCommand => new RelayCommand(obj=> 
         {
+
+            //Common.TemporaryFile();
+            //ApplicationList = Common.AllApplictionInstalled();
+            //string json = JsonHelper.Serialize(ApplicationList);
+            //FileHelper.WriteFile(json, Common.temporaryApplicationJson);
+
             Environment.Exit(-1);
         });
         #endregion

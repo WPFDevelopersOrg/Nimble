@@ -19,6 +19,10 @@ namespace SoftWareHelper.Views
         public MainView()
         {
             InitializeComponent();
+            //if (!Microsoft.Windows.Shell.SystemParameters2.Current.IsGlassEnabled)
+            //{
+            //   
+            //}
             desktopWorkingArea = System.Windows.SystemParameters.WorkArea;
             this.Left = desktopWorkingArea.Width - this.Width;
             this.Top = desktopWorkingArea.Height / 2 -(this.Height / 2);

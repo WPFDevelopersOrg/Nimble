@@ -13,7 +13,7 @@
         TextOptions.TextFormattingMode="Display" UseLayoutRounding="True"
         SnapsToDevicePixels="True" WindowStyle="None" Background="Transparent"
         Title="MainView" Height="600" Width="100" Topmost="True"
-        ShowInTaskbar="False">
+        ShowInTaskbar="False" x:Name="myWindow">
     <shell:WindowChrome.WindowChrome>
         <shell:WindowChrome GlassFrameThickness="-10" CaptionHeight="0"/>
     </shell:WindowChrome.WindowChrome>
@@ -99,6 +99,75 @@
 					Color="#FF007ACC"
 					Offset="1" />
         </LinearGradientBrush>
+
+        <Storyboard x:Key="WindowPutItAway">
+            <DoubleAnimation Storyboard.TargetName="myWindow" 
+                             Storyboard.TargetProperty="(Window.Height)" 
+                             To="60" Duration="0:0:1"/>
+            <!--<DoubleAnimation Storyboard.TargetName="myWindow" 
+                             Storyboard.TargetProperty="(Window.Width)" 
+                             To="50" Duration="0:0:1"/>-->
+            <!--<DoubleAnimation Storyboard.TargetName="PutItAwayBorder" 
+                             Storyboard.TargetProperty="(Button.Opacity)" 
+                             To="0"/>
+            
+            <DoubleAnimation Storyboard.TargetName="StretchOutBorder" 
+                             Storyboard.TargetProperty="(Button.Opacity)" 
+                             To="1"/>
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="StretchOutBorder"
+                        Storyboard.TargetProperty="Visibility">
+                <DiscreteObjectKeyFrame KeyTime="0:0:5" Value="{x:Static Visibility.Visible}"/>
+            </ObjectAnimationUsingKeyFrames>-->
+        </Storyboard>
+
+        <Storyboard x:Key="WindowStretchOut">
+            <DoubleAnimation Storyboard.TargetName="myWindow" 
+                             Storyboard.TargetProperty="(Window.Height)" 
+                             To="600" Duration="0:0:1"/>
+            <!--<DoubleAnimation Storyboard.TargetName="myWindow" 
+                             Storyboard.TargetProperty="(Window.Width)" 
+                             To="100" Duration="0:0:00.2"/>-->
+            <!--<DoubleAnimation Storyboard.TargetName="StretchOutBorder" 
+                             Storyboard.TargetProperty="(Button.Opacity)" 
+                             To="1"/>
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="StretchOutBorder"
+                        Storyboard.TargetProperty="Visibility">
+                <DiscreteObjectKeyFrame KeyTime="0:0:5" Value="{x:Static Visibility.Visible}"/>
+            </ObjectAnimationUsingKeyFrames>
+            <DoubleAnimation Storyboard.TargetName="StretchOutBorder" 
+                             Storyboard.TargetProperty="(Button.Opacity)" 
+                             To="0"/>-->
+            
+        </Storyboard>
+
+        <Style x:Key="tbSwitchMiniAndNormal" TargetType="{x:Type ToggleButton}">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="ToolTip" Value="Mini"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Grid x:Name="PART_Grid">
+                            <Rectangle x:Name="PART_Rectangle" Fill="Transparent"
+                                       Stroke="White" StrokeThickness="1" Opacity="0"/>
+                            <Path x:Name="_Path" Data="{DynamicResource PutItAwayPath}" Fill="White"
+                                  Stretch="Fill" Width="10" Height="14"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" TargetName="PART_Rectangle" Value="1"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Data" Value="{DynamicResource StretchOutPath}" TargetName="_Path"/>
+                                <Setter Property="ToolTip" Value="Normal"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Margin" Value="0,2,0,0"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
 
     </FrameworkElement.Resources>
@@ -211,10 +280,10 @@
                 <Path Data="{DynamicResource DragPath}" Fill="White" 
                       Stretch="Fill" Width="20" IsHitTestVisible="False"/>
             </Grid>
-            <Border x:Name="borderExit" Width="10" Height="10"
+            <Border x:Name="borderExit" Width="15" Height="15"
                     HorizontalAlignment="Right" VerticalAlignment="Top"
                     Margin="0,4,4,0" Cursor="Hand"
-                    ToolTip="关闭">
+                    ToolTip="Exit" Background="Transparent">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="MouseDown">
                         <i:InvokeCommandAction Command="{Binding DataContext.ExitCommand,RelativeSource={RelativeSource AncestorType=Window}}"></i:InvokeCommandAction>
@@ -233,6 +302,67 @@
                 <Path Data="{DynamicResource ExitPath}" Fill="White" 
                       Stretch="Fill" Width="10" Height="10"/>
             </Border>
+            <!--<Border x:Name="PutItAwayBorder" Width="15" Height="15"
+                    HorizontalAlignment="Left" VerticalAlignment="Top"
+                    Margin="4,4,0,0" Cursor="Hand" Background="Transparent"
+                    ToolTip="Mini">
+                <Border.Style>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="Visibility" Value="Hidden"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=MyGrid, Path=IsMouseOver}" Value="True">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <Border.Triggers>
+                    <EventTrigger RoutedEvent="Border.MouseDown">
+                        <BeginStoryboard Storyboard="{DynamicResource WindowPutItAway}">
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Border.Triggers>
+                <Path Data="{DynamicResource PutItAwayPath}" Fill="White" 
+                      Stretch="Fill" Width="10" Height="10"/>
+            </Border>
+
+            <Border x:Name="StretchOutBorder" Width="15" Height="15"
+                    HorizontalAlignment="Left" VerticalAlignment="Top"
+                    Margin="4,4,0,0" Cursor="Hand" Background="Transparent"
+                    ToolTip="还原" Opacity="0" Visibility="Collapsed">
+                <Border.Style>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=MyGrid, Path=IsMouseOver}" Value="True">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <Border.Triggers>
+                    <EventTrigger RoutedEvent="Border.MouseDown">
+                        <BeginStoryboard Storyboard="{DynamicResource WindowStretchOut}">
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Border.Triggers>
+                <Path Data="{DynamicResource StretchOutPath}" Fill="White" 
+                      Stretch="Fill" Width="10" Height="10"/>
+            </Border>-->
+            <ToggleButton Style="{DynamicResource tbSwitchMiniAndNormal}"
+                          HorizontalAlignment="Left" VerticalAlignment="Center"
+                          Height="20" Width="20" IsChecked="False">
+                <ToggleButton.Triggers>
+                    <EventTrigger RoutedEvent="ToggleButton.Checked">
+                        <BeginStoryboard Storyboard="{DynamicResource WindowPutItAway}">
+                        </BeginStoryboard>
+                    </EventTrigger>
+                    <EventTrigger RoutedEvent="ToggleButton.Unchecked">
+                        <BeginStoryboard Storyboard="{DynamicResource WindowStretchOut}">
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </ToggleButton.Triggers>
+            </ToggleButton>
 
             <Line X1="0" Margin="10,0" Y1="1" X2="80" Y2="1" Stroke="White" VerticalAlignment="Bottom"/>
 
