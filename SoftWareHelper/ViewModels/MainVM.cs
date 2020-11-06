@@ -1,4 +1,5 @@
-﻿using SoftWareHelper.Helpers;
+﻿using Microsoft.Windows.Shell;
+using SoftWareHelper.Helpers;
 using SoftWareHelper.Models;
 using System;
 using System.Collections.Generic;
@@ -62,6 +63,8 @@ namespace SoftWareHelper.ViewModels
         public ICommand SelectionChangedCommand => new RelayCommand(obj => 
         {
             ApplicationModel model = obj as ApplicationModel;
+            //ApplicationList.Move(ApplicationList.IndexOf(model),0);
+            
             Process.Start(model.ExePath);
         });
         /// <summary>
@@ -69,14 +72,10 @@ namespace SoftWareHelper.ViewModels
         /// </summary>
         public ICommand ExitCommand => new RelayCommand(obj=> 
         {
-
-            //Common.TemporaryFile();
-            //ApplicationList = Common.AllApplictionInstalled();
-            //string json = JsonHelper.Serialize(ApplicationList);
-            //FileHelper.WriteFile(json, Common.temporaryApplicationJson);
-
             Environment.Exit(-1);
         });
+
+       
         #endregion
 
         #region 方法

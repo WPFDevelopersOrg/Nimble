@@ -3,6 +3,7 @@ using System;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media.Animation;
 
 namespace SoftWareHelper.Views
 {
@@ -48,7 +49,7 @@ namespace SoftWareHelper.Views
 
             exStyle |= (int)Win32Api.ExtendedWindowStyles.WS_EX_TOOLWINDOW;
             Win32Api.SetWindowLong(wndHelper.Handle, (int)Win32Api.GetWindowLongFields.GWL_EXSTYLE, (IntPtr)exStyle);
-            Win32Api.HwndSourceAdd(this);
+            //Win32Api.HwndSourceAdd(this);
         }
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
@@ -77,6 +78,80 @@ namespace SoftWareHelper.Views
             }
         }
 
+        private void ToggleButtonMini_Checked(object sender, RoutedEventArgs e)
+        {
+           
+            EasingFunctionBase easeFunction = new CubicEase()
+            {
+                EasingMode = EasingMode.EaseOut,
+            };
+
+            var heightAnimation = new DoubleAnimation 
+            {
+                Name = "heightMini",
+                To = 60,
+                Duration = new Duration(TimeSpan.FromSeconds(0.5)),
+                EasingFunction = easeFunction
+            };
+            var widthAnimation = new DoubleAnimation
+            {
+                Name = "widthMini",
+                To = 30,
+                Duration = new Duration(TimeSpan.FromSeconds(0.51)),
+                EasingFunction = easeFunction
+            };
+            widthAnimation.Completed += (s, e1) =>
+            {
+                this.Left = desktopWorkingArea.Width - this.Width;
+            };
+            //heightAnimation.Completed += Animation_Completed;
+            //widthAnimation.Completed += Animation_Completed;
+            this.BeginAnimation(Window.HeightProperty, heightAnimation);
+            this.BeginAnimation(Window.WidthProperty,widthAnimation);
+        }
+
+        private void Animation_Completed(object sender, EventArgs e)
+        {
+            Timeline name = ((AnimationClock)sender).Timeline;
+            switch (name.Name)
+            {
+                case "widthMini":
+                    this.Left = desktopWorkingArea.Width - this.Width;
+                    break;
+
+            }
+            Console.WriteLine(this.Width);
+        }
+
+        private void UnToggleButtonMini_Checked(object sender, RoutedEventArgs e)
+        {
+           
+            EasingFunctionBase easeFunction = new CubicEase()
+            {
+                EasingMode = EasingMode.EaseIn,
+            };
+            var widthAnimation = new DoubleAnimation
+            {
+                To = 120,
+                Duration = new Duration(TimeSpan.FromSeconds(0.01)),
+                EasingFunction = easeFunction
+            };
+            widthAnimation.Completed += (s, e1) =>
+            {
+                this.Left = desktopWorkingArea.Width - this.Width;
+            };
+
+            var heightAnimation = new DoubleAnimation
+            {
+                To = 600,
+                Duration = new Duration(TimeSpan.FromSeconds(0.5)),
+                EasingFunction = easeFunction
+            };
+            this.BeginAnimation(Window.WidthProperty, widthAnimation);
+            this.BeginAnimation(Window.HeightProperty, heightAnimation);
+
+        }
+        
     }
 
 }

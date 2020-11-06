@@ -45,6 +45,16 @@ namespace SoftWareHelper.Helpers
             return IntPtr.Zero;
         }
 
+        /// <summary>
+        /// 移动
+        /// </summary>
+        /// <param name="hWnd"></param>
+        /// <param name="X"></param>
+        /// <param name="Y"></param>
+        /// <param name="nWidth"></param>
+        /// <param name="nHeight"></param>
+        /// <param name="bRepaint"></param>
+        /// <returns></returns>
         [DllImportAttribute("user32.dll", EntryPoint = "MoveWindow")]
         public static extern bool MoveWindow(System.IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
 

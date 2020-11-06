@@ -11,6 +11,7 @@ namespace SoftWareHelper.CustomControls
 {
     public class SwitchMenu : Selector
     {
+
         private Button PART_PreviousButton;
         private Button PART_NextButton;
         private Button PART_UpButton;
@@ -29,10 +30,12 @@ namespace SoftWareHelper.CustomControls
         }
         public static readonly DependencyProperty OrientationProperty =
             DependencyProperty.Register("Orientation", typeof(Orientation), typeof(SwitchMenu), new PropertyMetadata(Orientation.Horizontal));
+
+
         #endregion
 
         #endregion
-        
+
         static SwitchMenu()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(SwitchMenu), new FrameworkPropertyMetadata(typeof(SwitchMenu)));
@@ -81,7 +84,10 @@ namespace SoftWareHelper.CustomControls
             }
             this.MouseMove += SwitchMenu_MouseMove;
             this.MouseLeave += SwitchMenu_MouseLeave;
+
+            
         }
+
 
         private void SwitchMenu_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {

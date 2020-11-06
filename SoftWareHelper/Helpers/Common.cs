@@ -155,7 +155,6 @@ namespace SoftWareHelper.Helpers
                                 if (!SystemApplication.Any(displayName.ToString().Contains))
                                 {
                                     var displayPath = subkey.GetValue("DisplayIcon");
-
                                     if (displayPath != null)
                                     {
                                         model = new ApplicationModel
