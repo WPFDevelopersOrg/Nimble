@@ -25,6 +25,7 @@ namespace SoftWareHelper.Views
             //   
             //}
             desktopWorkingArea = System.Windows.SystemParameters.WorkArea;
+            this.Height = desktopWorkingArea.Height / 2;
             this.Left = desktopWorkingArea.Width - this.Width;
             this.Top = desktopWorkingArea.Height / 2 -(this.Height / 2);
             this.Loaded += Window_Loaded;
@@ -143,7 +144,7 @@ namespace SoftWareHelper.Views
 
             var heightAnimation = new DoubleAnimation
             {
-                To = 600,
+                To = desktopWorkingArea.Height / 2,
                 Duration = new Duration(TimeSpan.FromSeconds(0.5)),
                 EasingFunction = easeFunction
             };

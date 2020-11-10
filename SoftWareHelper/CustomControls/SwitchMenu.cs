@@ -6,21 +6,35 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
+using System.Windows.Media.Animation;
 
 namespace SoftWareHelper.CustomControls
 {
     public class SwitchMenu : Selector
     {
+        public static class ScrollViewerBehavior
+        {
+            public static readonly DependencyProperty HorizontalOffsetProperty = DependencyProperty.RegisterAttached("HorizontalOffset", typeof(double), typeof(ScrollViewerBehavior), new UIPropertyMetadata(0.0, OnHorizontalOffsetChanged));
+            public static void SetHorizontalOffset(FrameworkElement target, double value) => target.SetValue(HorizontalOffsetProperty, value);
+            public static double GetHorizontalOffset(FrameworkElement target) => (double)target.GetValue(HorizontalOffsetProperty);
+            private static void OnHorizontalOffsetChanged(DependencyObject target, DependencyPropertyChangedEventArgs e) => (target as ScrollViewer)?.ScrollToHorizontalOffset((double)e.NewValue);
 
+            public static readonly DependencyProperty VerticalOffsetProperty = DependencyProperty.RegisterAttached("VerticalOffset", typeof(double), typeof(ScrollViewerBehavior), new UIPropertyMetadata(0.0, OnVerticalOffsetChanged));
+            public static void SetVerticalOffset(FrameworkElement target, double value) => target.SetValue(VerticalOffsetProperty, value);
+            public static double GetVerticalOffset(FrameworkElement target) => (double)target.GetValue(VerticalOffsetProperty);
+            private static void OnVerticalOffsetChanged(DependencyObject target, DependencyPropertyChangedEventArgs e) => (target as ScrollViewer)?.ScrollToVerticalOffset((double)e.NewValue);
+        }
         private Button PART_PreviousButton;
         private Button PART_NextButton;
         private Button PART_UpButton;
         private Button PART_DownButton;
         private ScrollViewer PART_ScrollViewer;
         private double offset = 70;
+        private double recordAnimationOffset = 0.0;
 
         #region 依赖属性
-        
+
         #region Orientation
         [Bindable(true), Category("Appearance"), Description("aaaa")]
         public Orientation Orientation
@@ -46,7 +60,17 @@ namespace SoftWareHelper.CustomControls
             item.MouseLeftButtonUp += item_MouseLeftButtonUp;
             return item;
         }
-
+        protected override void OnPreviewMouseWheel(MouseWheelEventArgs e)
+        {
+            if (e.Delta < 0 )
+            {
+                BeginScrollViewerAnimation(500);
+            }
+            else
+            {
+                BeginScrollViewerAnimation(-500);
+            }
+        }
         void item_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
 
@@ -54,7 +78,7 @@ namespace SoftWareHelper.CustomControls
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-           
+
             this.PART_PreviousButton = this.GetTemplateChild("PART_PreviousButton") as Button;
             this.PART_NextButton = this.GetTemplateChild("PART_NextButton") as Button;
             this.PART_UpButton = this.GetTemplateChild("PART_UpButton") as Button;
@@ -85,9 +109,10 @@ namespace SoftWareHelper.CustomControls
             this.MouseMove += SwitchMenu_MouseMove;
             this.MouseLeave += SwitchMenu_MouseLeave;
 
-            
-        }
+            this.PART_ScrollViewer.SetValue(ScrollViewerBehavior.VerticalOffsetProperty, 0.0);
 
+        }
+       
 
         private void SwitchMenu_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
@@ -125,15 +150,18 @@ namespace SoftWareHelper.CustomControls
 
         private void PART_UpButton_Click(object sender, RoutedEventArgs e)
         {
-            this.ScrollToOffset(Orientation.Vertical, -this.offset);
+            BeginScrollViewerAnimation(-500);
+            //this.ScrollToOffset(Orientation.Vertical, -this.offset);
         }
+
         private void PART_DownButton_Click(object sender, RoutedEventArgs e)
         {
-            this.ScrollToOffset(Orientation.Vertical, this.offset);
+            BeginScrollViewerAnimation(500);
+            //this.ScrollToOffset(Orientation.Vertical, this.offset);
         }
         void PART_ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
-            
+
         }
         void PART_PreviousButton_Click(object sender, RoutedEventArgs e)
         {
@@ -161,5 +189,31 @@ namespace SoftWareHelper.CustomControls
                     break;
             }
         }
+
+        void BeginScrollViewerAnimation(double animationOffset)
+        {
+            EasingFunctionBase easeFunction = new CubicEase()
+            {
+                EasingMode = EasingMode.EaseOut,
+            };
+            var doubleAnimation = new DoubleAnimation
+            {
+                Duration = new Duration(TimeSpan.FromSeconds(0.6)),
+                EasingFunction = easeFunction
+            };
+           
+            recordAnimationOffset = recordAnimationOffset + animationOffset;
+            if (recordAnimationOffset > this.PART_ScrollViewer.ExtentHeight
+                ||
+                recordAnimationOffset < 0)
+            {
+                recordAnimationOffset = recordAnimationOffset - animationOffset;
+                return;
+            }
+            doubleAnimation.To = recordAnimationOffset;
+
+            this.PART_ScrollViewer.BeginAnimation(ScrollViewerBehavior.VerticalOffsetProperty, doubleAnimation);
+        }
+
     }
 }

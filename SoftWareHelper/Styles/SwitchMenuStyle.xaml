@@ -11,6 +11,15 @@
     <!--下-->
     <Geometry x:Key="DownGeometry">M671.2832,492.032 L516.864,603.3408 362.3936,492.032 362.3936,397.7728 516.8128,509.0816 671.232,397.2608 671.232,492.032 z</Geometry>
 
+    <!--<Storyboard x:Key="ScrollVerticalStoryboard">
+        <DoubleAnimation Storyboard.TargetName="PART_ScrollViewer" Storyboard.TargetProperty="(CustomControls:ScrollViewerBehavior.VerticalOffsetProperty)"
+                        From="0" To="500" Duration="0:0:0.6">
+            <DoubleAnimation.EasingFunction>
+                <CircleEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>-->
+    
     <Style x:Key="PathButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">
@@ -104,6 +113,11 @@
                             <Path Margin="2" Data="{DynamicResource DownGeometry}" 
                                   Width="14" Height="10"
                                   Fill="#ffff" Stretch="Fill"/>
+                            <!--<Button.Triggers>
+                                <EventTrigger RoutedEvent="Button.Click">
+                                    <BeginStoryboard Storyboard="{StaticResource ScrollVerticalStoryboard}"/>
+                                </EventTrigger>
+                            </Button.Triggers>-->
                         </Button>
                     </Grid>
                     <ControlTemplate.Triggers>
