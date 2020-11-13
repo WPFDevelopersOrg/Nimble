@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace SoftWareHelper
@@ -15,32 +16,36 @@ namespace SoftWareHelper
     /// </summary>
     public partial class App : Application
     {
+        public EventWaitHandle ProgramStarted { get; set; }
         private string appName;
         protected override void OnStartup(StartupEventArgs e)
         {
+            RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
             appName = System.IO.Path.GetFileNameWithoutExtension(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
-            bool createdNew = true;
-            using (Mutex mutex = new Mutex(true, appName, out createdNew))
+            ProgramStarted = new EventWaitHandle(false, EventResetMode.AutoReset, appName, out var createNew);
+            if (!createNew)
             {
-                if (createdNew)
+                // 唤起已经启动的进程
+                Process current = Process.GetCurrentProcess();
+                foreach (Process process in Process.GetProcessesByName(current.ProcessName))
                 {
-                    Common common = new Common();
-                    var main = new MainView();
-                    main.Show();
-                }
-                else
-                {
-                    Process current = Process.GetCurrentProcess();
-                    foreach (Process process in Process.GetProcessesByName(current.ProcessName))
+                    if (process.Id != current.Id)
                     {
-                        if (process.Id != current.Id)
-                        {
-                            Win32Api.SetForegroundWindow(process.MainWindowHandle);
-                            break;
-                        }
+                        Win32Api.SetForegroundWindow(process.MainWindowHandle);
+                        App.Current.Shutdown();
+                        Environment.Exit(-1);
+                        break;
                     }
                 }
+
             }
+            else
+            {
+                Common common = new Common();
+                var main = new MainView();
+                main.Show();
+            }
+
             base.OnStartup(e);
 
             //UI线程未捕获异常处理事件

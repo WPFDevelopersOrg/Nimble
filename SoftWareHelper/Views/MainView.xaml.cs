@@ -3,6 +3,7 @@ using System;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 
 namespace SoftWareHelper.Views
@@ -14,7 +15,7 @@ namespace SoftWareHelper.Views
     {
         private Rect desktopWorkingArea;
 
-        Point anchorPoint;
+        System.Windows.Point anchorPoint;
         bool inDrag;
 
         public MainView()
@@ -24,19 +25,24 @@ namespace SoftWareHelper.Views
             //{
             //   
             //}
+            
             desktopWorkingArea = System.Windows.SystemParameters.WorkArea;
             this.Height = desktopWorkingArea.Height / 2;
             this.Left = desktopWorkingArea.Width - this.Width;
-            this.Top = desktopWorkingArea.Height / 2 -(this.Height / 2);
+            this.Top = desktopWorkingArea.Height / 2 - (this.Height / 2);
             this.Loaded += Window_Loaded;
             this.Deactivated += MainView_Deactivated;
         }
 
+        #region Deactivated
         private void MainView_Deactivated(object sender, EventArgs e)
         {
             MainView window = (MainView)sender;
             window.Topmost = true;
         }
+        #endregion
+
+        #region Loaded
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             if (Common.IsWin10)
@@ -44,6 +50,9 @@ namespace SoftWareHelper.Views
                 //WindowBlur.SetIsEnabled(this, true);
                 //DataContext = new WindowBlureffect(this, AccentState.ACCENT_ENABLE_ACRYLICBLURBEHIND) { BlurOpacity = 100 };
             }
+            //if (Environment.OSVersion.Version.Major >= 6)
+            //    Win32Api.SetProcessDPIAware();
+
             WindowInteropHelper wndHelper = new WindowInteropHelper(this);
 
             int exStyle = (int)Win32Api.GetWindowLong(wndHelper.Handle, (int)Win32Api.GetWindowLongFields.GWL_EXSTYLE);
@@ -51,7 +60,10 @@ namespace SoftWareHelper.Views
             exStyle |= (int)Win32Api.ExtendedWindowStyles.WS_EX_TOOLWINDOW;
             Win32Api.SetWindowLong(wndHelper.Handle, (int)Win32Api.GetWindowLongFields.GWL_EXSTYLE, (IntPtr)exStyle);
             //Win32Api.HwndSourceAdd(this);
-        }
+        } 
+        #endregion
+
+        #region 移动窗体
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             anchorPoint = e.GetPosition(this);
@@ -59,13 +71,27 @@ namespace SoftWareHelper.Views
             CaptureMouse();
             e.Handled = true;
         }
+        
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            if (inDrag)
+            try
             {
-                Point currentPoint = e.GetPosition(this);
-                var y = this.Top + currentPoint.Y - anchorPoint.Y;
-                Win32Api.MoveWindow(new WindowInteropHelper(this).Handle, Convert.ToInt32(desktopWorkingArea.Width - this.Width), (int)y, (int)this.Width, (int)this.Height, true);
+                if (inDrag)
+                {
+                    System.Windows.Point currentPoint = e.GetPosition(this);
+                    var y = this.Top + currentPoint.Y - anchorPoint.Y;
+                    Win32Api.RECT rect;
+                    Win32Api.GetWindowRect(new WindowInteropHelper(this).Handle, out rect);
+                    var w = rect.right - rect.left;
+                    var h = rect.bottom - rect.top;
+                    int x = Convert.ToInt32(PrimaryScreen.DESKTOP.Width - w);
+
+                    Win32Api.MoveWindow(new WindowInteropHelper(this).Handle, x, (int)y, w, h, 1);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"MainView.OnMouseMove{ex.Message}");
             }
         }
 
@@ -78,37 +104,46 @@ namespace SoftWareHelper.Views
                 e.Handled = true;
             }
         }
+        #endregion
 
+        #region 窗体动画
         private void ToggleButtonMini_Checked(object sender, RoutedEventArgs e)
         {
-           
-            EasingFunctionBase easeFunction = new CubicEase()
-            {
-                EasingMode = EasingMode.EaseOut,
-            };
 
-            var heightAnimation = new DoubleAnimation 
+            try
             {
-                Name = "heightMini",
-                To = 60,
-                Duration = new Duration(TimeSpan.FromSeconds(0.5)),
-                EasingFunction = easeFunction
-            };
-            var widthAnimation = new DoubleAnimation
+                EasingFunctionBase easeFunction = new CubicEase()
+                {
+                    EasingMode = EasingMode.EaseOut,
+                };
+
+                var heightAnimation = new DoubleAnimation
+                {
+                    Name = "heightMini",
+                    To = 60,
+                    Duration = new Duration(TimeSpan.FromSeconds(0.5)),
+                    EasingFunction = easeFunction
+                };
+                var widthAnimation = new DoubleAnimation
+                {
+                    Name = "widthMini",
+                    To = 30,
+                    Duration = new Duration(TimeSpan.FromSeconds(0.51)),
+                    EasingFunction = easeFunction
+                };
+                widthAnimation.Completed += (s, e1) =>
+                {
+                    this.Left = desktopWorkingArea.Width - this.Width;
+                };
+                //heightAnimation.Completed += Animation_Completed;
+                //widthAnimation.Completed += Animation_Completed;
+                this.BeginAnimation(Window.HeightProperty, heightAnimation);
+                this.BeginAnimation(Window.WidthProperty, widthAnimation);
+            }
+            catch (Exception ex)
             {
-                Name = "widthMini",
-                To = 30,
-                Duration = new Duration(TimeSpan.FromSeconds(0.51)),
-                EasingFunction = easeFunction
-            };
-            widthAnimation.Completed += (s, e1) =>
-            {
-                this.Left = desktopWorkingArea.Width - this.Width;
-            };
-            //heightAnimation.Completed += Animation_Completed;
-            //widthAnimation.Completed += Animation_Completed;
-            this.BeginAnimation(Window.HeightProperty, heightAnimation);
-            this.BeginAnimation(Window.WidthProperty,widthAnimation);
+                Log.Error($"MainView.ToggleButtonMini_Checked{ex.Message}");
+            }
         }
 
         private void Animation_Completed(object sender, EventArgs e)
@@ -126,33 +161,42 @@ namespace SoftWareHelper.Views
 
         private void UnToggleButtonMini_Checked(object sender, RoutedEventArgs e)
         {
-           
-            EasingFunctionBase easeFunction = new CubicEase()
-            {
-                EasingMode = EasingMode.EaseIn,
-            };
-            var widthAnimation = new DoubleAnimation
-            {
-                To = 120,
-                Duration = new Duration(TimeSpan.FromSeconds(0.01)),
-                EasingFunction = easeFunction
-            };
-            widthAnimation.Completed += (s, e1) =>
-            {
-                this.Left = desktopWorkingArea.Width - this.Width;
-            };
 
-            var heightAnimation = new DoubleAnimation
+            try
             {
-                To = desktopWorkingArea.Height / 2,
-                Duration = new Duration(TimeSpan.FromSeconds(0.5)),
-                EasingFunction = easeFunction
-            };
-            this.BeginAnimation(Window.WidthProperty, widthAnimation);
-            this.BeginAnimation(Window.HeightProperty, heightAnimation);
+                EasingFunctionBase easeFunction = new CubicEase()
+                {
+                    EasingMode = EasingMode.EaseIn,
+                };
+                var widthAnimation = new DoubleAnimation
+                {
+                    To = 120,
+                    Duration = new Duration(TimeSpan.FromSeconds(0.01)),
+                    EasingFunction = easeFunction
+                };
+                widthAnimation.Completed += (s, e1) =>
+                {
+                    this.Left = desktopWorkingArea.Width - this.Width;
+                };
 
-        }
-        
+                var heightAnimation = new DoubleAnimation
+                {
+                    To = desktopWorkingArea.Height / 2,
+                    Duration = new Duration(TimeSpan.FromSeconds(0.5)),
+                    EasingFunction = easeFunction
+                };
+                this.BeginAnimation(Window.WidthProperty, widthAnimation);
+                this.BeginAnimation(Window.HeightProperty, heightAnimation);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"MainView.UnToggleButtonMini_Checked{ex.Message}");
+            }
+
+        } 
+        #endregion
+
+
     }
 
 }

@@ -104,6 +104,7 @@
     <Compile Include="Helpers\FileHelper.cs" />
     <Compile Include="Helpers\JsonHelper.cs" />
     <Compile Include="Helpers\Log.cs" />
+    <Compile Include="Helpers\PrimaryScreen.cs" />
     <Compile Include="Helpers\RelayCommand.cs" />
     <Compile Include="Helpers\Win32Api.cs" />
     <Compile Include="Helpers\WindowBlur.cs" />

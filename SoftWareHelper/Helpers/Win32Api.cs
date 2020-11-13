@@ -56,7 +56,7 @@ namespace SoftWareHelper.Helpers
         /// <param name="bRepaint"></param>
         /// <returns></returns>
         [DllImportAttribute("user32.dll", EntryPoint = "MoveWindow")]
-        public static extern bool MoveWindow(System.IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
+        public static extern int MoveWindow(IntPtr hwnd, int x, int y, int w, int h, int bRepaint);
 
 
         [System.Runtime.InteropServices.DllImport("gdi32.dll")]
@@ -146,6 +146,27 @@ namespace SoftWareHelper.Helpers
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32")]
+        public static extern int GetSystemMetrics(int nIndex);
+
+        #region 设置DPI 
+        [STAThread]
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        public static extern bool SetProcessDPIAware(); 
+        #endregion
+
+
+        [StructLayout(LayoutKind.Sequential, Pack = 4)]
+        internal struct RECT
+        {
+            internal readonly int left;
+            internal readonly int top;
+            internal readonly int right;
+            internal readonly int bottom;
+        }
+        [DllImport("user32.dll")]
+        internal static extern int GetWindowRect(IntPtr hWnd, out RECT rect);
 
     }
 }
