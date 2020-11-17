@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation/shell"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
         xmlns:vm="clr-namespace:SoftWareHelper.ViewModels"
         xmlns:CustomControls="clr-namespace:SoftWareHelper.CustomControls"
         xmlns:helpers="clr-namespace:SoftWareHelper.Helpers"
@@ -26,6 +27,9 @@
         <vm:MainVM/>
     </FrameworkElement.DataContext>
     <FrameworkElement.Resources>
+
+        <helpers:DarkAndLightConvert x:Key="darkAndLightConvert"/>
+
         <Geometry x:Key="DragPath">M256 384h128v-128h-128v128zM448 384h128v-128h-128v128zM640 256v128h128v-128h-128zM256 576h128v-128h-128v128zM448 576h128v-128h-128v128zM640 576h128v-128h-128v128zM256 768h128v-128h-128v128zM448 768h128v-128h-128v128zM640 768h128v-128h-128v128z</Geometry>
         <DataTemplate x:Key="ApplicationTemplate">
             <DataTemplate.Resources>
@@ -57,7 +61,7 @@
             <Border RenderTransformOrigin="0.5,0.5" x:Name="border" 
                     Margin="4" Cursor="Hand">
                 <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="MouseDown">
+                    <i:EventTrigger EventName="MouseLeftButtonDown">
                         <i:InvokeCommandAction Command="{Binding DataContext.SelectionChangedCommand,RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"></i:InvokeCommandAction>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
@@ -76,7 +80,7 @@
                                VerticalAlignment="Center"
                                Block.TextAlignment="Center" 
                                HorizontalAlignment="Center"
-                               Foreground="White"/>
+                               Foreground="{DynamicResource NormalWhiteBrush}"/>
                 </StackPanel>
             </Border>
             <DataTemplate.Triggers>
@@ -100,7 +104,7 @@
 					Offset="1" />
         </LinearGradientBrush>-->
 
-        <SolidColorBrush x:Key="NormalColors" Color="Black"/>
+        <!--<SolidColorBrush x:Key="NormalColors" Color="Black"/>-->
 
 
         <Storyboard x:Key="WindowPutItAway">
@@ -167,14 +171,14 @@
                     <ControlTemplate TargetType="ToggleButton">
                         <Grid x:Name="PART_Grid">
                             <Rectangle x:Name="PART_Rectangle" Fill="{DynamicResource DefaultBackgroundBrush}"/>
-                            <Path x:Name="_Path" Data="{DynamicResource PutItAwayPath}" Fill="Black"
+                            <Path x:Name="_Path" Data="{DynamicResource PutItAwayPath}" Fill="{StaticResource NormalBlackBrush}"
                                   Stretch="Fill" Width="10" Height="10"/>
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <!--<Setter Property="Opacity" TargetName="PART_Rectangle" Value="1"/>-->
                                 <Setter Property="Fill" TargetName="PART_Rectangle" Value="{DynamicResource MouseOverBackgroundBrush}" />
-                                <Setter Property="Fill" Value="#FFF" TargetName="_Path"/>
+                                <Setter Property="Fill" Value="{DynamicResource NormalWhiteBrush}" TargetName="_Path"/>
                             </Trigger>
                             <Trigger Property="IsChecked" Value="True">
                                 <Setter Property="Data" Value="{DynamicResource StretchOutPath}" TargetName="_Path"/>
@@ -191,7 +195,7 @@
         <Style TargetType="{x:Type Button}">
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="ToolTip" Value="Exit"/>
-            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Foreground" Value="{StaticResource NormalBlackBrush}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
@@ -203,7 +207,7 @@
                             <Trigger Property="IsMouseOver" Value="True">
                                 <!--<Setter Property="Opacity" TargetName="PART_Rectangle" Value="1"/>-->
                                 <Setter Property="Fill" TargetName="PART_Rectangle" Value="{DynamicResource MouseOverBackgroundBrush}" />
-                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="Foreground" Value="{DynamicResource NormalWhiteBrush}"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter Property="Margin" Value="0,2,0,0"/>
@@ -300,13 +304,70 @@
         </EventTrigger>
     </FrameworkElement.Triggers>-->
     <Grid  Name="MyGrid">
+        <tb:TaskbarIcon x:Name="myNotifyIcon"
+                    IconSource="/comic.ico"
+                    MenuActivation="LeftOrRightClick"
+                    PopupActivation="DoubleClick">
+            <tb:TaskbarIcon.TrayToolTip>
+                <Border
+                            Padding="8"
+                            Background="{StaticResource NormalWhiteBrush}"
+                            BorderBrush="{StaticResource NormalBlackBrush}"
+                            BorderThickness="1"
+                            TextElement.Foreground="{StaticResource NormalBlackBrush}">
+                    <StackPanel Orientation="Vertical">
+                        <!--  Title  -->
+                        <TextBlock
+                                    Margin="0,0,0,2"
+                                    FontSize="15"
+                                    FontWeight="Medium"
+                                    Text="SoftWareHelper" />
+                        <TextBlock Text="授之以鱼，不如授之以渔"/>
+
+                    </StackPanel>
+                </Border>
+            </tb:TaskbarIcon.TrayToolTip>
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu>
+                    <ContextMenu.Resources>
+                        <Style TargetType="{x:Type Path}">
+                            <Setter Property="Height" Value="15"/>
+                            <Setter Property="Width" Value="15"/>
+                            <Setter Property="Fill" Value="{DynamicResource NormalMenuBlackBrush}"/>
+                            <Setter Property="Stretch" Value="Fill"/>
+                        </Style>
+                    </ContextMenu.Resources>
+                    <MenuItem Header="关于" Command="{Binding GithubCommand}">
+                        <MenuItem.Icon>
+                            <Path Data="{DynamicResource GithubPath}"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="透明度" ItemsSource="{Binding Path=OpacityItemList}" DisplayMemberPath="ItemName">
+                        <MenuItem.ItemContainerStyle>
+                            <Style TargetType="MenuItem">
+                                <Setter Property="IsCheckable" Value="True"/>
+                                <Setter Property="IsChecked" Value="{Binding Path=IsSelected, Mode=TwoWay}"/>
+                                <Setter Property="Padding" Value="2 6 2 6" />
+                            </Style>
+                        </MenuItem.ItemContainerStyle>
+                        <!--<MenuItem Header="100%" IsCheckable="True"/>
+                        <MenuItem Header="80%" IsCheckable="True"/>
+                        <MenuItem Header="60%" IsCheckable="True"/>
+                        <MenuItem Header="40%" IsCheckable="True"/>
+                        <MenuItem Header="20%" IsCheckable="True"/>-->
+                    </MenuItem>
+                    <MenuItem Header="{Binding IsDark,Converter={StaticResource darkAndLightConvert}}" Command="{Binding ThemesCommand}"/>
+                    <MenuItem Header="关闭" Command="{Binding ExitCommand}"/>
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
         <!--<Rectangle Opacity=".6" Margin="10" Fill="Black" RadiusX="2" RadiusY="2"/>-->
-        <Rectangle Opacity=".6" Margin="30,10,0,10"
-                   Name="PageGround" Fill="{DynamicResource NormalColors}">
-            <Rectangle.Effect>
+        <Rectangle Opacity="{Binding MainOpacity}" Margin="30,10,0,10"
+                   Name="PageGround" Fill="{DynamicResource NormalBlackBrush}" Effect="{DynamicResource NormalShadowDepth}">
+            <!--<Rectangle.Effect>
                 <DropShadowEffect ShadowDepth="1" BlurRadius="6" Direction="270" Opacity="0.75" Color="#FF211613"/>
-                <!--<BlurEffect KernelType="Gaussian" Radius="60" />-->
-            </Rectangle.Effect>
+                --><!--<BlurEffect KernelType="Gaussian" Radius="60" />--><!--
+            </Rectangle.Effect>-->
         </Rectangle>
 
         <Grid HorizontalAlignment="Left" VerticalAlignment="Top"
@@ -357,7 +418,7 @@
             <Grid Height="20" Margin="0,10"
                   Background="Transparent" 
                   Cursor="SizeAll">
-                <Path Data="{DynamicResource DragPath}" Fill="White" 
+                <Path Data="{DynamicResource DragPath}" Fill="{DynamicResource NormalWhiteBrush}" 
                       Stretch="Fill" Width="20" IsHitTestVisible="False"/>
             </Grid>
             <!--<Border x:Name="borderExit" Width="15" Height="15"
@@ -444,7 +505,7 @@
                 </ToggleButton.Triggers>
             </ToggleButton>-->
 
-            <Line X1="0" Margin="10,0" Y1="1" X2="80" Y2="1" Stroke="White" VerticalAlignment="Bottom"/>
+            <Line X1="0" Margin="10,0" Y1="1" X2="80" Y2="1" Stroke="{DynamicResource NormalWhiteBrush}" VerticalAlignment="Bottom"/>
 
         </Grid>
     </Grid>

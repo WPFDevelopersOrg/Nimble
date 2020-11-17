@@ -1,5 +1,7 @@
 ﻿using SoftWareHelper.Helpers;
 using System;
+using System.Configuration;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
@@ -13,10 +15,11 @@ namespace SoftWareHelper.Views
     /// </summary>
     public partial class MainView : Window
     {
+        #region 静态属性
         private Rect desktopWorkingArea;
-
-        System.Windows.Point anchorPoint;
-        bool inDrag;
+        private System.Windows.Point anchorPoint;
+        private bool inDrag;
+        #endregion
 
         public MainView()
         {
@@ -59,6 +62,7 @@ namespace SoftWareHelper.Views
 
             exStyle |= (int)Win32Api.ExtendedWindowStyles.WS_EX_TOOLWINDOW;
             Win32Api.SetWindowLong(wndHelper.Handle, (int)Win32Api.GetWindowLongFields.GWL_EXSTYLE, (IntPtr)exStyle);
+            //SetLightDark(SetConfig());
             //Win32Api.HwndSourceAdd(this);
         } 
         #endregion
@@ -193,9 +197,17 @@ namespace SoftWareHelper.Views
                 Log.Error($"MainView.UnToggleButtonMini_Checked{ex.Message}");
             }
 
-        } 
+        }
+
         #endregion
 
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            //var dark = !SetConfig();
+            //SetLightDark(dark);
+        }
+
+        
 
     }
 
