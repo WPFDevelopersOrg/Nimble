@@ -108,8 +108,8 @@ namespace SoftWareHelper.ViewModels
                 item.PropertyChanged -= Item_PropertyChanged;
                 item.PropertyChanged += Item_PropertyChanged;
             }
-            
-            ThemesHelper.SetLightDark(ThemesHelper.GetConfig()); 
+            IsDark = ThemesHelper.GetConfig();
+            ThemesHelper.SetLightDark(IsDark); 
             #endregion
 
             Common.TemporaryFile();
