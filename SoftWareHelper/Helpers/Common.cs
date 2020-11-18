@@ -285,6 +285,34 @@ namespace SoftWareHelper.Helpers
         }
         #endregion
 
+        #region 读取桌面
+        public static void GetDesktopAppliction(ObservableCollection<ApplicationModel> array)
+        {
+            string desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            ApplicationModel model;
+            foreach (var lnk in Directory.GetFiles(desktop))
+            {
+                if (Path.GetExtension(lnk) == ".lnk")
+                {
+                    if (System.IO.File.Exists(lnk))
+                    {
+                        var name = Path.GetFileNameWithoutExtension(lnk);
+                        var containsValue = array.Where(x => x.Name.Contains(name));
+                        if (containsValue != null && containsValue.Count() > 0)
+                            continue;
+                        model = new ApplicationModel();
+                        model.ExePath = lnk;
+                        model.Name = name;
+                        var iconPath = System.IO.Path.Combine(temporaryIconFile, model.Name);
+                        iconPath = iconPath + ".png";
+                        model.IconPath = iconPath;
+                        SaveImage((BitmapSource)GetIcon(lnk), iconPath);
+                        array.Insert(0,model);
+                    }
+                }
+            }
+        }
+        #endregion
 
         #region 文件夹
         public static void TemporaryFile()

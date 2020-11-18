@@ -109,11 +109,12 @@ namespace SoftWareHelper.ViewModels
                 item.PropertyChanged += Item_PropertyChanged;
             }
             IsDark = ThemesHelper.GetConfig();
-            ThemesHelper.SetLightDark(IsDark); 
+            ThemesHelper.SetLightDark(IsDark);
             #endregion
-
             Common.TemporaryFile();
             ApplicationList = Common.AllApplictionInstalled();
+            Common.GetDesktopAppliction(ApplicationList);
+           
             string json = JsonHelper.Serialize(ApplicationList);
             FileHelper.WriteFile(json, Common.temporaryApplicationJson);
 
@@ -129,7 +130,7 @@ namespace SoftWareHelper.ViewModels
             //    ApplicationList = JsonHelper.Deserialize<ObservableCollection<ApplicationModel>>(json);
             //}
         });
-
+       
         private void Item_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             var model = sender as OpacityItem;
