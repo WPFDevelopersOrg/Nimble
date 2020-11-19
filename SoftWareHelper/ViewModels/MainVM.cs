@@ -77,6 +77,20 @@ namespace SoftWareHelper.ViewModels
             }
         }
 
+        private bool _isDragDrop;
+        /// <summary>
+        /// 是否拖动
+        /// </summary>
+        public bool IsDragDrop
+        {
+            get { return _isDragDrop; }
+            set
+            {
+                _isDragDrop = value;
+                this.NotifyPropertyChange("IsDragDrop");
+            }
+        }
+
         #endregion
 
         #region 构造
@@ -150,6 +164,7 @@ namespace SoftWareHelper.ViewModels
                     //{
                     //    OpacityItemList.FirstOrDefault(x => x.Value == currentOpacity).IsSelected = true;
                     //}
+                    ThemesHelper.SaveOpacity(model.Value);
                     MainOpacity = model.Value / 100;
                 }
               
@@ -161,6 +176,8 @@ namespace SoftWareHelper.ViewModels
         /// </summary>
         public ICommand SelectionChangedCommand => new RelayCommand(obj =>
         {
+            if (IsDragDrop)
+                return;
             ApplicationModel model = obj as ApplicationModel;
             //ApplicationList.Move(ApplicationList.IndexOf(model),0);
 
@@ -189,6 +206,15 @@ namespace SoftWareHelper.ViewModels
         public ICommand GithubCommand => new RelayCommand(obj =>
         {
             Process.Start("https://github.com/yanjinhuagood/SoftWareHelper");
+        });
+
+        /// <summary>
+        /// MouseRightDragCommand
+        /// </summary>
+        public ICommand MouseRightDragCommand => new RelayCommand(obj =>
+        {
+            var drag = !IsDragDrop;
+            IsDragDrop = drag;
         });
         #endregion
 

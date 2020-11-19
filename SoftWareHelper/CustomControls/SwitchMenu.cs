@@ -46,6 +46,18 @@ namespace SoftWareHelper.CustomControls
             DependencyProperty.Register("Orientation", typeof(Orientation), typeof(SwitchMenu), new PropertyMetadata(Orientation.Horizontal));
 
 
+
+        public bool IsDragDrop
+        {
+            get { return (bool)GetValue(IsDragDropProperty); }
+            set { SetValue(IsDragDropProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsDragDrop.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsDragDropProperty =
+            DependencyProperty.Register("IsDragDrop", typeof(bool), typeof(SwitchMenu), new PropertyMetadata(false));
+
+
         #endregion
 
         #endregion

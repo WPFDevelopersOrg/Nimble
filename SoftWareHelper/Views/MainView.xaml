@@ -6,6 +6,7 @@
         xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation/shell"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:tb="http://www.hardcodet.net/taskbar"
+        xmlns:drag="urn:gong-wpf-dragdrop"
         xmlns:vm="clr-namespace:SoftWareHelper.ViewModels"
         xmlns:CustomControls="clr-namespace:SoftWareHelper.CustomControls"
         xmlns:helpers="clr-namespace:SoftWareHelper.Helpers"
@@ -59,7 +60,7 @@
                 </Storyboard>
             </DataTemplate.Resources>
             <Border RenderTransformOrigin="0.5,0.5" x:Name="border" 
-                    Margin="4" Cursor="Hand">
+                    Padding="4" Cursor="Hand">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="MouseLeftButtonDown">
                         <i:InvokeCommandAction Command="{Binding DataContext.SelectionChangedCommand,RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"></i:InvokeCommandAction>
@@ -134,7 +135,7 @@
             <DoubleAnimation Storyboard.TargetName="myWindow" 
                              Storyboard.TargetProperty="(Window.Height)" 
                              To="600" BeginTime="0:0:00.02" Duration="0:0:00.32"/>
-            
+
             <!--<DoubleAnimation Storyboard.TargetName="StretchOutBorder" 
                              Storyboard.TargetProperty="(Button.Opacity)" 
                              To="1"/>
@@ -145,7 +146,7 @@
             <DoubleAnimation Storyboard.TargetName="StretchOutBorder" 
                              Storyboard.TargetProperty="(Button.Opacity)" 
                              To="0"/>-->
-            
+
         </Storyboard>
 
         <LinearGradientBrush x:Key="DefaultBackgroundBrush" StartPoint="0,0" EndPoint="0,1">
@@ -366,7 +367,9 @@
                    Name="PageGround" Fill="{DynamicResource NormalBlackBrush}" Effect="{DynamicResource NormalShadowDepth}">
             <!--<Rectangle.Effect>
                 <DropShadowEffect ShadowDepth="1" BlurRadius="6" Direction="270" Opacity="0.75" Color="#FF211613"/>
-                --><!--<BlurEffect KernelType="Gaussian" Radius="60" />--><!--
+                -->
+            <!--<BlurEffect KernelType="Gaussian" Radius="60" />-->
+            <!--
             </Rectangle.Effect>-->
         </Rectangle>
 
@@ -400,10 +403,10 @@
                         </EventTrigger>
                     </ToggleButton.Triggers>-->
                 </ToggleButton>
-               
+
             </StackPanel>
         </Grid>
-       
+
 
         <Grid Margin="30,10,0,14">
             <Grid.RowDefinitions>
@@ -412,8 +415,20 @@
             </Grid.RowDefinitions>
 
             <CustomControls:SwitchMenu Grid.Row="1" ItemsSource="{Binding ApplicationList}" Orientation="Vertical"
-                                       ItemTemplate="{StaticResource ApplicationTemplate}">
-
+                                       ItemTemplate="{StaticResource ApplicationTemplate}" IsDragDrop="{Binding IsDragDrop}"
+                                       drag:DragDrop.UseDefaultDragAdorner="True" drag:DragDrop.DefaultDragAdornerOpacity="0.5"
+                                       drag:DragDrop.IsDragSource="{Binding IsDragDrop}" drag:DragDrop.IsDropTarget="True"
+                                       drag:DragDrop.ItemsPanelOrientation="Vertical">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseRightButtonDown">
+                        <i:InvokeCommandAction Command="{Binding MouseRightDragCommand}"></i:InvokeCommandAction>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <!--
+                       drag:DragDrop.UseDefaultDragAdorner="True"
+                       drag:DragDrop.DefaultDragAdornerOpacity="0.5"
+                       drag:DragDrop.IsDragSource="True"
+                       drag:DragDrop.IsDropTarget="True"-->
             </CustomControls:SwitchMenu>
             <Grid Height="20" Margin="0,10"
                   Background="Transparent" 

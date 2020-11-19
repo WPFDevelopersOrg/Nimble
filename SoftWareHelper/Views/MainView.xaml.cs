@@ -201,14 +201,7 @@ namespace SoftWareHelper.Views
 
         #endregion
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            //var dark = !SetConfig();
-            //SetLightDark(dark);
-        }
-
-        
-
+       
     }
 
 }

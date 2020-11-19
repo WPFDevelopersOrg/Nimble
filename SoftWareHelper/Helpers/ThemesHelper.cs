@@ -68,5 +68,12 @@ namespace SoftWareHelper.Helpers
             }
             return opacity;
         }
+        public static void SaveOpacity(double opacity)
+        {
+            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            config.AppSettings.Settings["Opacity"].Value = opacity.ToString();
+            config.Save(ConfigurationSaveMode.Modified);
+            ConfigurationManager.RefreshSection("appSettings");
+        }
     }
 }

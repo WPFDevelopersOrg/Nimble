@@ -19,7 +19,9 @@
             </DoubleAnimation.EasingFunction>
         </DoubleAnimation>
     </Storyboard>-->
-    
+
+    <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
+
     <Style x:Key="PathButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">
@@ -42,7 +44,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <Style TargetType="CustomControls:SwitchMenu">
         <Setter Property="BorderBrush" Value="{DynamicResource NormalBlackBrush}" />
         <!--<Setter Property="BorderThickness" Value="1" />-->
@@ -71,6 +73,10 @@
                                       VerticalScrollBarVisibility="Hidden">
                             <ItemsPresenter />
                         </ScrollViewer>
+                        <Rectangle Grid.Row="1" Grid.Column="1" StrokeThickness="4" 
+                                   Stroke="{DynamicResource NormalWhiteBrush}" 
+                                   StrokeDashArray="1,1" 
+                                   Visibility="{TemplateBinding IsDragDrop,Converter={StaticResource booleanToVisibilityConverter}}"/>
                         <Button x:Name="PART_PreviousButton" Grid.Row="1" Grid.Column="0"  
                                 Visibility="Collapsed" Style="{DynamicResource PathButtonStyle}"
                                  Width="80" Height="24">
@@ -186,7 +192,7 @@
         <Setter Property="ItemsPanel">
             <Setter.Value>
                 <ItemsPanelTemplate>
-                    <StackPanel IsItemsHost="True" Orientation="Horizontal" />
+                    <VirtualizingStackPanel IsItemsHost="True" Orientation="Horizontal" />
                 </ItemsPanelTemplate>
             </Setter.Value>
         </Setter>
@@ -195,7 +201,7 @@
                 <Setter Property="ItemsPanel">
                     <Setter.Value>
                         <ItemsPanelTemplate>
-                            <StackPanel IsItemsHost="True" Orientation="Vertical" />
+                            <VirtualizingStackPanel IsItemsHost="True" Orientation="Vertical" />
                         </ItemsPanelTemplate>
                     </Setter.Value>
                 </Setter>

@@ -289,8 +289,14 @@ namespace SoftWareHelper.Helpers
         public static void GetDesktopAppliction(ObservableCollection<ApplicationModel> array)
         {
             string desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            GetCommonDesktoplnk(desktop,array);
+            string commonDesktop = Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory);
+            GetCommonDesktoplnk(commonDesktop, array);
+        }
+        static void GetCommonDesktoplnk(string _path, ObservableCollection<ApplicationModel> array)
+        {
             ApplicationModel model;
-            foreach (var lnk in Directory.GetFiles(desktop))
+            foreach (var lnk in Directory.GetFiles(_path))
             {
                 if (Path.GetExtension(lnk) == ".lnk")
                 {
@@ -306,8 +312,10 @@ namespace SoftWareHelper.Helpers
                         var iconPath = System.IO.Path.Combine(temporaryIconFile, model.Name);
                         iconPath = iconPath + ".png";
                         model.IconPath = iconPath;
+                        array.Insert(0, model);
+                        if (File.Exists(iconPath))
+                            continue;
                         SaveImage((BitmapSource)GetIcon(lnk), iconPath);
-                        array.Insert(0,model);
                     }
                 }
             }
@@ -391,6 +399,9 @@ namespace SoftWareHelper.Helpers
         #region 重组model到集合
         public static void FormModel(ApplicationModel model, ObservableCollection<ApplicationModel> applictionArray)
         {
+            var uninsta = System.IO.Path.GetFileNameWithoutExtension(model.ExePath);
+            if (uninsta.ToLower().Contains("uninstall") || uninsta.Contains("卸载") || uninsta.Contains("unins000"))
+                return;
             model.ExePath = model.ExePath.Trim('"');
             var exe = Path.GetExtension(model.ExePath);
             var iconPath = System.IO.Path.Combine(temporaryIconFile, model.Name);
@@ -400,16 +411,18 @@ namespace SoftWareHelper.Helpers
             {
                 case ".exe":
                     iconPath = iconPath + ".png";
-                    SaveImage((BitmapSource)GetIcon(model.ExePath), iconPath);
                     model.IconPath = iconPath;
                     applictionArray.Add(model);
-                    break;
-                case ".ico":
-                    iconPath = Path.Combine(Path.GetDirectoryName(model.IconPath), Path.GetFileNameWithoutExtension(model.ExePath) + ".png");
+                    if (File.Exists(iconPath))
+                        break;
                     SaveImage((BitmapSource)GetIcon(model.ExePath), iconPath);
-                    model.IconPath = iconPath;
-                    applictionArray.Add(model);
                     break;
+                //case ".ico":
+                //    iconPath = Path.Combine(Path.GetDirectoryName(model.IconPath), Path.GetFileNameWithoutExtension(model.ExePath) + ".png");
+                //    SaveImage((BitmapSource)GetIcon(model.ExePath), iconPath);
+                //    model.IconPath = iconPath;
+                //    applictionArray.Add(model);
+                //    break;
                 default:
                     break;
             }
