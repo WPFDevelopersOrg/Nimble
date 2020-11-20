@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using System.Windows.Shapes;
 
 namespace SoftWareHelper.CustomControls
 {
@@ -30,6 +31,7 @@ namespace SoftWareHelper.CustomControls
         private Button PART_UpButton;
         private Button PART_DownButton;
         private ScrollViewer PART_ScrollViewer;
+        private Rectangle PART_Rectangle;
         private double offset = 70;
         private double recordAnimationOffset = 0.0;
 
@@ -55,8 +57,15 @@ namespace SoftWareHelper.CustomControls
 
         // Using a DependencyProperty as the backing store for IsDragDrop.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsDragDropProperty =
-            DependencyProperty.Register("IsDragDrop", typeof(bool), typeof(SwitchMenu), new PropertyMetadata(false));
+            DependencyProperty.Register("IsDragDrop", typeof(bool), typeof(SwitchMenu), new PropertyMetadata(false, UpdateDragDropPropertyMetadata));
 
+        private static void UpdateDragDropPropertyMetadata(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if ((bool)e.NewValue)
+            {
+
+            }
+        }
 
         #endregion
 
@@ -74,13 +83,13 @@ namespace SoftWareHelper.CustomControls
         }
         protected override void OnPreviewMouseWheel(MouseWheelEventArgs e)
         {
-            if (e.Delta < 0 )
+            if (e.Delta < 0)
             {
-                BeginScrollViewerAnimation(500);
+                BeginScrollViewerAnimation(this.ActualHeight);
             }
             else
             {
-                BeginScrollViewerAnimation(-500);
+                BeginScrollViewerAnimation(-this.ActualHeight);
             }
         }
         void item_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -96,6 +105,7 @@ namespace SoftWareHelper.CustomControls
             this.PART_UpButton = this.GetTemplateChild("PART_UpButton") as Button;
             this.PART_DownButton = this.GetTemplateChild("PART_DownButton") as Button;
             this.PART_ScrollViewer = this.GetTemplateChild("PART_ScrollViewer") as ScrollViewer;
+            this.PART_Rectangle = this.GetTemplateChild("PART_Rectangle") as Rectangle;
             if (this.PART_PreviousButton != null)
             {
                 this.PART_PreviousButton.Click += PART_PreviousButton_Click;
@@ -120,11 +130,19 @@ namespace SoftWareHelper.CustomControls
             }
             this.MouseMove += SwitchMenu_MouseMove;
             this.MouseLeave += SwitchMenu_MouseLeave;
+            if (this.PART_Rectangle != null)
+            {
+                this.PART_Rectangle.IsVisibleChanged += PART_Rectangle_IsVisibleChanged;
+            }
 
             this.PART_ScrollViewer.SetValue(ScrollViewerBehavior.VerticalOffsetProperty, 0.0);
 
         }
-       
+
+        private void PART_Rectangle_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            SwitchMenu_MouseLeave(null,null);
+        }
 
         private void SwitchMenu_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
@@ -145,7 +163,7 @@ namespace SoftWareHelper.CustomControls
 
         private void SwitchMenu_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            if (this.PART_ScrollViewer != null)
+            if (this.PART_ScrollViewer != null && !IsDragDrop)
             {
                 if (this.Orientation == Orientation.Horizontal)
                 {
@@ -162,13 +180,13 @@ namespace SoftWareHelper.CustomControls
 
         private void PART_UpButton_Click(object sender, RoutedEventArgs e)
         {
-            BeginScrollViewerAnimation(-500);
+            BeginScrollViewerAnimation(-this.ActualHeight);
             //this.ScrollToOffset(Orientation.Vertical, -this.offset);
         }
 
         private void PART_DownButton_Click(object sender, RoutedEventArgs e)
         {
-            BeginScrollViewerAnimation(500);
+            BeginScrollViewerAnimation(this.ActualHeight);
             //this.ScrollToOffset(Orientation.Vertical, this.offset);
         }
         void PART_ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
@@ -213,7 +231,7 @@ namespace SoftWareHelper.CustomControls
                 Duration = new Duration(TimeSpan.FromSeconds(0.6)),
                 EasingFunction = easeFunction
             };
-           
+
             recordAnimationOffset = recordAnimationOffset + animationOffset;
             if (recordAnimationOffset > this.PART_ScrollViewer.ExtentHeight
                 ||

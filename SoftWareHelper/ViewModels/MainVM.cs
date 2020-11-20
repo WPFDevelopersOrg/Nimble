@@ -216,6 +216,14 @@ namespace SoftWareHelper.ViewModels
             var drag = !IsDragDrop;
             IsDragDrop = drag;
         });
+        /// <summary>
+        /// RemoveApplictionCommand
+        /// </summary>
+        public ICommand RemoveApplictionCommand => new RelayCommand(obj =>
+        {
+            ApplicationModel model = obj as ApplicationModel;
+            ApplicationList.Remove(model);
+        });
         #endregion
 
         #region 方法

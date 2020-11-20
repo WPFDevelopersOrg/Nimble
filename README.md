@@ -17,9 +17,11 @@
 
 
 ## __完善__  
+#### 移除应用
+<img src="/Images/Remove.png"/>
 #### 移动应用
 <img src="/Images/drag.png"/>
-#### 托盘、换肤、透明度
+##### 托盘、换肤、透明度
 <img src="/Images/original.png"/>
 <img src="/Images/MheelGif.gif"/>
 <img src="/Images/GIFNew.gif"/>

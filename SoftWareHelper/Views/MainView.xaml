@@ -30,6 +30,39 @@
     <FrameworkElement.Resources>
 
         <helpers:DarkAndLightConvert x:Key="darkAndLightConvert"/>
+        <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
+
+        <SolidColorBrush x:Key="TitleBarBackgroundBrush" Color="#FF819F" />
+        <Style x:Key="CloseButton" TargetType="{x:Type Button}">
+            <Setter Property="ToolTip" Value="Remove"/>
+            <Setter Property="Foreground" Value="{DynamicResource NormalBlackBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid>
+                            <Ellipse x:Name="_Ellipse" Height="12" Width="12"
+                                     Fill="{DynamicResource NormalWhiteBrush}"
+                                     Opacity=".8"/>
+                            <ContentPresenter Name="TextArea"/>
+                        </Grid>
+                       
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <!--<Setter Property="Fill" TargetName="_Ellipse" Value="{StaticResource TitleBarBackgroundBrush}"/>-->
+                                <Setter Property="Fill" TargetName="_Ellipse" Value="{StaticResource TitleBarBackgroundBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <!--<Setter Property="Fill" TargetName="_Ellipse" Value="{StaticResource TitleBarBackgroundBrush}"/>-->
+                                <Setter Property="Margin" TargetName="TextArea" Value="0,2,0,0"/>
+                            </Trigger>
+                            <!--<Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Background" TargetName="Border" Value="#B7B7B7"/>
+                            </Trigger>-->
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
         <Geometry x:Key="DragPath">M256 384h128v-128h-128v128zM448 384h128v-128h-128v128zM640 256v128h128v-128h-128zM256 576h128v-128h-128v128zM448 576h128v-128h-128v128zM640 576h128v-128h-128v128zM256 768h128v-128h-128v128zM448 768h128v-128h-128v128zM640 768h128v-128h-128v128z</Geometry>
         <DataTemplate x:Key="ApplicationTemplate">
@@ -60,7 +93,7 @@
                 </Storyboard>
             </DataTemplate.Resources>
             <Border RenderTransformOrigin="0.5,0.5" x:Name="border" 
-                    Padding="4" Cursor="Hand">
+                    Padding="4" Cursor="Hand" MaxHeight="90" Background="Transparent">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="MouseLeftButtonDown">
                         <i:InvokeCommandAction Command="{Binding DataContext.SelectionChangedCommand,RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"></i:InvokeCommandAction>
@@ -74,23 +107,55 @@
                         <TranslateTransform X="0" Y="0"/>
                     </TransformGroup>
                 </Border.RenderTransform>
-                <StackPanel Orientation="Vertical">
-                    <Image Source="{Binding IconPath}"/>
-                    <TextBlock Text="{Binding Name}" 
+                <Grid>
+                    <StackPanel Orientation="Vertical">
+                        <Image Source="{Binding IconPath}" Margin="0,4,0,0"/>
+                        <TextBlock Text="{Binding Name}" 
                                MaxWidth="70" TextWrapping="Wrap"
                                VerticalAlignment="Center"
                                Block.TextAlignment="Center" 
                                HorizontalAlignment="Center"
                                Foreground="{DynamicResource NormalWhiteBrush}"/>
-                </StackPanel>
+                    </StackPanel>
+                    <Button x:Name="PART_Button" Style="{StaticResource CloseButton}"
+                        HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="30,0,0,0"
+                        Cursor="Hand" Visibility="{Binding DataContext.IsDragDrop,RelativeSource={RelativeSource AncestorType=Window},Converter={StaticResource booleanToVisibilityConverter}}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Click">
+                                <i:InvokeCommandAction Command="{Binding DataContext.RemoveApplictionCommand,RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <Button.Content>
+                            <Path Data="{StaticResource ClosePath}" StrokeThickness="0.5"
+                                  Stretch="Fill" Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" 
+                                  Height="6" Width="6"/>
+                        </Button.Content>
+                    </Button>
+                </Grid>
+                
+                
             </Border>
-            <DataTemplate.Triggers>
+            <!--<DataTemplate.Triggers>
                 <EventTrigger RoutedEvent="Mouse.MouseEnter" SourceName="border">
                     <BeginStoryboard Storyboard="{StaticResource OnMouseEnter}"/>
                 </EventTrigger>
                 <EventTrigger RoutedEvent="Mouse.MouseLeave" SourceName="border">
                     <BeginStoryboard Storyboard="{StaticResource OnMouseLeave}"/>
                 </EventTrigger>
+            </DataTemplate.Triggers>-->
+            <DataTemplate.Triggers>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsMouseOver" Value="True"/>
+                        <Condition Property="Visibility" SourceName="PART_Button"  Value="Collapsed"/>
+                    </MultiTrigger.Conditions>
+                    <MultiTrigger.EnterActions>
+                        <BeginStoryboard Storyboard="{StaticResource OnMouseEnter}"/>
+                    </MultiTrigger.EnterActions>
+                    <MultiTrigger.ExitActions>
+                        <BeginStoryboard Storyboard="{StaticResource OnMouseLeave}"/>
+                    </MultiTrigger.ExitActions>
+                </MultiTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
 
@@ -218,7 +283,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
+        
 
     </FrameworkElement.Resources>
     <!--<FrameworkElement.Resources>

@@ -21,7 +21,6 @@
     </Storyboard>-->
 
     <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
-
     <Style x:Key="PathButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">
@@ -71,9 +70,9 @@
 
                         <ScrollViewer x:Name="PART_ScrollViewer" Grid.Row="1" Grid.Column="1" HorizontalScrollBarVisibility="Hidden"
                                       VerticalScrollBarVisibility="Hidden">
-                            <ItemsPresenter />
+                            <ItemsPresenter/>
                         </ScrollViewer>
-                        <Rectangle Grid.Row="1" Grid.Column="1" StrokeThickness="4" 
+                        <Rectangle x:Name="PART_Rectangle" Grid.Row="1" Grid.Column="1" StrokeThickness="4" 
                                    Stroke="{DynamicResource NormalWhiteBrush}" 
                                    StrokeDashArray="1,1" 
                                    Visibility="{TemplateBinding IsDragDrop,Converter={StaticResource booleanToVisibilityConverter}}"/>
@@ -127,6 +126,17 @@
                         </Button>
                     </Grid>
                     <ControlTemplate.Triggers>
+                        <!--<MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Orientation" Value="Vertical"/>
+                                <Condition Property="IsMouseOver" Value="True"/>
+                                <Condition Property="Visibility" SourceName="PART_Rectangle" Value="Collapsed"/>
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="PART_PreviousButton" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="PART_NextButton" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="PART_UpButton" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="PART_DownButton" Property="Visibility" Value="Visible" />
+                        </MultiTrigger>-->
                         <!--<Trigger Property="Orientation" Value="Vertical">
                             <Setter TargetName="PART_PreviousButton" Property="Visibility" Value="Collapsed" />
                             <Setter TargetName="PART_NextButton" Property="Visibility" Value="Collapsed" />

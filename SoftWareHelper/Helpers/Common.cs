@@ -303,7 +303,7 @@ namespace SoftWareHelper.Helpers
                     if (System.IO.File.Exists(lnk))
                     {
                         var name = Path.GetFileNameWithoutExtension(lnk);
-                        var containsValue = array.Where(x => x.Name.Contains(name));
+                        var containsValue = array.Where(x => x.Name.Contains(name) && !x.Name.Contains("微信"));
                         if (containsValue != null && containsValue.Count() > 0)
                             continue;
                         model = new ApplicationModel();

@@ -20,5 +20,9 @@ namespace SoftWareHelper.Models
         /// 安装路径
         /// </summary>
         public string ExePath { get; set; }
+        /// <summary>
+        /// 是否移除
+        /// </summary>
+        public bool IsRemove { get; set; }
     }
 }
