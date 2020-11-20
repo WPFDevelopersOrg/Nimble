@@ -176,7 +176,7 @@ namespace SoftWareHelper.Helpers
                     }
                 }
             }
-           
+
 
             // X86
             key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall");
@@ -216,7 +216,7 @@ namespace SoftWareHelper.Helpers
                     }
                 }
             }
-            
+
 
             // X64
             key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall");
@@ -279,7 +279,7 @@ namespace SoftWareHelper.Helpers
                     }
                 }
             }
-            
+
 
             return applictionArray;
         }
@@ -289,7 +289,7 @@ namespace SoftWareHelper.Helpers
         public static void GetDesktopAppliction(ObservableCollection<ApplicationModel> array)
         {
             string desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-            GetCommonDesktoplnk(desktop,array);
+            GetCommonDesktoplnk(desktop, array);
             string commonDesktop = Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory);
             GetCommonDesktoplnk(commonDesktop, array);
         }
@@ -303,6 +303,8 @@ namespace SoftWareHelper.Helpers
                     if (System.IO.File.Exists(lnk))
                     {
                         var name = Path.GetFileNameWithoutExtension(lnk);
+                        if (name == System.IO.Path.GetFileNameWithoutExtension(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName))
+                            continue;
                         var containsValue = array.Where(x => x.Name.Contains(name) && !x.Name.Contains("微信"));
                         if (containsValue != null && containsValue.Count() > 0)
                             continue;
@@ -400,7 +402,8 @@ namespace SoftWareHelper.Helpers
         public static void FormModel(ApplicationModel model, ObservableCollection<ApplicationModel> applictionArray)
         {
             var uninsta = System.IO.Path.GetFileNameWithoutExtension(model.ExePath);
-            if (uninsta.ToLower().Contains("uninstall") || uninsta.Contains("卸载") || uninsta.Contains("unins000"))
+            var own = System.IO.Path.GetFileNameWithoutExtension(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
+            if (uninsta.ToLower().Contains("uninstall") || uninsta.Contains("卸载") || uninsta.Contains("unins000") || uninsta.Contains("own"))
                 return;
             model.ExePath = model.ExePath.Trim('"');
             var exe = Path.GetExtension(model.ExePath);
