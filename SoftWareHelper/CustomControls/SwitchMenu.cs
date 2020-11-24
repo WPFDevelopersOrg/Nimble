@@ -241,9 +241,25 @@ namespace SoftWareHelper.CustomControls
                 return;
             }
             doubleAnimation.To = recordAnimationOffset;
-
+            doubleAnimation.Completed += DoubleAnimation_Completed;
+           
             this.PART_ScrollViewer.BeginAnimation(ScrollViewerBehavior.VerticalOffsetProperty, doubleAnimation);
+            this.PART_ScrollViewer.ScrollToVerticalOffset(this.PART_ScrollViewer.VerticalOffset + recordAnimationOffset);
+
+
         }
 
+        private void DoubleAnimation_Completed(object sender, EventArgs e)
+        {
+            Console.WriteLine($"this.PART_ScrollViewer.VerticalOffset Completed {this.PART_ScrollViewer.VerticalOffset }");
+            if (this.PART_ScrollViewer != null && !IsDragDrop)
+            {
+                if (this.Orientation == Orientation.Vertical)
+                {
+                    this.PART_UpButton.Visibility = (this.PART_ScrollViewer.VerticalOffset < this.ActualHeight) ? Visibility.Hidden : Visibility.Visible;
+                    this.PART_DownButton.Visibility = (this.PART_ScrollViewer.VerticalOffset == this.PART_ScrollViewer.VerticalOffset) ? Visibility.Hidden : Visibility.Visible;
+                }
+            }
+        }
     }
 }

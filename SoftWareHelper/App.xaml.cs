@@ -2,6 +2,7 @@
 using SoftWareHelper.Views;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -42,6 +43,7 @@ namespace SoftWareHelper
             else
             {
                 Common common = new Common();
+                appShortcutToStartup();
                 var main = new MainView();
                 main.Show();
             }
@@ -98,6 +100,23 @@ namespace SoftWareHelper
             Log.Error("Task线程异常：" + e.Exception.Message);
             e.SetObserved();//设置该异常已察觉（这样处理后就不会引起程序崩溃）
         }
-
+        void appShortcutToStartup()
+        {
+            string startupDir = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
+            var path = startupDir + "\\" + "SoftWareHelperStart" + ".url";
+            if (!System.IO.File.Exists(path))
+            {
+                using (StreamWriter writer = new StreamWriter(path))
+                {
+                    string app = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                    writer.WriteLine("[InternetShortcut]");
+                    writer.WriteLine("URL=file:///" + app);
+                    writer.WriteLine("IconIndex=0");
+                    string icon = app.Replace('\\', '/');
+                    writer.WriteLine("IconFile=" + icon);
+                }
+            }
+            
+        }
     }
 }

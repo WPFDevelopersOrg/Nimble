@@ -3,6 +3,7 @@ using SoftWareHelper.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
@@ -292,7 +293,37 @@ namespace SoftWareHelper.Helpers
             GetCommonDesktoplnk(desktop, array);
             string commonDesktop = Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory);
             GetCommonDesktoplnk(commonDesktop, array);
+            var systemAppliction = new string[] {  "mspaint.exe", "mstsc.exe", "magnify.exe", "calc.exe", "notepad.exe", "cmd.exe" };
+            GetSystemAppliction(systemAppliction,array);
         }
+        #region 系统
+        static void GetSystemAppliction(string[] apps, ObservableCollection<ApplicationModel> array)
+        {
+            ApplicationModel model;
+            foreach (var item in apps)
+            {
+                var appliction = Path.Combine(Environment.SystemDirectory, item);
+                if (System.IO.File.Exists(appliction))
+                {
+                    
+                    FileVersionInfo fileVersion =
+        FileVersionInfo.GetVersionInfo(appliction);
+                    model = new ApplicationModel();
+                    model.ExePath = appliction;
+                    model.Name = fileVersion.FileDescription;
+                    var iconPath = System.IO.Path.Combine(temporaryIconFile, model.Name);
+                    iconPath = iconPath + ".png";
+                    model.IconPath = iconPath;
+                    array.Insert(0, model);
+                    if (File.Exists(iconPath))
+                        continue;
+                    SaveImage((BitmapSource)GetIcon(appliction), iconPath);
+                }
+            }
+        } 
+        #endregion
+
+        #region 桌面
         static void GetCommonDesktoplnk(string _path, ObservableCollection<ApplicationModel> array)
         {
             ApplicationModel model;
@@ -321,7 +352,9 @@ namespace SoftWareHelper.Helpers
                     }
                 }
             }
-        }
+        } 
+        #endregion
+
         #endregion
 
         #region 文件夹
