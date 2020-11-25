@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
 
@@ -42,10 +43,38 @@ namespace SoftWareHelper
             }
             else
             {
+                //FPS设置为20
+                //Timeline.DesiredFrameRateProperty.OverrideMetadata(typeof(Timeline),
+                //    new FrameworkPropertyMetadata { DefaultValue = 20 });
                 Common common = new Common();
                 appShortcutToStartup();
                 var main = new MainView();
                 main.Show();
+                WindowInteropHelper wndHelper = new WindowInteropHelper(main);
+                IntPtr handle = wndHelper.Handle;
+                int exStyle = (int)Win32Api.GetWindowLong(wndHelper.Handle, (int)Win32Api.GetWindowLongFields.GWL_EXSTYLE);
+                exStyle |= (int)Win32Api.ExtendedWindowStyles.WS_EX_TOOLWINDOW;
+                Win32Api.SetWindowLong(wndHelper.Handle, (int)Win32Api.GetWindowLongFields.GWL_EXSTYLE, (IntPtr)exStyle);
+
+                Thread thread = new Thread(() =>
+                {
+                    while (true)
+                    {
+                        Thread.Sleep(1000);
+                        Dispatcher.BeginInvoke(new Action(delegate
+                        {
+                            if (!main.IsActive)
+                            {
+                                main.Topmost = false;
+                                main.Topmost = true;
+                                Log.Info($"当前Window窗体IsActive:{main.IsActive}");
+                                //Win32Api.SetWindowPos(handle, Win32Api.HWND_TOPMOST, (int)main.Top, (int)main.Left, (int)main.ActualWidth, (int)main.ActualHeight, Win32Api.SWP_SHOWWINDOW);
+                            }
+                        }));
+                    }
+                });
+                thread.IsBackground = true;
+                thread.Start();
             }
 
             base.OnStartup(e);
@@ -70,7 +99,7 @@ namespace SoftWareHelper
             catch (Exception ex)
             {
                 //此时程序出现严重异常，将强制结束退出
-                Log.Error("UI线程发生致命错误！");
+                Log.Error("UI线程发生致命错误！" + ex.Message);
             }
 
         }
@@ -116,7 +145,7 @@ namespace SoftWareHelper
                     writer.WriteLine("IconFile=" + icon);
                 }
             }
-            
+
         }
     }
 }

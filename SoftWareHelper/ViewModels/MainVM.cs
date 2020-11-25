@@ -189,7 +189,8 @@ namespace SoftWareHelper.ViewModels
         public ICommand ExitCommand => new RelayCommand(obj =>
         {
             //Environment.Exit(-1);
-            Application.Current.Shutdown();
+            //Application.Current.Shutdown(0);
+            System.Environment.Exit(0);
         });
         /// <summary>
         /// ThemesCommand

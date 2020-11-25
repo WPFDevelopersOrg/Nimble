@@ -34,13 +34,19 @@ namespace SoftWareHelper.Views
             this.Left = desktopWorkingArea.Width - this.Width;
             this.Top = desktopWorkingArea.Height / 2 - (this.Height / 2);
             this.Loaded += Window_Loaded;
-            this.Deactivated += MainView_Deactivated;
+            //this.Deactivated += MainView_Deactivated;
+            //this.PreviewLostKeyboardFocus += MainView_PreviewLostKeyboardFocus;
         }
 
-        #region Deactivated
+        #region Deactivated,PreviewLostKeyboardFocus
         private void MainView_Deactivated(object sender, EventArgs e)
         {
-            MainView window = (MainView)sender;
+            Window window = (Window)sender;
+            window.Topmost = true;
+        }
+        private void MainView_PreviewLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            Window window = (Window)sender;
             window.Topmost = true;
         }
         #endregion
@@ -56,12 +62,14 @@ namespace SoftWareHelper.Views
             //if (Environment.OSVersion.Version.Major >= 6)
             //    Win32Api.SetProcessDPIAware();
 
-            WindowInteropHelper wndHelper = new WindowInteropHelper(this);
+            #region 注释
+            //WindowInteropHelper wndHelper = new WindowInteropHelper(this);
+            //int exStyle = (int)Win32Api.GetWindowLong(wndHelper.Handle, (int)Win32Api.GetWindowLongFields.GWL_EXSTYLE);
+            //exStyle |= (int)Win32Api.ExtendedWindowStyles.WS_EX_TOOLWINDOW;
+            //Win32Api.SetWindowLong(wndHelper.Handle, (int)Win32Api.GetWindowLongFields.GWL_EXSTYLE, (IntPtr)exStyle); 
+            #endregion
 
-            int exStyle = (int)Win32Api.GetWindowLong(wndHelper.Handle, (int)Win32Api.GetWindowLongFields.GWL_EXSTYLE);
 
-            exStyle |= (int)Win32Api.ExtendedWindowStyles.WS_EX_TOOLWINDOW;
-            Win32Api.SetWindowLong(wndHelper.Handle, (int)Win32Api.GetWindowLongFields.GWL_EXSTYLE, (IntPtr)exStyle);
             //SetLightDark(SetConfig());
             //Win32Api.HwndSourceAdd(this);
         } 
@@ -199,9 +207,15 @@ namespace SoftWareHelper.Views
 
         }
 
+
         #endregion
 
-       
+        private void myNotifyIcon_TrayLeftMouseUp(object sender, RoutedEventArgs e)
+        {
+            Show();
+            Activate();
+            Focus();
+        }
     }
 
 }

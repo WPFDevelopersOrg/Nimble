@@ -168,5 +168,15 @@ namespace SoftWareHelper.Helpers
         [DllImport("user32.dll")]
         internal static extern int GetWindowRect(IntPtr hWnd, out RECT rect);
 
+        #region 置顶(待定)
+        [DllImport("user32.dll")]
+        public static extern int SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, int uFlags);
+
+        public const int SWP_SHOWWINDOW = 0x0040;
+
+        public const int SWP_NOMOVE = 0x2;
+
+        public static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
+        #endregion
     }
 }

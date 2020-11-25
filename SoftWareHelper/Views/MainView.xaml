@@ -14,7 +14,7 @@
         mc:Ignorable="d" ResizeMode="NoResize"
         TextOptions.TextFormattingMode="Display" UseLayoutRounding="True"
         SnapsToDevicePixels="True" WindowStyle="None" Background="Transparent"
-        Title="MainView" Height="600" Width="120" Topmost="True"
+        Title="MainView" Height="600" Width="120"
         ShowInTaskbar="False" x:Name="myWindow">
     <shell:WindowChrome.WindowChrome>
         <shell:WindowChrome GlassFrameThickness="-10" CaptionHeight="0"/>
@@ -372,8 +372,9 @@
     <Grid  Name="MyGrid">
         <tb:TaskbarIcon x:Name="myNotifyIcon"
                     IconSource="/comic.ico"
-                    MenuActivation="LeftOrRightClick"
-                    PopupActivation="DoubleClick">
+                    PopupActivation="DoubleClick"
+                    NoLeftClickDelay="True"
+                    TrayLeftMouseUp="myNotifyIcon_TrayLeftMouseUp">
             <tb:TaskbarIcon.TrayToolTip>
                 <Border
                             Padding="8"
