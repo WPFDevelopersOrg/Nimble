@@ -67,7 +67,7 @@ namespace SoftWareHelper
                             {
                                 main.Topmost = false;
                                 main.Topmost = true;
-                                Log.Info($"当前Window窗体IsActive:{main.IsActive}");
+                                //Log.Info($"当前Window窗体IsActive:{main.IsActive}");
                                 //Win32Api.SetWindowPos(handle, Win32Api.HWND_TOPMOST, (int)main.Top, (int)main.Left, (int)main.ActualWidth, (int)main.ActualHeight, Win32Api.SWP_SHOWWINDOW);
                             }
                         }));
