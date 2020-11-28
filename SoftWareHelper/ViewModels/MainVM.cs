@@ -125,12 +125,28 @@ namespace SoftWareHelper.ViewModels
             IsDark = ThemesHelper.GetConfig();
             ThemesHelper.SetLightDark(IsDark);
             #endregion
-            Common.TemporaryFile();
-            ApplicationList = Common.AllApplictionInstalled();
-            Common.GetDesktopAppliction(ApplicationList);
-           
-            string json = JsonHelper.Serialize(ApplicationList);
-            FileHelper.WriteFile(json, Common.temporaryApplicationJson);
+
+            //Common.TemporaryFile();
+            //ApplicationList = Common.AllApplictionInstalled();
+            //Common.GetDesktopAppliction(ApplicationList);
+
+            //string json = JsonHelper.Serialize(ApplicationList);
+            //FileHelper.WriteFile(json, Common.temporaryApplicationJson);
+
+            if (Common.ApplicationListCache == null)
+            {
+                Common.TemporaryFile();
+                ApplicationList = Common.AllApplictionInstalled();
+                Common.GetDesktopAppliction(ApplicationList);
+
+                string json = JsonHelper.Serialize(ApplicationList);
+                FileHelper.WriteFile(json, Common.temporaryApplicationJson);
+            }
+            else
+            {
+                ApplicationList = Common.ApplicationListCache;
+            }
+
 
             //if (!File.Exists(Common.temporaryApplicationJson))
             //{

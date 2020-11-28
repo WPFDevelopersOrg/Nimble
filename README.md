@@ -1,6 +1,7 @@
 ## SoftWareHelper
 ## [gitee](https://gitee.com/yanjinhua/SoftWareHelper)
 
+#### 此项目大家互相学习，互相进步。方便的话给一个<kbd>Star</kbd>，谢谢！
 
 ## 环境
 
@@ -18,6 +19,12 @@
 
 
 ## __完善__  
+
+#### 启动页
+
+<img src="/Images/GIFfree.gif"/>
+<img src="/Images/free1.png"/>
+
 
 #### 系统应用
 <img src="/Images/systemAppliction.png"/>

@@ -465,5 +465,8 @@ namespace SoftWareHelper.Helpers
         }
         #endregion
 
+
+        public static ObservableCollection<ApplicationModel> ApplicationListCache;
+
     }
 }

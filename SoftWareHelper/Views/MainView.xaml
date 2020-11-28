@@ -14,7 +14,7 @@
         mc:Ignorable="d" ResizeMode="NoResize"
         TextOptions.TextFormattingMode="Display" UseLayoutRounding="True"
         SnapsToDevicePixels="True" WindowStyle="None" Background="Transparent"
-        Title="MainView" Height="600" Width="120"
+        Title="SoftWareHelper" Height="600" Width="120"
         ShowInTaskbar="False" x:Name="myWindow">
     <shell:WindowChrome.WindowChrome>
         <shell:WindowChrome GlassFrameThickness="-10" CaptionHeight="0"/>

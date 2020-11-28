@@ -2,6 +2,7 @@
 using System;
 using System.Configuration;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
@@ -28,12 +29,29 @@ namespace SoftWareHelper.Views
             //{
             //   
             //}
-            
             desktopWorkingArea = System.Windows.SystemParameters.WorkArea;
             this.Height = desktopWorkingArea.Height / 2;
             this.Left = desktopWorkingArea.Width - this.Width;
             this.Top = desktopWorkingArea.Height / 2 - (this.Height / 2);
             this.Loaded += Window_Loaded;
+
+            Thread thread = new Thread(() =>
+            {
+                while (true)
+                {
+                    Thread.Sleep(1000);
+                    Dispatcher.BeginInvoke(new Action(delegate
+                    {
+                        if (!this.IsActive)
+                        {
+                            this.Topmost = false;
+                            this.Topmost = true;
+                        }
+                    }));
+                }
+            });
+            thread.IsBackground = true;
+            thread.Start();
             //this.Deactivated += MainView_Deactivated;
             //this.PreviewLostKeyboardFocus += MainView_PreviewLostKeyboardFocus;
         }
@@ -63,10 +81,10 @@ namespace SoftWareHelper.Views
             //    Win32Api.SetProcessDPIAware();
 
             #region 注释
-            //WindowInteropHelper wndHelper = new WindowInteropHelper(this);
-            //int exStyle = (int)Win32Api.GetWindowLong(wndHelper.Handle, (int)Win32Api.GetWindowLongFields.GWL_EXSTYLE);
-            //exStyle |= (int)Win32Api.ExtendedWindowStyles.WS_EX_TOOLWINDOW;
-            //Win32Api.SetWindowLong(wndHelper.Handle, (int)Win32Api.GetWindowLongFields.GWL_EXSTYLE, (IntPtr)exStyle); 
+            WindowInteropHelper wndHelper = new WindowInteropHelper(this);
+            int exStyle = (int)Win32Api.GetWindowLong(wndHelper.Handle, (int)Win32Api.GetWindowLongFields.GWL_EXSTYLE);
+            exStyle |= (int)Win32Api.ExtendedWindowStyles.WS_EX_TOOLWINDOW;
+            Win32Api.SetWindowLong(wndHelper.Handle, (int)Win32Api.GetWindowLongFields.GWL_EXSTYLE, (IntPtr)exStyle);
             #endregion
 
 

@@ -48,33 +48,15 @@ namespace SoftWareHelper
                 //    new FrameworkPropertyMetadata { DefaultValue = 20 });
                 Common common = new Common();
                 appShortcutToStartup();
-                var main = new MainView();
+                var main = new StartView();
                 main.Show();
-                WindowInteropHelper wndHelper = new WindowInteropHelper(main);
-                IntPtr handle = wndHelper.Handle;
-                int exStyle = (int)Win32Api.GetWindowLong(wndHelper.Handle, (int)Win32Api.GetWindowLongFields.GWL_EXSTYLE);
-                exStyle |= (int)Win32Api.ExtendedWindowStyles.WS_EX_TOOLWINDOW;
-                Win32Api.SetWindowLong(wndHelper.Handle, (int)Win32Api.GetWindowLongFields.GWL_EXSTYLE, (IntPtr)exStyle);
+                //WindowInteropHelper wndHelper = new WindowInteropHelper(main);
+                //IntPtr handle = wndHelper.Handle;
+                //int exStyle = (int)Win32Api.GetWindowLong(wndHelper.Handle, (int)Win32Api.GetWindowLongFields.GWL_EXSTYLE);
+                //exStyle |= (int)Win32Api.ExtendedWindowStyles.WS_EX_TOOLWINDOW;
+                //Win32Api.SetWindowLong(wndHelper.Handle, (int)Win32Api.GetWindowLongFields.GWL_EXSTYLE, (IntPtr)exStyle);
 
-                Thread thread = new Thread(() =>
-                {
-                    while (true)
-                    {
-                        Thread.Sleep(1000);
-                        Dispatcher.BeginInvoke(new Action(delegate
-                        {
-                            if (!main.IsActive)
-                            {
-                                main.Topmost = false;
-                                main.Topmost = true;
-                                //Log.Info($"当前Window窗体IsActive:{main.IsActive}");
-                                //Win32Api.SetWindowPos(handle, Win32Api.HWND_TOPMOST, (int)main.Top, (int)main.Left, (int)main.ActualWidth, (int)main.ActualHeight, Win32Api.SWP_SHOWWINDOW);
-                            }
-                        }));
-                    }
-                });
-                thread.IsBackground = true;
-                thread.Start();
+                
             }
 
             base.OnStartup(e);
