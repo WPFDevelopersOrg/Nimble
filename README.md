@@ -1,6 +1,8 @@
 ## SoftWareHelper
 ## [gitee](https://gitee.com/yanjinhua/SoftWareHelper)
 
+## [QQ群交流](https://jq.qq.com/?_wv=1027&k=uN3RMw7N)
+
 #### 此项目大家互相学习，互相进步。方便的话给一个<kbd>Star</kbd>，谢谢！
 
 ## 环境
