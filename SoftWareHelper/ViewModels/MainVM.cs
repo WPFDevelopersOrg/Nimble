@@ -241,6 +241,7 @@ namespace SoftWareHelper.ViewModels
             ApplicationModel model = obj as ApplicationModel;
             ApplicationList.Remove(model);
         });
+        
         #endregion
 
         #region 方法

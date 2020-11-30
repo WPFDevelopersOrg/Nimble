@@ -52,7 +52,7 @@ namespace SoftWareHelper.Views
 
                 string json = JsonHelper.Serialize(Common.ApplicationListCache);
                 FileHelper.WriteFile(json, Common.temporaryApplicationJson);
-                Thread.Sleep(6000);
+                Thread.Sleep(1000);
             };
 
             bw.RunWorkerCompleted += (s, y) => 

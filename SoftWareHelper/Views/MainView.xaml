@@ -404,6 +404,18 @@
                             <Setter Property="Stretch" Value="Fill"/>
                         </Style>
                     </ContextMenu.Resources>
+                    <MenuItem Header="QQ群">
+                        <MenuItem.ToolTip>
+                            <ToolTip>
+                                <Rectangle Width="200" Height="300">
+                                    <Rectangle.Fill>
+                                        <ImageBrush ImageSource="/SoftWareHelper;component/Images/20201130100057.png"
+                                                    Stretch="Uniform"/>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                            </ToolTip>
+                        </MenuItem.ToolTip>
+                    </MenuItem>
                     <MenuItem Header="关于" Command="{Binding GithubCommand}">
                         <MenuItem.Icon>
                             <Path Data="{DynamicResource GithubPath}"/>
