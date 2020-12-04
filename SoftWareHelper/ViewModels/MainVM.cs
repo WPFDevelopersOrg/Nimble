@@ -16,7 +16,7 @@ namespace SoftWareHelper.ViewModels
     public class MainVM : ViewModelBase
     {
 
-        #region 静态属性
+        #region 字段
         private double currentOpacity;
         #endregion
 
@@ -90,7 +90,19 @@ namespace SoftWareHelper.ViewModels
                 this.NotifyPropertyChange("IsDragDrop");
             }
         }
-
+        //private bool _isEdgeHide;
+        ///// <summary>
+        ///// 是否边缘隐藏
+        ///// </summary>
+        //public bool IsEdgeHide
+        //{
+        //    get { return _isEdgeHide; }
+        //    set
+        //    {
+        //        _isEdgeHide = value;
+        //        this.NotifyPropertyChange("IsEdgeHide");
+        //    }
+        //}
         #endregion
 
         #region 构造
@@ -111,7 +123,7 @@ namespace SoftWareHelper.ViewModels
                 new OpacityItem{ Value = 60.00 },
                 new OpacityItem{ Value = 40.00 }
             };
-            currentOpacity = ThemesHelper.GetOpacity();
+            currentOpacity = ConfigHelper.Opacity;
             MainOpacity = currentOpacity / 100;
             if (OpacityItemList.Any(x => x.Value == currentOpacity))
             {
@@ -122,31 +134,21 @@ namespace SoftWareHelper.ViewModels
                 item.PropertyChanged -= Item_PropertyChanged;
                 item.PropertyChanged += Item_PropertyChanged;
             }
-            IsDark = ThemesHelper.GetConfig();
+            IsDark = ThemesHelper.GetLightDark();
             ThemesHelper.SetLightDark(IsDark);
             #endregion
 
-            //Common.TemporaryFile();
-            //ApplicationList = Common.AllApplictionInstalled();
-            //Common.GetDesktopAppliction(ApplicationList);
-
-            //string json = JsonHelper.Serialize(ApplicationList);
-            //FileHelper.WriteFile(json, Common.temporaryApplicationJson);
-
             if (Common.ApplicationListCache == null)
             {
-                Common.TemporaryFile();
-                ApplicationList = Common.AllApplictionInstalled();
-                Common.GetDesktopAppliction(ApplicationList);
-
-                string json = JsonHelper.Serialize(ApplicationList);
-                FileHelper.WriteFile(json, Common.temporaryApplicationJson);
+                Action initAction = new Action(Common.Init);
+                IAsyncResult result = initAction.BeginInvoke(null, null);
+                initAction.EndInvoke(result);
+                ApplicationList = Common.ApplicationListCache;
             }
             else
             {
                 ApplicationList = Common.ApplicationListCache;
             }
-
 
             //if (!File.Exists(Common.temporaryApplicationJson))
             //{
@@ -180,8 +182,12 @@ namespace SoftWareHelper.ViewModels
                     //{
                     //    OpacityItemList.FirstOrDefault(x => x.Value == currentOpacity).IsSelected = true;
                     //}
-                    ThemesHelper.SaveOpacity(model.Value);
-                    MainOpacity = model.Value / 100;
+                    if (ConfigHelper.Opacity != model.Value)
+                    {
+                        ConfigHelper.SaveOpacity(model.Value);
+                        MainOpacity = model.Value / 100;
+                    }
+                    
                 }
               
             }
@@ -213,7 +219,7 @@ namespace SoftWareHelper.ViewModels
         /// </summary>
         public ICommand ThemesCommand => new RelayCommand(obj =>
         {
-            var dark = !ThemesHelper.GetConfig();
+            var dark = !ThemesHelper.GetLightDark();
             IsDark = dark;
             ThemesHelper.SetLightDark(dark);
         });

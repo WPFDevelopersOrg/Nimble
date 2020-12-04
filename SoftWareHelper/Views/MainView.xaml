@@ -10,7 +10,7 @@
         xmlns:vm="clr-namespace:SoftWareHelper.ViewModels"
         xmlns:CustomControls="clr-namespace:SoftWareHelper.CustomControls"
         xmlns:helpers="clr-namespace:SoftWareHelper.Helpers"
-        xmlns:local="clr-namespace:SoftWareHelper.Views"
+        xmlns:views="clr-namespace:SoftWareHelper.Views"
         mc:Ignorable="d" ResizeMode="NoResize"
         TextOptions.TextFormattingMode="Display" UseLayoutRounding="True"
         SnapsToDevicePixels="True" WindowStyle="None" Background="Transparent"
@@ -27,6 +27,11 @@
     <FrameworkElement.DataContext>
         <vm:MainVM/>
     </FrameworkElement.DataContext>
+    <FrameworkElement.RenderTransform>
+        <TransformGroup>
+            <TranslateTransform x:Name="translateForm"/>
+        </TransformGroup>
+    </FrameworkElement.RenderTransform>
     <FrameworkElement.Resources>
 
         <helpers:DarkAndLightConvert x:Key="darkAndLightConvert"/>
@@ -374,7 +379,8 @@
                     IconSource="/comic.ico"
                     PopupActivation="DoubleClick"
                     NoLeftClickDelay="True"
-                    TrayLeftMouseUp="myNotifyIcon_TrayLeftMouseUp">
+                    TrayLeftMouseUp="myNotifyIcon_TrayLeftMouseUp"
+                     Uid="{Binding IsEdgeHide,RelativeSource={RelativeSource AncestorType={x:Type views:MainView}}}">
             <tb:TaskbarIcon.TrayToolTip>
                 <Border
                             Padding="8"
@@ -395,7 +401,7 @@
                 </Border>
             </tb:TaskbarIcon.TrayToolTip>
             <tb:TaskbarIcon.ContextMenu>
-                <ContextMenu>
+                <ContextMenu PlacementTarget="{Binding ElementName=myNotifyIcon}">
                     <ContextMenu.Resources>
                         <Style TargetType="{x:Type Path}">
                             <Setter Property="Height" Value="15"/>
@@ -421,6 +427,15 @@
                             <Path Data="{DynamicResource GithubPath}"/>
                         </MenuItem.Icon>
                     </MenuItem>
+                    <!--<MenuItem Header="边缘隐藏" 
+                              Checked="MenuItemEdgeHide_Checked" 
+                              Unchecked="MenuItemEdgeHide_Unchecked" 
+                              IsCheckable="True"
+                              IsChecked="{Binding IsEdgeHide,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type views:MainView}}}"/>-->
+                    <MenuItem Header="边缘隐藏" x:Name="MenuItemEdgeHide"
+                              Checked="MenuItemEdgeHide_Checked" 
+                              Unchecked="MenuItemEdgeHide_Unchecked" 
+                              IsCheckable="True"/>
                     <MenuItem Header="透明度" ItemsSource="{Binding Path=OpacityItemList}" DisplayMemberPath="ItemName">
                         <MenuItem.ItemContainerStyle>
                             <Style TargetType="MenuItem">
@@ -452,7 +467,8 @@
         </Rectangle>
 
         <Grid HorizontalAlignment="Left" VerticalAlignment="Top"
-                Margin="10,10,0,0">
+              Margin="10,10,0,0"
+              Visibility="{Binding IsEdgeHide,Converter={StaticResource bool2VisibilityConverter},RelativeSource={RelativeSource AncestorType={x:Type views:MainView}}}">
             <Rectangle Fill="{DynamicResource DefaultBackgroundBrush}"/>
             <StackPanel>
                 <Button x:Name="borderExit" Width="20" Height="20"
@@ -467,6 +483,7 @@
                 </Button>
                 <!--<Line X1="0" Y1="1" X2="20" Y2="1" Stroke="White"/>-->
                 <ToggleButton Style="{DynamicResource tbSwitchMiniAndNormal}"
+                              x:Name="ToggleButtonMini"
                           Height="20" Width="20" IsChecked="False" Margin="0,2"
                               Checked="ToggleButtonMini_Checked"
                               Unchecked="UnToggleButtonMini_Checked">

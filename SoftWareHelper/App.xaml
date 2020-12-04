@@ -1,6 +1,7 @@
 ﻿<Application x:Class="SoftWareHelper.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:helpers="clr-namespace:SoftWareHelper.Helpers">
     <!--StartupUri="Views/MainView.xaml"-->
     <!--StartupUri="MainWindow.xaml">-->
     <Application.Resources>
@@ -35,6 +36,7 @@
             <Geometry x:Key="DarkAndLightPath">M512 0c-282.77 0-512 229.23-512 512s229.23 512 512 512 512-229.23 512-512-229.23-512-512-512zM128 512c0-212.078 171.922-384 384-384v768c-212.078 0-384-171.922-384-384z</Geometry>
 
 
+            <helpers:Bool2VisibilityConverter x:Key="bool2VisibilityConverter"/>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/SoftWareHelper;component/Styles/WindowsStyle.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/SoftWareHelper;component/Styles/SwitchMenuStyle.xaml"/>

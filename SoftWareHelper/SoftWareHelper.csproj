@@ -107,7 +107,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="CustomControls\SwitchMenu.cs" />
+    <Compile Include="Helpers\Bool2VisibilityConverter.cs" />
     <Compile Include="Helpers\Common.cs" />
+    <Compile Include="Helpers\ConfigHelper.cs" />
     <Compile Include="Helpers\DarkAndLightConvert.cs" />
     <Compile Include="Helpers\FileHelper.cs" />
     <Compile Include="Helpers\JsonHelper.cs" />

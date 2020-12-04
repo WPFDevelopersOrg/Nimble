@@ -44,6 +44,11 @@ namespace SoftWareHelper.Helpers
         /// </summary>
         public static bool IsWin10 => Environment.OSVersion.Version.Major == 10;
 
+        /// <summary>
+        /// 缓存
+        /// </summary>
+        public static ObservableCollection<ApplicationModel> ApplicationListCache;
+
         public Common()
         {
             SystemApplication = new List<string>()
@@ -110,7 +115,6 @@ namespace SoftWareHelper.Helpers
             return false;
         }
         #endregion
-
 
         #region 获取安装的软件
         //[RegistryPermissionAttribute(SecurityAction.PermitOnly, Read = @"HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall")]
@@ -293,8 +297,14 @@ namespace SoftWareHelper.Helpers
             GetCommonDesktoplnk(desktop, array);
             string commonDesktop = Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory);
             GetCommonDesktoplnk(commonDesktop, array);
-            var systemAppliction = new string[] {  "mspaint.exe", "mstsc.exe", "magnify.exe", "calc.exe", "notepad.exe", "cmd.exe" };
-            GetSystemAppliction(systemAppliction,array);
+            var systemAppliction = new string[] { "mspaint.exe", "mstsc.exe", "magnify.exe", "control.exe", "SnippingTool.exe", "calc.exe", "notepad.exe", "cmd.exe" };
+            GetSystemAppliction(systemAppliction, array);
+            //string commonDesktop = Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory);
+            //var systemAppliction = new string[] { "mspaint.exe", "mstsc.exe", "magnify.exe", "calc.exe", "notepad.exe", "cmd.exe" };
+            //Action<string, ObservableCollection<ApplicationModel>> actionGetCommonDesktop = new Action<string, ObservableCollection<ApplicationModel>>(GetCommonDesktoplnk);
+            //Action<string[], ObservableCollection<ApplicationModel>> actionGetSystem = new Action<string[], ObservableCollection<ApplicationModel>>(GetSystemAppliction);
+            //actionGetCommonDesktop.BeginInvoke(commonDesktop, array, a => actionGetCommonDesktop.EndInvoke(a),null);
+            //actionGetSystem.BeginInvoke(systemAppliction, array,a=>actionGetSystem.EndInvoke(a),null);
         }
         #region 系统
         static void GetSystemAppliction(string[] apps, ObservableCollection<ApplicationModel> array)
@@ -305,7 +315,7 @@ namespace SoftWareHelper.Helpers
                 var appliction = Path.Combine(Environment.SystemDirectory, item);
                 if (System.IO.File.Exists(appliction))
                 {
-                    
+
                     FileVersionInfo fileVersion =
         FileVersionInfo.GetVersionInfo(appliction);
                     model = new ApplicationModel();
@@ -320,7 +330,7 @@ namespace SoftWareHelper.Helpers
                     SaveImage((BitmapSource)GetIcon(appliction), iconPath);
                 }
             }
-        } 
+        }
         #endregion
 
         #region 桌面
@@ -352,7 +362,7 @@ namespace SoftWareHelper.Helpers
                     }
                 }
             }
-        } 
+        }
         #endregion
 
         #endregion
@@ -465,8 +475,13 @@ namespace SoftWareHelper.Helpers
         }
         #endregion
 
-
-        public static ObservableCollection<ApplicationModel> ApplicationListCache;
-
+        public static void Init()
+        {
+            Common.TemporaryFile();
+            Common.ApplicationListCache = Common.AllApplictionInstalled();
+            Common.GetDesktopAppliction(Common.ApplicationListCache);
+            string json = JsonHelper.Serialize(Common.ApplicationListCache);
+            FileHelper.WriteFile(json, Common.temporaryApplicationJson);
+        }
     }
 }

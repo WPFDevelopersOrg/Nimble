@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.Text;
 using System.Windows;
 
 namespace SoftWareHelper.Helpers
@@ -41,7 +39,7 @@ namespace SoftWareHelper.Helpers
 
         }
 
-        public static bool GetConfig()
+        public static bool GetLightDark()
         {
             bool dark;
             if (!bool.TryParse(string.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["Dark"]) ? "false" : ConfigurationManager.AppSettings["Dark"], out dark))
@@ -55,25 +53,6 @@ namespace SoftWareHelper.Helpers
             return dark;
         }
 
-        public static double GetOpacity()
-        {
-            double opacity = 80;
-            if (!double.TryParse(string.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["Opacity"]) ? "80" : ConfigurationManager.AppSettings["Opacity"], out opacity))
-            {
-                opacity = 80;
-            }
-            else
-            {
-                opacity = Convert.ToDouble(string.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["Opacity"]) ? "80" : ConfigurationManager.AppSettings["Opacity"]);
-            }
-            return opacity;
-        }
-        public static void SaveOpacity(double opacity)
-        {
-            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            config.AppSettings.Settings["Opacity"].Value = opacity.ToString();
-            config.Save(ConfigurationSaveMode.Modified);
-            ConfigurationManager.RefreshSection("appSettings");
-        }
+       
     }
 }

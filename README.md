@@ -28,6 +28,10 @@
 <img src="/Images/free1.png"/>
 
 
+#### 是否边缘隐藏 
+
+<img src="/Images/IsEdgeHide.png"/>
+
 #### 系统应用
 <img src="/Images/systemAppliction.png"/>
 

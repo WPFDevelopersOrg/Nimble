@@ -47,6 +47,7 @@ namespace SoftWareHelper
                 //Timeline.DesiredFrameRateProperty.OverrideMetadata(typeof(Timeline),
                 //    new FrameworkPropertyMetadata { DefaultValue = 20 });
                 Common common = new Common();
+                ConfigHelper.GetConfigHelper();
                 appShortcutToStartup();
                 var main = new StartView();
                 main.Show();

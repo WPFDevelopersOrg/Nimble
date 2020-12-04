@@ -1,10 +1,13 @@
 ﻿using SoftWareHelper.Helpers;
+using SoftWareHelper.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -38,20 +41,17 @@ namespace SoftWareHelper.Views
             Start();
             this.Loaded += StartView_Loaded;
         }
-
+        
         private void StartView_Loaded(object sender, RoutedEventArgs e)
         {
             var bw = new BackgroundWorker();
 
             bw.DoWork += (s, y) =>
             {
-
-                Common.TemporaryFile();
-                Common.ApplicationListCache = Common.AllApplictionInstalled();
-                Common.GetDesktopAppliction(Common.ApplicationListCache);
-
-                string json = JsonHelper.Serialize(Common.ApplicationListCache);
-                FileHelper.WriteFile(json, Common.temporaryApplicationJson);
+                //Action initAction = new Action(Common.Init);
+                //IAsyncResult result = initAction.BeginInvoke(null, null);
+                //initAction.EndInvoke(result);
+                Common.Init();
                 Thread.Sleep(1000);
             };
 
