@@ -178,5 +178,86 @@ namespace SoftWareHelper.Helpers
 
         public static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
         #endregion
+
+
+
+        [DllImport("shell32.dll")]
+        public static extern UInt32 SHAppBarMessage(UInt32 dwMessage, ref APPBARDATA pData);
+        public enum AppBarMessages
+        {
+            New = 0x00,
+            Remove = 0x01,
+            QueryPos = 0x02,
+            SetPos = 0x03,
+            GetState = 0x04,
+            GetTaskBarPos = 0x05,
+            Activate = 0x06,
+            GetAutoHideBar = 0x07,
+            SetAutoHideBar = 0x08,
+            WindowPosChanged = 0x09,
+            SetState = 0x0a
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct APPBARDATA
+        {
+            public UInt32 cbSize;
+            public IntPtr hWnd;
+            public UInt32 uCallbackMessage;
+            public UInt32 uEdge;//后期扩展
+            public RECT1 rc;
+            public Int32 lParam;
+        }
+        [StructLayout(LayoutKind.Sequential)]
+        public struct RECT1
+        {
+            public int left;
+            public int top;
+            public int right;
+            public int bottom;
+        }
+        /// <summary>
+        /// 注册
+        /// </summary>
+        /// <param name="window"></param>
+        public static void RegisterDesktop(Window window)
+        {
+            WindowInteropHelper helper = new WindowInteropHelper(window);
+            HwndSource mainWindowSrc = (HwndSource)HwndSource.FromHwnd(helper.Handle);
+
+            APPBARDATA abd = new APPBARDATA();
+            abd.cbSize = (uint)Marshal.SizeOf(abd);
+            abd.hWnd = mainWindowSrc.Handle;
+            abd.uEdge = 2;
+            abd.rc.top = 0;
+            abd.rc.bottom = (int)SystemParameters.PrimaryScreenHeight;
+            abd.rc.right = (int)SystemParameters.PrimaryScreenWidth;
+            abd.rc.left = abd.rc.right - (int)window.ActualWidth;
+
+            //注册新的应用栏，并指定系统应用于向应用栏发送通知消息的消息标识符。
+            SHAppBarMessage((UInt32)AppBarMessages.New, ref abd);
+            //请求应用栏的大小和屏幕位置。
+            SHAppBarMessage((UInt32)AppBarMessages.QueryPos, ref abd);
+            //设置应用栏的大小和屏幕位置。
+            SHAppBarMessage((UInt32)AppBarMessages.SetPos, ref abd);
+            //设置应用所在平面位置。
+            MoveWindow(abd.hWnd, abd.rc.left, abd.rc.top, abd.rc.right - abd.rc.left, abd.rc.bottom - abd.rc.top, 1);
+        }
+        /// <summary>
+        /// 卸载
+        /// </summary>
+        /// <param name="window"></param>
+        public static void UnRegisterDesktop(Window window)
+        {
+            WindowInteropHelper helper = new WindowInteropHelper(window);
+            HwndSource mainWindowSrc = (HwndSource)HwndSource.FromHwnd(helper.Handle);
+
+            APPBARDATA abd = new APPBARDATA();
+            abd.cbSize = (uint)Marshal.SizeOf(abd);
+            abd.hWnd = mainWindowSrc.Handle;
+
+            SHAppBarMessage((UInt32)AppBarMessages.Remove, ref abd);
+        }
+
     }
 }

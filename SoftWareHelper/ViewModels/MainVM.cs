@@ -185,11 +185,11 @@ namespace SoftWareHelper.ViewModels
                     if (ConfigHelper.Opacity != model.Value)
                     {
                         ConfigHelper.SaveOpacity(model.Value);
-                        MainOpacity = model.Value / 100;
                     }
-                    
+                    MainOpacity = model.Value / 100;
+
                 }
-              
+
             }
         }
 

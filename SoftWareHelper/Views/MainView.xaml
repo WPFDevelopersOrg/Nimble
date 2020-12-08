@@ -17,7 +17,7 @@
         Title="SoftWareHelper" Height="600" Width="120"
         ShowInTaskbar="False" x:Name="myWindow">
     <shell:WindowChrome.WindowChrome>
-        <shell:WindowChrome GlassFrameThickness="-10" CaptionHeight="0"/>
+        <shell:WindowChrome GlassFrameThickness="-1" CaptionHeight="0"/>
     </shell:WindowChrome.WindowChrome>
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
@@ -379,8 +379,7 @@
                     IconSource="/comic.ico"
                     PopupActivation="DoubleClick"
                     NoLeftClickDelay="True"
-                    TrayLeftMouseUp="myNotifyIcon_TrayLeftMouseUp"
-                     Uid="{Binding IsEdgeHide,RelativeSource={RelativeSource AncestorType={x:Type views:MainView}}}">
+                    TrayLeftMouseUp="myNotifyIcon_TrayLeftMouseUp">
             <tb:TaskbarIcon.TrayToolTip>
                 <Border
                             Padding="8"
@@ -432,10 +431,10 @@
                               Unchecked="MenuItemEdgeHide_Unchecked" 
                               IsCheckable="True"
                               IsChecked="{Binding IsEdgeHide,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type views:MainView}}}"/>-->
-                    <MenuItem Header="边缘隐藏" x:Name="MenuItemEdgeHide"
+                    <!--<MenuItem Header="边缘隐藏" x:Name="MenuItemEdgeHide"
                               Checked="MenuItemEdgeHide_Checked" 
                               Unchecked="MenuItemEdgeHide_Unchecked" 
-                              IsCheckable="True"/>
+                              IsCheckable="True"/>-->
                     <MenuItem Header="透明度" ItemsSource="{Binding Path=OpacityItemList}" DisplayMemberPath="ItemName">
                         <MenuItem.ItemContainerStyle>
                             <Style TargetType="MenuItem">
@@ -469,6 +468,9 @@
         <Grid HorizontalAlignment="Left" VerticalAlignment="Top"
               Margin="10,10,0,0"
               Visibility="{Binding IsEdgeHide,Converter={StaticResource bool2VisibilityConverter},RelativeSource={RelativeSource AncestorType={x:Type views:MainView}}}">
+            <!--
+              Visibility="{Binding IsEdgeHide,Converter={StaticResource bool2VisibilityConverter},RelativeSource={RelativeSource AncestorType={x:Type views:MainView}}}"-->
+             
             <Rectangle Fill="{DynamicResource DefaultBackgroundBrush}"/>
             <StackPanel>
                 <Button x:Name="borderExit" Width="20" Height="20"
@@ -503,7 +505,7 @@
         </Grid>
 
 
-        <Grid Margin="30,10,0,14">
+        <Grid x:Name="GridGround" Margin="30,10,0,14">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>

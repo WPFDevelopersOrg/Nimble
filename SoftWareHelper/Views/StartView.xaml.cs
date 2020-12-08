@@ -59,7 +59,9 @@ namespace SoftWareHelper.Views
             {
                 tbMsg.Text = "开始体验";
                 timer.Stop();
-                MainView mView = new MainView();
+                //MainView mView = new MainView();
+                var mView = new StartWayView();
+                mView.Topmost = true;
                 mView.Show();
 
                 var closeAnimation = new DoubleAnimation 

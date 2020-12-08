@@ -38,7 +38,6 @@ namespace SoftWareHelper.CustomControls
         #region 依赖属性
 
         #region Orientation
-        [Bindable(true), Category("Appearance"), Description("aaaa")]
         public Orientation Orientation
         {
             get { return (Orientation)GetValue(OrientationProperty); }
@@ -251,7 +250,7 @@ namespace SoftWareHelper.CustomControls
 
         private void DoubleAnimation_Completed(object sender, EventArgs e)
         {
-            Console.WriteLine($"this.PART_ScrollViewer.VerticalOffset Completed {this.PART_ScrollViewer.VerticalOffset }");
+            //Console.WriteLine($"this.PART_ScrollViewer.VerticalOffset Completed {this.PART_ScrollViewer.VerticalOffset }");
             if (this.PART_ScrollViewer != null && !IsDragDrop)
             {
                 if (this.Orientation == Orientation.Vertical)

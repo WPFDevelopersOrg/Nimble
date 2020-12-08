@@ -42,6 +42,7 @@
                 <ResourceDictionary Source="pack://application:,,,/SoftWareHelper;component/Styles/SwitchMenuStyle.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/SoftWareHelper;component/Styles/ContextMenuStyle.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/SoftWareHelper;component/Themes/Dark.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/SoftWareHelper;component/Styles/ButtonsStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
