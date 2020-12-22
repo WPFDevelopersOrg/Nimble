@@ -11,6 +11,7 @@ using System.Management;
 using System.Reflection;
 using System.Security.Permissions;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -324,6 +325,17 @@ namespace SoftWareHelper.Helpers
                     var iconPath = System.IO.Path.Combine(temporaryIconFile, model.Name);
                     iconPath = iconPath + ".png";
                     model.IconPath = iconPath;
+                    string first = model.Name.Substring(0, 1);
+                    if (!IsChinese(first))
+                    {
+                        if (char.IsUpper(first.ToCharArray()[0]))
+                            model.Group = first;
+                        model.Group = model.Name.Substring(0, 1).ToUpper();
+                    }
+                    else
+                    {
+                        model.Group = GetCharSpellCode(first);
+                    }
                     array.Insert(0, model);
                     if (File.Exists(iconPath))
                         continue;
@@ -355,6 +367,17 @@ namespace SoftWareHelper.Helpers
                         var iconPath = System.IO.Path.Combine(temporaryIconFile, model.Name);
                         iconPath = iconPath + ".png";
                         model.IconPath = iconPath;
+                        string first = model.Name.Substring(0, 1);
+                        if (!IsChinese(first))
+                        {
+                            if (char.IsUpper(first.ToCharArray()[0]))
+                                model.Group = first;
+                            model.Group = model.Name.Substring(0, 1).ToUpper();
+                        }
+                        else
+                        {
+                            model.Group = GetCharSpellCode(first);
+                        }
                         array.Insert(0, model);
                         if (File.Exists(iconPath))
                             continue;
@@ -442,8 +465,20 @@ namespace SoftWareHelper.Helpers
         #endregion
 
         #region 重组model到集合
-        public static void FormModel(ApplicationModel model, ObservableCollection<ApplicationModel> applictionArray)
+        static void FormModel(ApplicationModel model, ObservableCollection<ApplicationModel> applictionArray)
         {
+            string first = model.Name.Substring(0, 1);
+            if (!IsChinese(first))
+            {
+                if (char.IsUpper(first.ToCharArray()[0]))
+                    model.Group = first;
+                model.Group = model.Name.Substring(0, 1).ToUpper();
+            }
+            else
+            {
+                model.Group = GetCharSpellCode(first);
+            }
+
             var uninsta = System.IO.Path.GetFileNameWithoutExtension(model.ExePath);
             var own = System.IO.Path.GetFileNameWithoutExtension(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
             if (uninsta.ToLower().Contains("uninstall") || uninsta.Contains("卸载") || uninsta.Contains("unins000") || uninsta.Contains("own"))
@@ -480,8 +515,137 @@ namespace SoftWareHelper.Helpers
             Common.TemporaryFile();
             Common.ApplicationListCache = Common.AllApplictionInstalled();
             Common.GetDesktopAppliction(Common.ApplicationListCache);
+            Common.ApplicationListCache = new ObservableCollection<ApplicationModel>(Common.ApplicationListCache.OrderBy(x => x.Group));
             string json = JsonHelper.Serialize(Common.ApplicationListCache);
             FileHelper.WriteFile(json, Common.temporaryApplicationJson);
         }
+
+
+        #region 判断首字母是否为中文,如果为中文 首字母转为英语
+        static bool IsChinese(string text)
+        {
+            bool chinese = false;
+            Regex regChina = new Regex("[^\x00-\xFF]");
+            Regex regEnglish = new Regex("^[a-zA-Z]");
+            if (regEnglish.IsMatch(text))
+            {
+                chinese = false;
+            }
+            else if (regChina.IsMatch(text))
+            {
+                chinese = true;
+            }
+            return chinese;
+        }
+        /// <summary>
+        /// 得到一个汉字的拼音第一个字母
+        /// </summary>
+        /// <param name="CnChar">单个汉字</param>
+        /// <returns>单个大写字母</returns>
+
+        static string GetCharSpellCode(string CnChar)
+        {
+            long iCnChar;
+            byte[] ZW = System.Text.Encoding.Default.GetBytes(CnChar);
+            int i1 = (short)(ZW[0]);
+            int i2 = (short)(ZW[1]);
+            iCnChar = i1 * 256 + i2;
+            if ((iCnChar >= 45217) && (iCnChar <= 45252))
+            {
+                return "A";
+            }
+            else if ((iCnChar >= 45253) && (iCnChar <= 45760))
+            {
+                return "B";
+            }
+            else if ((iCnChar >= 45761) && (iCnChar <= 46317))
+            {
+                return "C";
+            }
+            else if ((iCnChar >= 46318) && (iCnChar <= 46825))
+            {
+                return "D";
+            }
+            else if ((iCnChar >= 46826) && (iCnChar <= 47009))
+            {
+                return "E";
+            }
+            else if ((iCnChar >= 47010) && (iCnChar <= 47296))
+            {
+                return "F";
+            }
+            else if ((iCnChar >= 47297) && (iCnChar <= 47613))
+            {
+                return "G";
+            }
+            else if ((iCnChar >= 47614) && (iCnChar <= 48118))
+            {
+                return "H";
+            }
+            else if ((iCnChar >= 48119) && (iCnChar <= 49061))
+            {
+                return "J";
+            }
+            else if ((iCnChar >= 49062) && (iCnChar <= 49323))
+            {
+                return "K";
+            }
+            else if ((iCnChar >= 49324) && (iCnChar <= 49895))
+            {
+                return "L";
+            }
+            else if ((iCnChar >= 49896) && (iCnChar <= 50370))
+            {
+                return "M";
+            }
+            else if ((iCnChar >= 50371) && (iCnChar <= 50613))
+            {
+                return "N";
+            }
+            else if ((iCnChar >= 50614) && (iCnChar <= 50621))
+            {
+                return "O";
+            }
+            else if ((iCnChar >= 50622) && (iCnChar <= 50905))
+            {
+                return "P";
+            }
+            else if ((iCnChar >= 50906) && (iCnChar <= 51386))
+            {
+                return "Q";
+            }
+            else if ((iCnChar >= 51387) && (iCnChar <= 51445))
+            {
+                return "R";
+            }
+            else if ((iCnChar >= 51446) && (iCnChar <= 52217))
+            {
+                return "S";
+            }
+            else if ((iCnChar >= 52218) && (iCnChar <= 52697))
+            {
+                return "T";
+            }
+            else if ((iCnChar >= 52698) && (iCnChar <= 52979))
+            {
+                return "W";
+            }
+            else if ((iCnChar >= 52980) && (iCnChar <= 53640))
+            {
+                return "X";
+            }
+            else if ((iCnChar >= 53689) && (iCnChar <= 54480))
+            {
+                return "Y";
+            }
+            else if ((iCnChar >= 54481) && (iCnChar <= 55289))
+            {
+                return "Z";
+            }
+            else
+                return ("?");
+
+        }
+        #endregion
     }
 }

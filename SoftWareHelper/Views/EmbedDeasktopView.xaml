@@ -18,7 +18,7 @@
         Title="SoftWareHelper" Height="600" Width="90"
         ShowInTaskbar="False">
     <shell:WindowChrome.WindowChrome>
-        <shell:WindowChrome GlassFrameThickness="-1" CaptionHeight="0"/>
+        <shell:WindowChrome GlassFrameThickness="-1"/>
     </shell:WindowChrome.WindowChrome>
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
@@ -87,7 +87,8 @@
                 </Storyboard>
             </DataTemplate.Resources>
             <Border RenderTransformOrigin="0.5,0.5" x:Name="border" 
-                    Padding="4" Cursor="Hand" MaxHeight="90" Background="Transparent">
+                    Padding="4" Cursor="Hand" MaxHeight="90" Background="Transparent"
+                    Tag="{Binding Group}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="MouseLeftButtonDown">
                         <i:InvokeCommandAction Command="{Binding DataContext.SelectionChangedCommand,RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"></i:InvokeCommandAction>
@@ -126,8 +127,6 @@
                         </Button.Content>
                     </Button>
                 </Grid>
-
-
             </Border>
             <DataTemplate.Triggers>
                 <MultiTrigger>
@@ -212,19 +211,37 @@
                 </ContextMenu>
             </tb:TaskbarIcon.ContextMenu>
         </tb:TaskbarIcon>
-        <Rectangle Opacity="{Binding MainOpacity}"
+        <Rectangle Opacity="{Binding MainOpacity}" Margin="1,0,0,0"
                    Name="PageGround" Fill="{DynamicResource NormalBlackBrush}"/>
 
-        <CustomControls:SwitchMenu ItemsSource="{Binding ApplicationList}" Orientation="Vertical"
+        <CustomControls:SwitchMenu x:Name="AppSwitchList" ItemsSource="{Binding ApplicationList}" Orientation="Vertical"
                                        ItemTemplate="{StaticResource ApplicationTemplate}" IsDragDrop="{Binding IsDragDrop}"
                                        drag:DragDrop.UseDefaultDragAdorner="True" drag:DragDrop.DefaultDragAdornerOpacity="0.5"
                                        drag:DragDrop.IsDragSource="{Binding IsDragDrop}" drag:DragDrop.IsDropTarget="True"
                                        drag:DragDrop.ItemsPanelOrientation="Vertical" Margin="0,10">
+            <!--
+                                       VirtualizingStackPanel.IsVirtualizing="False"
+                                       VirtualizingStackPanel.VirtualizationMode="Standard"
+                                       IsTextSearchCaseSensitive="False"
+                                       IsTextSearchEnabled="True"
+                                       TextSearch.TextPath="Name"-->
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseRightButtonDown">
                     <i:InvokeCommandAction Command="{Binding MouseRightDragCommand}"></i:InvokeCommandAction>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </CustomControls:SwitchMenu>
+        <Border x:Name="KeyDownPanel" 
+                Width="60" Height="60" 
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center" 
+                Background="{DynamicResource NormalBlackBrush}"
+                CornerRadius="7"  Visibility="Collapsed"
+                SnapsToDevicePixels="True"
+                UseLayoutRounding="True">
+            <TextBlock x:Name="KeyDownText" 
+                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                       FontSize="22" Foreground="{DynamicResource NormalWhiteBrush}" />
+        </Border>
     </Grid>
 </Window>

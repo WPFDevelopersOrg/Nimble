@@ -1,4 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:PresentationOptions="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options" 
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Color x:Key="BlackColor">#FFFFFFFF</Color> 
     <Color x:Key="WhiteColor">#FF252525</Color>
@@ -6,6 +7,6 @@
     <Color x:Key="GrayHover">#FFAAAAAA</Color>-->
 
 
-    <SolidColorBrush x:Key="NormalWhiteBrush" Color="{StaticResource WhiteColor}"  />
-    <SolidColorBrush x:Key="NormalBlackBrush" Color="{StaticResource BlackColor}" />
+    <SolidColorBrush x:Key="NormalWhiteBrush" Color="{StaticResource WhiteColor}" PresentationOptions:Freeze="True"/>
+    <SolidColorBrush x:Key="NormalBlackBrush" Color="{StaticResource BlackColor}" PresentationOptions:Freeze="True"/>
 </ResourceDictionary>

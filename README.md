@@ -27,8 +27,13 @@
 <img src="/Images/GIFfree.gif"/>
 <img src="/Images/free1.png"/>
 
+#### 搜索定位功能（首字母）
+
+<img src="/Images/KeyBoardEntry.png"/>
+
 #### 启动选择 __嵌入|悬浮__ 
 
+<img src="/Images/desktop.gif"/>
 <img src="/Images/select.png"/>
 
 #### 是否边缘隐藏 

@@ -228,7 +228,7 @@ namespace SoftWareHelper.ViewModels
         /// </summary>
         public ICommand GithubCommand => new RelayCommand(obj =>
         {
-            Process.Start("https://github.com/yanjinhuagood/SoftWareHelper");
+            Process.Start("chrome.exe", "https://github.com/yanjinhuagood/SoftWareHelper");
         });
 
         /// <summary>

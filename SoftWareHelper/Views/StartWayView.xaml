@@ -11,7 +11,7 @@
         SnapsToDevicePixels="True" WindowStyle="None" Background="Transparent"
         Title="启动方式" Height="240" Width="400" WindowStartupLocation="CenterScreen">
     <shell:WindowChrome.WindowChrome>
-        <shell:WindowChrome GlassFrameThickness="-1"/>
+        <shell:WindowChrome GlassFrameThickness="-1" CaptionHeight="{Binding ElementName=StartWayWindow,Path=ActualHeight}"/>
     </shell:WindowChrome.WindowChrome>
     <Grid>
         <Rectangle Margin="10" RadiusX="2" RadiusY="2" Stroke="{DynamicResource NormalWhiteBrush}"
@@ -24,7 +24,7 @@
             <TextBlock Grid.Row="0" Text="启动方式" Foreground="{DynamicResource NormalWhiteBrush}" FontSize="14" Padding="10"/>
             <UniformGrid Grid.Row="1" Columns="2">
                 <StackPanel>
-                    <Rectangle  Height="140" Width="160">
+                    <Rectangle  Height="140" Width="160" shell:WindowChrome.IsHitTestVisibleInChrome="True">
                         <Rectangle.Fill>
                             <ImageBrush ImageSource="/SoftWareHelper;component/Images/embed.png" 
                                         Stretch="Uniform"/>
@@ -43,7 +43,7 @@
                     <Button Content="嵌入桌面" Style="{DynamicResource CairoButtonStyle}" Click="BtnEnterThe_Click" Tag="EmbedDeasktopView"/>
                 </StackPanel>
                 <StackPanel>
-                    <Rectangle  Height="140" Width="160">
+                    <Rectangle  Height="140" Width="160" shell:WindowChrome.IsHitTestVisibleInChrome="True">
                         <Rectangle.Fill>
                             <ImageBrush ImageSource="/SoftWareHelper;component/Images/topmost.png" 
                                         Stretch="Uniform"/>

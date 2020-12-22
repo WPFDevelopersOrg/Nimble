@@ -8,6 +8,7 @@ namespace SoftWareHelper.Models
     public class ApplicationModel
     {
         public string ID { get; set; }
+        public string Group { get; set; }
         /// <summary>
         /// 软件名称
         /// </summary>
