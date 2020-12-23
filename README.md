@@ -27,7 +27,7 @@
 <img src="/Images/GIFfree.gif"/>
 <img src="/Images/free1.png"/>
 
-#### 搜索定位功能（首字母）
+#### 搜索定位功能（应用首字的首字母）
 
 <img src="/Images/KeyBoardEntry.png"/>
 
