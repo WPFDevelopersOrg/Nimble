@@ -40,18 +40,23 @@ namespace SoftWareHelper.Views
             this.Closing += EmbedDeasktopView_Closing;
             this.KeyDown += EmbedDeasktopView_KeyDown;
             this.KeyUp += EmbedDeasktopView_KeyUp;
-            this.MouseEnter += EmbedDeasktopView_MouseEnter;
+            this.MouseEnter += (s, e) => 
+            {
+                Show();
+                Activate();
+                Focus();
+                //InputMethod.SetPreferredImeConversionMode(this, ImeConversionModeValues.Alphanumeric);
+                //InputMethod.SetPreferredImeState(this, InputMethodState.On);
+            };
+            
         }
-
-        private void EmbedDeasktopView_MouseEnter(object sender, MouseEventArgs e)
-        {
-            if (this.IsFocused)
-                return;
-            //InputLanguageManager.SetInputLanguage(this.AppSwitchList, CultureInfo.CreateSpecificCulture("en-US"));
-            InputMethod.SetPreferredImeConversionMode(this.AppSwitchList, ImeConversionModeValues.Alphanumeric);
-            this.AppSwitchList.Focus();
-        }
-
+        //void IMEUS()
+        //{
+        //    StringBuilder name = new StringBuilder(9);
+        //    Win32Api.GetKeyboardLayoutName(name);
+        //    String KeyBoardLayout = name.ToString();
+        //    Win32Api.PostMessage(Win32Api.GetForegroundWindow(), Win32Api.WM_INPUTLANGCHANGEREQUEST, IntPtr.Zero, Win32Api.LoadKeyboardLayout("0000409", Win32Api.KLF_ACTIVATE));
+        //}
         private void EmbedDeasktopView_KeyUp(object sender, KeyEventArgs e)
         {
             //ObjectAnimationUsingKeyFrames animate = new ObjectAnimationUsingKeyFrames();

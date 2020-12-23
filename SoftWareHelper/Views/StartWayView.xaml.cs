@@ -23,7 +23,6 @@ namespace SoftWareHelper.Views
         {
             InitializeComponent();
         }
-
         private void BtnEnterThe_Click(object sender, RoutedEventArgs e)
         {
             var btn = sender as Button;

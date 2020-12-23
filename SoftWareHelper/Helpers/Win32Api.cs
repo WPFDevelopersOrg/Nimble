@@ -258,6 +258,8 @@ namespace SoftWareHelper.Helpers
 
             SHAppBarMessage((UInt32)AppBarMessages.Remove, ref abd);
         }
+
+        #region 键盘转译
         public enum MapType : uint
         {
             MAPVK_VK_TO_VSC = 0x0,
@@ -313,5 +315,22 @@ namespace SoftWareHelper.Helpers
             }
             return ch;
         }
+        #endregion
+
+        #region IME
+        [DllImport("user32.dll")]
+        public static extern long GetKeyboardLayoutName(
+         System.Text.StringBuilder pwszKLID);
+        [DllImport("user32.dll")]
+        public static extern bool PostMessage(IntPtr hhwnd, uint msg, IntPtr wparam, IntPtr lparam);
+        [DllImport("user32.dll")]
+        public static extern IntPtr LoadKeyboardLayout(string pwszKLID, uint Flags);
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetForegroundWindow();
+
+        public const uint WM_INPUTLANGCHANGEREQUEST = 0x0050;
+        public const uint KLF_ACTIVATE = 1; 
+        #endregion
+
     }
 }
