@@ -97,7 +97,7 @@ namespace SoftWareHelper.Views
         private void OnHookKeyDown(object sender, HookEventArgs e)
         {
             SetKeyDown(e.Key);
-            if (keys.Count > 1 && IsKeyDown(Key.LeftAlt))
+            if (keys.Count == 2 && IsKeyDown(Key.LeftAlt))
             {
                 var _key = Win32Api.GetCharFromKey(e.Key).ToString().ToUpper();
                 if (string.IsNullOrWhiteSpace(_key))

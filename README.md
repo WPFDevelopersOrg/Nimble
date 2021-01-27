@@ -31,7 +31,7 @@
 
 <img src="/Images/jsonconfig.png"/>
 
-#### 搜索定位功能 <kbd>Alt</kbd>+<kbd>（应用首字的首字母）</kbd>（应用首字的首字母）
+#### 搜索定位功能 <kbd>LeftAlt</kbd>+<kbd>（应用首字的首字母）</kbd>（应用首字的首字母）
 
 <img src="/Images/KeyBoardEntry.png"/>
 
