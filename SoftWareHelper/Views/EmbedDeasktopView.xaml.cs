@@ -23,6 +23,8 @@ namespace SoftWareHelper.Views
     /// </summary>
     public partial class EmbedDeasktopView : Window
     {
+        private KeyboardHook _hook;
+        private List<Key> keys = new List<Key>();
         public EmbedDeasktopView()
         {
             InitializeComponent();
@@ -38,25 +40,116 @@ namespace SoftWareHelper.Views
             //}
             this.Loaded += EmbedDeasktopView_Loaded;
             this.Closing += EmbedDeasktopView_Closing;
-            this.KeyDown += EmbedDeasktopView_KeyDown;
-            this.KeyUp += EmbedDeasktopView_KeyUp;
-            this.MouseEnter += (s, e) => 
+            _hook = new KeyboardHook();
+            _hook.KeyDown += new KeyboardHook.HookEventHandler(OnHookKeyDown);
+            _hook.KeyUp += new KeyboardHook.HookEventHandler(OnHookKeyUp);
+            //this.KeyDown += EmbedDeasktopView_KeyDown;
+            //this.KeyUp += EmbedDeasktopView_KeyUp;
+            //InputMethod.SetIsInputMethodEnabled(input, false);
+            //this.MouseEnter += (s, e) => 
+            //{
+            //    //FocusManager.SetIsFocusScope(this.AppSwitchList, true);
+            //    //if (!IsActive)
+            //    //{
+            //    //WindowInteropHelper wndHelper = new WindowInteropHelper(this);
+            //    //Win32Api.SetFocus(wndHelper.Handle);
+            //    //Show();
+            //    //Activate();
+            //    //Focus();
+            //    //InputMethod.SetPreferredImeConversionMode(this, ImeConversionModeValues.Alphanumeric);
+            //    //InputMethod.SetPreferredImeState(this, InputMethodState.On);
+            //    //}
+            //    //this.Focusable = true;
+            //    //IInputElement element = Keyboard.Focus(this);
+            //    //input.Focus();
+
+            //    #region 鼠标移入点击
+            //    //Point pos = new Point(0, 0);
+            //    //pos = this.PointToScreen(pos);
+            //    //Win32Api.mouse_event(Win32Api.MOUSEEVENTF_LEFTDOWN, (int)pos.X, (int)pos.Y, 0, 0);
+            //    //System.Threading.Thread.Sleep(1000);
+            //    //Win32Api.mouse_event(Win32Api.MOUSEEVENTF_LEFTUP, (int)pos.X, (int)pos.Y, 0, 0);
+            //    //IMEUS(); 
+            //    #endregion
+            //};
+            //this.MouseLeave += (s, e) =>
+            //{
+            //    #region 当鼠标移开窗体 切换为中文
+            //    //var cultureType = "zh-CN";
+            //    //var installedInputLanguages = System.Windows.Forms.InputLanguage.InstalledInputLanguages;
+
+            //    //if (installedInputLanguages.Cast<System.Windows.Forms.InputLanguage>().Any(i => i.Culture.Name == cultureType))
+            //    //{
+            //    //    System.Windows.Forms.InputLanguage.CurrentInputLanguage = System.Windows.Forms.InputLanguage.FromCulture(System.Globalization.CultureInfo.GetCultureInfo(cultureType));
+            //    //} 
+            //    #endregion
+            //    Keyboard.ClearFocus();
+            //};
+        }
+
+        private void OnHookKeyUp(object sender, HookEventArgs e)
+        {
+            SetKeyUp(e.Key);
+            Thread.Sleep(300);
+            this.KeyDownPanel.Visibility = Visibility.Collapsed;
+        }
+
+        private void OnHookKeyDown(object sender, HookEventArgs e)
+        {
+            SetKeyDown(e.Key);
+            if (keys.Count > 1 && IsKeyDown(Key.LeftAlt))
             {
-                Show();
-                Activate();
-                Focus();
-                //InputMethod.SetPreferredImeConversionMode(this, ImeConversionModeValues.Alphanumeric);
-                //InputMethod.SetPreferredImeState(this, InputMethodState.On);
-            };
+                var _key = Win32Api.GetCharFromKey(e.Key).ToString().ToUpper();
+                if (string.IsNullOrWhiteSpace(_key))
+                    return;
+                double offset = 0.0;
+                ScrollViewer scrollViewer = ControlsHelper.FindChild<ScrollViewer>(this.AppSwitchList, "PART_ScrollViewer");
+                var elementList = ControlsHelper.FindVisualChildren<Border>(this.AppSwitchList).ToList();
+                bool isFind = false;
+                for (int i = 0; i < elementList.Count; i++)
+                {
+                    var element = elementList[i];
+                    if (isFind) break;
+                    if (element.Tag != null)
+                    {
+                        offset += element.ActualHeight;
+                        if (element.Tag.ToString().Equals(_key))
+                        {
+                            offset -= element.ActualHeight;
+                            scrollViewer.ScrollToVerticalOffset(offset);
+                            isFind = true;
+                        }
+                    }
+
+                }
+                this.KeyDownText.Text = _key;
+                this.KeyDownPanel.Visibility = Visibility.Visible;
+            }
             
         }
-        //void IMEUS()
-        //{
-        //    StringBuilder name = new StringBuilder(9);
-        //    Win32Api.GetKeyboardLayoutName(name);
-        //    String KeyBoardLayout = name.ToString();
-        //    Win32Api.PostMessage(Win32Api.GetForegroundWindow(), Win32Api.WM_INPUTLANGCHANGEREQUEST, IntPtr.Zero, Win32Api.LoadKeyboardLayout("0000409", Win32Api.KLF_ACTIVATE));
-        //}
+        private bool IsKeyDown(Key key)
+        {
+            return keys.Contains(key);
+        }
+
+        private void SetKeyDown(Key key)
+        {
+            if (!keys.Contains(key))
+                keys.Add(key);
+        }
+
+        private void SetKeyUp(Key key)
+        {
+            if (keys.Contains(key))
+                keys.Remove(key);
+        }
+        void IMEUS()
+        {
+            StringBuilder name = new StringBuilder(9);
+            Win32Api.GetKeyboardLayoutName(name);
+            String KeyBoardLayout = name.ToString();
+            Win32Api.PostMessage(Win32Api.GetForegroundWindow(), Win32Api.WM_INPUTLANGCHANGEREQUEST, IntPtr.Zero, Win32Api.LoadKeyboardLayout("0000409", Win32Api.KLF_ACTIVATE));
+        }
         private void EmbedDeasktopView_KeyUp(object sender, KeyEventArgs e)
         {
             //ObjectAnimationUsingKeyFrames animate = new ObjectAnimationUsingKeyFrames();
@@ -90,31 +183,7 @@ namespace SoftWareHelper.Views
 
         private void EmbedDeasktopView_KeyDown(object sender, KeyEventArgs e)
         {
-            var _key = Win32Api.GetCharFromKey(e.Key).ToString().ToUpper();
-            if (string.IsNullOrWhiteSpace(_key))
-                return;
-            double offset = 0.0;
-            ScrollViewer scrollViewer = ControlsHelper.FindChild<ScrollViewer>(this.AppSwitchList, "PART_ScrollViewer");
-            var elementList = ControlsHelper.FindVisualChildren<Border>(this.AppSwitchList).ToList();
-            bool isFind = false;
-            for (int i = 0; i < elementList.Count; i++)
-            {
-                var element = elementList[i];
-                if (isFind) break;
-                if (element.Tag != null)
-                {
-                    offset += element.ActualHeight;
-                    if (element.Tag.ToString().Equals(_key))
-                    {
-                        offset -= element.ActualHeight;
-                        scrollViewer.ScrollToVerticalOffset(offset);
-                        isFind = true;
-                    }
-                }
-
-            }
-            this.KeyDownText.Text = _key;
-            this.KeyDownPanel.Visibility = Visibility.Visible;
+            
         }
 
         private void EmbedDeasktopView_Loaded(object sender, RoutedEventArgs e)
@@ -145,6 +214,7 @@ namespace SoftWareHelper.Views
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+            myNotifyIcon.Dispose();
             System.Environment.Exit(0);
         }
     }

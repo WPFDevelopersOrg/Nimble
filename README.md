@@ -27,7 +27,11 @@
 <img src="/Images/GIFfree.gif"/>
 <img src="/Images/free1.png"/>
 
-#### 搜索定位功能（应用首字的首字母）
+#### 可以自行定义 C:\Users\用户\AppData\Local\SoftWareHelper\application.json 路径修改
+
+<img src="/Images/jsonconfig.png"/>
+
+#### 搜索定位功能 <kbd>Alt</kbd>+<kbd>（应用首字的首字母）</kbd>（应用首字的首字母）
 
 <img src="/Images/KeyBoardEntry.png"/>
 

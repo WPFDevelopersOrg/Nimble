@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using Newtonsoft.Json;
 using SoftWareHelper.Models;
 using System;
 using System.Collections.Generic;
@@ -513,13 +514,80 @@ namespace SoftWareHelper.Helpers
         public static void Init()
         {
             Common.TemporaryFile();
-            Common.ApplicationListCache = Common.AllApplictionInstalled();
-            Common.GetDesktopAppliction(Common.ApplicationListCache);
-            Common.ApplicationListCache = new ObservableCollection<ApplicationModel>(Common.ApplicationListCache.OrderBy(x => x.Group));
-            string json = JsonHelper.Serialize(Common.ApplicationListCache);
-            FileHelper.WriteFile(json, Common.temporaryApplicationJson);
+            if(!ConfigHelper.CustomJson)
+            {
+                Common.ApplicationListCache = Common.AllApplictionInstalled();
+                Common.GetDesktopAppliction(Common.ApplicationListCache);
+                Common.ApplicationListCache = new ObservableCollection<ApplicationModel>(Common.ApplicationListCache.OrderBy(x => x.Group));
+                string json = JsonHelper.Serialize(Common.ApplicationListCache);
+                FileHelper.WriteFile(ConvertJsonString(json), Common.temporaryApplicationJson);
+            }
+            else
+            {
+                var json = FileHelper.ReadFile(temporaryApplicationJson);
+                var applications = JsonHelper.Deserialize<ObservableCollection<ApplicationModel>>(json);
+                if (applications == null && applications.Count == 0) return;
+                var iconNull = applications.Where(z => string.IsNullOrWhiteSpace(z.IconPath));
+                if (iconNull != null && iconNull.Count() > 0)
+                {
+                    foreach (var item in iconNull)
+                    {
+                        if (string.IsNullOrWhiteSpace(item.ExePath) && string.IsNullOrWhiteSpace(item.Name)) return;
+                        var iconPath = System.IO.Path.Combine(temporaryIconFile, item.Name);
+                        iconPath = $"{iconPath}.png";
+                        if (applications.Any(z => z.Name == item.Name))
+                        {
+                            item.IconPath = iconPath;
+                            string first = item.Name.Substring(0, 1);
+                            if (!IsChinese(first))
+                            {
+                                if (char.IsUpper(first.ToCharArray()[0]))
+                                    item.Group = first;
+                                item.Group = item.Name.Substring(0, 1).ToUpper();
+                            }
+                            else
+                            {
+                                item.Group = GetCharSpellCode(first);
+                            }
+                        }
+                        if (File.Exists(iconPath))
+                            break;
+                        SaveImage((BitmapSource)GetIcon(item.ExePath), iconPath);
+                    }
+                }
+                Common.ApplicationListCache = new ObservableCollection<ApplicationModel>(applications.OrderBy(x => x.Group));
+                var json1 = JsonHelper.Serialize(Common.ApplicationListCache);
+                FileHelper.WriteFile(ConvertJsonString(json1), Common.temporaryApplicationJson);
+            }
         }
 
+
+        #region 格式化json字符串
+        static string ConvertJsonString(string str)
+        {
+            //格式化json字符串
+            JsonSerializer serializer = new JsonSerializer();
+            TextReader tr = new StringReader(str);
+            JsonTextReader jtr = new JsonTextReader(tr);
+            object obj = serializer.Deserialize(jtr);
+            if (obj != null)
+            {
+                StringWriter textWriter = new StringWriter();
+                JsonTextWriter jsonWriter = new JsonTextWriter(textWriter)
+                {
+                    Formatting = Formatting.Indented,
+                    Indentation = 4,
+                    IndentChar = ' '
+                };
+                serializer.Serialize(jsonWriter, obj);
+                return textWriter.ToString();
+            }
+            else
+            {
+                return str;
+            }
+        } 
+        #endregion
 
         #region 判断首字母是否为中文,如果为中文 首字母转为英语
         static bool IsChinese(string text)

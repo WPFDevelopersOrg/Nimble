@@ -10,6 +10,7 @@ namespace SoftWareHelper.Helpers
     {
         public static bool EdgeHide { get; set; }
         public static double Opacity { get; set; }
+        public static bool CustomJson { get;private set; }
         public static void GetConfigHelper()
         {
             //Opacity = GetOpacity();
@@ -31,6 +32,15 @@ namespace SoftWareHelper.Helpers
             else
             {
                 EdgeHide = Convert.ToBoolean(string.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["EdgeHide"]) ? "false" : ConfigurationManager.AppSettings["EdgeHide"]);
+            }
+            bool customJson;
+            if (!bool.TryParse(string.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["CustomJson"]) ? "false" : ConfigurationManager.AppSettings["CustomJson"], out customJson))
+            {
+                CustomJson = false;
+            }
+            else
+            {
+                CustomJson = Convert.ToBoolean(string.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["CustomJson"]) ? "false" : ConfigurationManager.AppSettings["CustomJson"]);
             }
         }
         double GetOpacity()
@@ -74,5 +84,6 @@ namespace SoftWareHelper.Helpers
             config.Save(ConfigurationSaveMode.Modified);
             ConfigurationManager.RefreshSection("appSettings");
         }
+
     }
 }

@@ -115,6 +115,7 @@ namespace SoftWareHelper
         void appShortcutToStartup()
         {
             string startupDir = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
+            if (!Directory.Exists(startupDir)) return;
             var path = startupDir + "\\" + "SoftWareHelperStart" + ".url";
             if (!System.IO.File.Exists(path))
             {
