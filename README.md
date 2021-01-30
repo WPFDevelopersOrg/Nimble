@@ -1,5 +1,5 @@
-## SoftWareHelper
-## [gitee](https://gitee.com/yanjinhua/SoftWareHelper)
+## SoftwareHelper
+## [gitee](https://gitee.com/yanjinhua/SoftwareHelper)
 
 ## [QQ群交流](https://jq.qq.com/?_wv=1027&k=uN3RMw7N)
 
@@ -13,7 +13,7 @@
  
 ## __效果图__ 
 
-## **下载解压后体验 [releases](https://github.com/yanjinhuagood/SoftWareHelper/releases/)**   
+## **下载解压后体验 [releases](https://github.com/yanjinhuagood/SoftwareHelper/releases/)**   
 
 
 
@@ -27,7 +27,7 @@
 <img src="/Images/GIFfree.gif"/>
 <img src="/Images/free1.png"/>
 
-#### 可以自行定义 C:\Users\用户\AppData\Local\SoftWareHelper\application.json 路径修改
+#### 可以自行定义 C:\Users\用户\AppData\Local\SoftwareHelper\application.json 路径修改
 
 <img src="/Images/jsonconfig.png"/>
 
