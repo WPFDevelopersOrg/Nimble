@@ -1,4 +1,4 @@
-﻿using SoftWareHelper.Helpers;
+﻿using SoftwareHelper.Helpers;
 using System;
 using System.Configuration;
 using System.Linq;
@@ -10,7 +10,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 
-namespace SoftWareHelper.Views
+namespace SoftwareHelper.Views
 {
     /// <summary>
     /// MainView.xaml 的交互逻辑

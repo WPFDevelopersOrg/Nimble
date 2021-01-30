@@ -1,4 +1,4 @@
-﻿using SoftWareHelper.Helpers;
+﻿using SoftwareHelper.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -16,7 +16,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace SoftWareHelper.Views
+namespace SoftwareHelper.Views
 {
     /// <summary>
     /// EmbedDeasktopView.xaml 的交互逻辑

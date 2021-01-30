@@ -1,6 +1,6 @@
 ﻿using Microsoft.Windows.Shell;
-using SoftWareHelper.Helpers;
-using SoftWareHelper.Models;
+using SoftwareHelper.Helpers;
+using SoftwareHelper.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,7 +11,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Input;
 
-namespace SoftWareHelper.ViewModels
+namespace SoftwareHelper.ViewModels
 {
     public class MainVM : ViewModelBase
     {
@@ -228,7 +228,7 @@ namespace SoftWareHelper.ViewModels
         /// </summary>
         public ICommand GithubCommand => new RelayCommand(obj =>
         {
-            Process.Start("chrome.exe", "https://github.com/yanjinhuagood/SoftWareHelper");
+            Process.Start("chrome.exe", "https://github.com/yanjinhuagood/SoftwareHelper");
         });
 
         /// <summary>

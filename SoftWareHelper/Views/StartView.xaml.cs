@@ -1,5 +1,5 @@
-﻿using SoftWareHelper.Helpers;
-using SoftWareHelper.Models;
+﻿using SoftwareHelper.Helpers;
+using SoftwareHelper.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -19,7 +19,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
-namespace SoftWareHelper.Views
+namespace SoftwareHelper.Views
 {
     /// <summary>
     /// StartView.xaml 的交互逻辑

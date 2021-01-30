@@ -5,7 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace SoftWareHelper.Helpers
+namespace SoftwareHelper.Helpers
 {
     public class PrimaryScreen
     {

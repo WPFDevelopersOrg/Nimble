@@ -10,7 +10,7 @@ using System.Windows.Input;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 
-namespace SoftWareHelper.CustomControls
+namespace SoftwareHelper.CustomControls
 {
     public class SwitchMenu : Selector
     {

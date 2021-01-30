@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
 
-namespace SoftWareHelper.Helpers
+namespace SoftwareHelper.Helpers
 {
     public class KeyboardHook
     {

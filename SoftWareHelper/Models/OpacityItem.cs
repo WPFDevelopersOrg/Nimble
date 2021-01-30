@@ -1,6 +1,6 @@
-﻿using SoftWareHelper.ViewModels;
+﻿using SoftwareHelper.ViewModels;
 
-namespace SoftWareHelper.Models
+namespace SoftwareHelper.Models
 {
     public class OpacityItem: ViewModelBase
     {

@@ -1,10 +1,10 @@
-﻿using SoftWareHelper.Helpers.Native;
+﻿using SoftwareHelper.Helpers.Native;
 using System;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 
-namespace SoftWareHelper.Helpers
+namespace SoftwareHelper.Helpers
 {
     public class WindowBlur
     {

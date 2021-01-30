@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Configuration;
 
-namespace SoftWareHelper.Helpers
+namespace SoftwareHelper.Helpers
 {
     /// <summary>
     /// Config帮助类

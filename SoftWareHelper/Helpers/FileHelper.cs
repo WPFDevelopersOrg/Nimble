@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace SoftWareHelper.Helpers
+namespace SoftwareHelper.Helpers
 {
     public class FileHelper
     {

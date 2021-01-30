@@ -1,5 +1,5 @@
-﻿using SoftWareHelper.Helpers;
-using SoftWareHelper.Views;
+﻿using SoftwareHelper.Helpers;
+using SoftwareHelper.Views;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -11,7 +11,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
 
-namespace SoftWareHelper
+namespace SoftwareHelper
 {
     /// <summary>
     /// App.xaml 的交互逻辑
@@ -116,7 +116,7 @@ namespace SoftWareHelper
         {
             string startupDir = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
             if (!Directory.Exists(startupDir)) return;
-            var path = startupDir + "\\" + "SoftWareHelperStart" + ".url";
+            var path = startupDir + "\\" + "SoftwareHelperStart" + ".url";
             if (!System.IO.File.Exists(path))
             {
                 using (StreamWriter writer = new StreamWriter(path))

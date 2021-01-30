@@ -3,7 +3,7 @@ using System.Configuration;
 using System.Linq;
 using System.Windows;
 
-namespace SoftWareHelper.Helpers
+namespace SoftwareHelper.Helpers
 {
     /// <summary>
     /// Themes 帮助类
@@ -22,7 +22,7 @@ namespace SoftWareHelper.Helpers
                 var existingResourceDictionary = Application.Current.Resources.MergedDictionaries
                                                     .Where(rd => rd.Source != null)
                                                     .SingleOrDefault(rd => rd.Source.OriginalString.Contains("Light") || rd.Source.OriginalString.Contains("Dark"));
-                var source = $"pack://application:,,,/SoftWareHelper;component/Themes/{(isDark ? "Dark" : "Light")}.xaml";
+                var source = $"pack://application:,,,/SoftwareHelper;component/Themes/{(isDark ? "Dark" : "Light")}.xaml";
                 var newResourceDictionary = new ResourceDictionary() { Source = new Uri(source) };
                 App.Current.Resources.MergedDictionaries.Remove(existingResourceDictionary);
                 App.Current.Resources.MergedDictionaries.Add(newResourceDictionary);
