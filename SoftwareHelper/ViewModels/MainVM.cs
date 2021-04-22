@@ -1,6 +1,9 @@
-﻿using Microsoft.Windows.Shell;
+﻿using Hardcodet.Wpf.TaskbarNotification;
+using Microsoft.Windows.Shell;
 using SoftwareHelper.Helpers;
+using SoftwareHelper.Helpers.MouseHelper;
 using SoftwareHelper.Models;
+using SoftwareHelper.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,6 +13,8 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace SoftwareHelper.ViewModels
 {
@@ -18,6 +23,12 @@ namespace SoftwareHelper.ViewModels
 
         #region 字段
         private double currentOpacity;
+        private readonly DispatcherTimer _timer = new DispatcherTimer();
+        private const int MousePullInfoIntervalInMs = 10;
+        private MouseHook mouseHook;
+        private WindowColor colorView;
+        private Rect desktopWorkingArea;
+        private TaskbarIcon taskbar;
         #endregion
 
         #region 属性
@@ -106,7 +117,12 @@ namespace SoftwareHelper.ViewModels
         #endregion
 
         #region 构造
-
+        public MainVM()
+        {
+            _timer.Interval = TimeSpan.FromMilliseconds(MousePullInfoIntervalInMs);
+            _timer.Tick += Timer_Tick;
+            mouseHook = new MouseHook();
+        }
         #endregion
 
         #region 命令
@@ -115,6 +131,8 @@ namespace SoftwareHelper.ViewModels
         /// </summary>    
         public ICommand ViewLoaded => new RelayCommand(obj =>
         {
+            if (obj != null && obj is TaskbarIcon taskbarIcon)
+                taskbar = taskbarIcon;
             #region Themes
             OpacityItemList = new ObservableCollection<OpacityItem>()
             {
@@ -149,7 +167,7 @@ namespace SoftwareHelper.ViewModels
             {
                 ApplicationList = Common.ApplicationListCache;
             }
-
+            mouseHook.MouseDown += MouseHook_MouseDown;
             //if (!File.Exists(Common.temporaryApplicationJson))
             //{
             //    ApplicationList = Common.AllApplictionInstalled();
@@ -162,7 +180,7 @@ namespace SoftwareHelper.ViewModels
             //    ApplicationList = JsonHelper.Deserialize<ObservableCollection<ApplicationModel>>(json);
             //}
         });
-       
+
         private void Item_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             var model = sender as OpacityItem;
@@ -212,6 +230,7 @@ namespace SoftwareHelper.ViewModels
         {
             //Environment.Exit(-1);
             //Application.Current.Shutdown(0);
+            //taskbar.Dispose();
             System.Environment.Exit(0);
         });
         /// <summary>
@@ -247,11 +266,65 @@ namespace SoftwareHelper.ViewModels
             ApplicationModel model = obj as ApplicationModel;
             ApplicationList.Remove(model);
         });
-        
+
+        /// <summary>
+        ///ColorCommand 
+        /// </summary>
+        public ICommand ColorCommand => new RelayCommand(obj =>
+        {
+            desktopWorkingArea = System.Windows.SystemParameters.WorkArea;
+
+            colorView = new WindowColor();
+            colorView.Show();
+            //Mouse.OverrideCursor = Cursors.Pen;
+            if (!_timer.IsEnabled)
+            {
+                _timer.Start();
+                mouseHook.Start();
+            }
+        });
         #endregion
 
         #region 方法
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            MousePoint.POINT point = new MousePoint.POINT();
+            var isMouseDown = MousePoint.GetCursorPos(out point);
+            var color = Win32Api.GetPixelColor(point.X, point.Y);
 
+            if (point.X >= desktopWorkingArea.Width)
+                colorView.Left = point.X - 40;
+            else if (point.X <= 10)
+                colorView.Left = point.X;
+            else
+                colorView.Left = point.X;
+
+            if (point.Y >= (desktopWorkingArea.Height - 40))
+                colorView.Top = point.Y - 40;
+            else
+                colorView.Top = point.Y;
+
+            colorView.MouseColor = new SolidColorBrush(color);
+        }
+
+        private void MouseHook_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            Clipboard.SetText(colorView.MouseColor.ToString());
+            ShowBalloon("提示", $"已复制到剪切板  {colorView.MouseColor.ToString()}  SoftwareHelper");
+            if (_timer.IsEnabled)
+            {
+                _timer.Stop();
+                mouseHook.Stop();
+                if (colorView != null)
+                {
+                    colorView.Close();
+                }
+            }
+        }
+        private void ShowBalloon(string title, string message)
+        {
+            if (taskbar != null) taskbar.ShowBalloonTip(title, message, BalloonIcon.None);
+        }
         #endregion
 
     }

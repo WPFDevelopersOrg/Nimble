@@ -121,6 +121,8 @@
     <Compile Include="Helpers\JsonHelper.cs" />
     <Compile Include="Helpers\KeyboardHook.cs" />
     <Compile Include="Helpers\Log.cs" />
+    <Compile Include="Helpers\MouseHelper\GlobalHook.cs" />
+    <Compile Include="Helpers\MouseHelper\MouseHook.cs" />
     <Compile Include="Helpers\PrimaryScreen.cs" />
     <Compile Include="Helpers\RelayCommand.cs" />
     <Compile Include="Helpers\ThemesHelper.cs" />
@@ -145,6 +147,9 @@
     </Compile>
     <Compile Include="Views\StartWayView.xaml.cs">
       <DependentUpon>StartWayView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WindowColor.xaml.cs">
+      <DependentUpon>WindowColor.xaml</DependentUpon>
     </Compile>
     <Page Include="Styles\ButtonsStyle.xaml">
       <SubType>Designer</SubType>
@@ -183,6 +188,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\StartWayView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\WindowColor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

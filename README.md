@@ -1,7 +1,9 @@
+
 ## SoftwareHelper
 ## [gitee](https://gitee.com/yanjinhua/SoftwareHelper)
 
-## [QQ群交流](https://jq.qq.com/?_wv=1027&k=uN3RMw7N)
+## <a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=B61RFy2vvpaKLEDxaW6NsDpPZA-eSyFh&jump_from=webapi"><img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" alt="WPF开发者" title="WPF开发者"></a>
+
 
 #### 此项目大家互相学习，互相进步。方便的话给一个<kbd>Star</kbd>，谢谢！
 
@@ -9,7 +11,8 @@
 
 ## Visual Studio 2019，dotNet Framework 4.0 SDK
  
- 
+## 微信公众号
+<img src="/Images/wxgzh.jpg"/> 
  
 ## __效果图__ 
 
@@ -26,6 +29,10 @@
 
 <img src="/Images/GIFfree.gif"/>
 <img src="/Images/free1.png"/>
+
+#### 颜色拾取
+
+<img src="/Images/GIFColor.gif"/>
 
 #### 可以自行定义 C:\Users\用户\AppData\Local\SoftwareHelper\application.json 路径修改
 
