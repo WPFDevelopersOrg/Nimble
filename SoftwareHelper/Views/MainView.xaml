@@ -21,7 +21,7 @@
     </shell:WindowChrome.WindowChrome>
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding ViewLoaded}"></i:InvokeCommandAction>
+            <i:InvokeCommandAction Command="{Binding ViewLoaded}" CommandParameter="{Binding ElementName=myNotifyIcon}"></i:InvokeCommandAction>
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <FrameworkElement.DataContext>
@@ -449,6 +449,7 @@
                         <MenuItem Header="40%" IsCheckable="True"/>
                         <MenuItem Header="20%" IsCheckable="True"/>-->
                     </MenuItem>
+                    <MenuItem Header="颜色拾取" Command="{Binding ColorCommand}"/>
                     <MenuItem Header="{Binding IsDark,Converter={StaticResource darkAndLightConvert}}" Command="{Binding ThemesCommand}"/>
                     <MenuItem Header="关闭" Command="{Binding ExitCommand}"/>
                 </ContextMenu>

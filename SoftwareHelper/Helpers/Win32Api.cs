@@ -357,5 +357,48 @@ namespace SoftwareHelper.Helpers
         public static extern IntPtr GetActiveWindow();
         [DllImport("user32.dll")]
         public static extern int GetFocus();
+
+
+        #region 颜色
+        [DllImport("user32.dll")]
+        static extern IntPtr GetDC(IntPtr hwnd);
+
+        [DllImport("user32.dll")]
+        static extern Int32 ReleaseDC(IntPtr hwnd, IntPtr hdc);
+
+        [DllImport("gdi32.dll")]
+        static extern uint GetPixel(IntPtr hdc, int nXPos, int nYPos);
+
+        static public System.Windows.Media.Color GetPixelColor(int x, int y)
+        {
+            IntPtr hdc = GetDC(IntPtr.Zero);
+            uint pixel = GetPixel(hdc, x, y);
+            ReleaseDC(IntPtr.Zero, hdc);
+            System.Windows.Media.Color color = System.Windows.Media.Color.FromRgb(
+                (byte)(pixel & 0x000000FF),
+                (byte)((pixel & 0x0000FF00) >> 8),
+                (byte)((pixel & 0x00FF0000) >> 16));
+            return color;
+        }
+
+        #endregion
+    }
+    public class MousePoint
+    {
+        [StructLayout(LayoutKind.Sequential)]
+        public struct POINT
+        {
+            public int X;
+            public int Y;
+            public POINT(int x, int y)
+            {
+                this.X = x;
+                this.Y = y;
+            }
+        }
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern bool GetCursorPos(out POINT pt);
+
     }
 }

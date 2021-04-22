@@ -46,5 +46,10 @@ namespace SoftwareHelper.Views
             Thread.Sleep(100);
             this.Close();
         }
+
+        private void ExitClick(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
 }
