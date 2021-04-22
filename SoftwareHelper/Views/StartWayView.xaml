@@ -22,6 +22,30 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" Text="启动方式" Foreground="{DynamicResource NormalWhiteBrush}" FontSize="14" Padding="10"/>
+            <Button Grid.Row="0" HorizontalAlignment="Right" Width="30" 
+                    shell:WindowChrome.IsHitTestVisibleInChrome="True" Cursor="Hand"
+                    Click="ExitClick">
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border CornerRadius="4" Background="Transparent">
+                            <Path x:Name="PathIcon" Width="10" Height="10" Stretch="Fill"
+                                  Fill="{StaticResource NormalWhiteBrush}"
+                                  Data="{DynamicResource  ClosePath}"/>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="PathIcon" Property="Fill" Value="Red" />
+                            </Trigger>
+
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="PathIcon" Property="Margin" Value="1,1,0,0" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            
             <UniformGrid Grid.Row="1" Columns="2">
                 <StackPanel>
                     <Rectangle  Height="140" Width="160" shell:WindowChrome.IsHitTestVisibleInChrome="True">

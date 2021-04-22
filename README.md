@@ -11,7 +11,8 @@
 
 ## Visual Studio 2019，dotNet Framework 4.0 SDK
  
- 
+## 微信公众号
+<img src="/Images/wxgzh.jpg"/> 
  
 ## __效果图__ 
 
@@ -28,6 +29,10 @@
 
 <img src="/Images/GIFfree.gif"/>
 <img src="/Images/free1.png"/>
+
+#### 颜色拾取
+
+<img src="/Images/GIFColor.gif"/>
 
 #### 可以自行定义 C:\Users\用户\AppData\Local\SoftwareHelper\application.json 路径修改
 
