@@ -22,7 +22,7 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" Text="启动方式" Foreground="{DynamicResource NormalWhiteBrush}" FontSize="14" Padding="10"/>
-            <Button Grid.Row="0" HorizontalAlignment="Right" Width="30" 
+            <!--<Button Grid.Row="0" HorizontalAlignment="Right" Width="30" 
                     shell:WindowChrome.IsHitTestVisibleInChrome="True" Cursor="Hand"
                     Click="ExitClick">
                 <Button.Template>
@@ -44,7 +44,7 @@
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Button.Template>
-            </Button>
+            </Button>-->
             
             <UniformGrid Grid.Row="1" Columns="2">
                 <StackPanel>
@@ -64,7 +64,7 @@
                             </ToolTip>
                         </Rectangle.ToolTip>
                     </Rectangle>
-                    <Button Content="嵌入桌面" Style="{DynamicResource CairoButtonStyle}" Click="BtnEnterThe_Click" Tag="EmbedDeasktopView"/>
+                    <Button Content="嵌入桌面" Style="{DynamicResource CairoButtonStyle}" Click="BtnEnterThe_Click" Tag="1"/>
                 </StackPanel>
                 <StackPanel>
                     <Rectangle  Height="140" Width="160" shell:WindowChrome.IsHitTestVisibleInChrome="True">
@@ -83,7 +83,7 @@
                             </ToolTip>
                         </Rectangle.ToolTip>
                     </Rectangle>
-                    <Button Content="悬浮桌面" Style="{DynamicResource CairoButtonStyle}" Click="BtnEnterThe_Click" Tag="MainView"/>
+                    <Button Content="悬浮桌面" Style="{DynamicResource CairoButtonStyle}" Click="BtnEnterThe_Click" Tag="2"/>
                 </StackPanel>
             </UniformGrid>
         </Grid>

@@ -54,28 +54,24 @@ namespace SoftwareHelper.Views
                 Common.Init();
                 Thread.Sleep(1000);
             };
-
             bw.RunWorkerCompleted += (s, y) => 
             {
                 tbMsg.Text = "开始体验";
                 timer.Stop();
-                //MainView mView = new MainView();
                 var mView = new StartWayView();
                 mView.Topmost = true;
                 mView.Show();
-
-                var closeAnimation = new DoubleAnimation 
+                var closeAnimation = new DoubleAnimation
                 {
                     From = this.Width,
                     To = 0,
                     Duration = new Duration(TimeSpan.FromSeconds(0.5)),
-                    EasingFunction = new BackEase { EasingMode= EasingMode.EaseIn }
+                    EasingFunction = new BackEase { EasingMode = EasingMode.EaseIn }
                 };
                 closeAnimation.Completed += (s1, e1) =>
                 {
                     this.Close();
                 };
-                //this.BeginAnimation(Window.OpacityProperty, closeAnimation);
                 this.BeginAnimation(Window.WidthProperty, closeAnimation);
             };
             tbMsg.Text = "即将进入";

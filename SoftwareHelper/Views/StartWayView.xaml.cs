@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SoftwareHelper.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,23 +23,39 @@ namespace SoftwareHelper.Views
         public StartWayView()
         {
             InitializeComponent();
+            if (ConfigHelper.StartMode != 0) this.Opacity = 0;
+            this.Loaded += StartWayView_Loaded;
         }
-        private void BtnEnterThe_Click(object sender, RoutedEventArgs e)
+
+        private void StartWayView_Loaded(object sender, RoutedEventArgs e)
         {
-            var btn = sender as Button;
-            switch (btn.Tag)
+            StartMode(ConfigHelper.StartMode);
+        }
+        void StartMode(int startMode,bool newBegin = false)
+        {
+            switch (startMode)
             {
-                case "EmbedDeasktopView":
+                case 0:
+                    break;
+                case 1:
                     var embedDeasktopView = new EmbedDeasktopView();
                     ShowWindow(embedDeasktopView);
                     break;
-                case "MainView":
+                case 2:
                     var mainView = new MainView();
                     ShowWindow(mainView);
                     break;
                 default:
                     break;
             }
+            if(newBegin)
+                ConfigHelper.SaveStartMode(startMode); 
+        }
+
+        private void BtnEnterThe_Click(object sender, RoutedEventArgs e)
+        {
+            var btn = sender as Button;
+            StartMode(Convert.ToInt32(btn.Tag),true);
         }
         void ShowWindow(Window win)
         {
