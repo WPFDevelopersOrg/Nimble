@@ -6,13 +6,5 @@
 /SoftWareHelper/bin
 /SoftWareHelper/obj/Release/TempPE
 /SoftWareHelper/obj/Release
-/Green/SoftWareHelper
-/SoftwareHelper/bin
-/SoftwareHelper/obj
-/GitNew
-/CutImageSolution
-/Rubik
-/WpfAnimationWeChat
-/WPFCheckCode
-/yanjinhuagood
-/.vs/SoftWareHelper/v16/Server/sqlite3
+/.vs
+/SoftwareHelper.v12.suo

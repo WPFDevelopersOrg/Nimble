@@ -133,8 +133,8 @@ namespace SoftwareHelper.CustomControls
                 //this.PART_ScrollViewer.MouseMove += PART_ScrollViewer_MouseMove;
                 //this.PART_ScrollViewer.MouseLeave += PART_ScrollViewer_MouseLeave;
             }
-            this.MouseMove += SwitchMenu_MouseMove;
-            this.MouseLeave += SwitchMenu_MouseLeave;
+            //this.MouseMove += SwitchMenu_MouseMove;
+            //this.MouseLeave += SwitchMenu_MouseLeave;
             if (this.PART_Rectangle != null)
             {
                 this.PART_Rectangle.IsVisibleChanged += PART_Rectangle_IsVisibleChanged;
@@ -146,9 +146,31 @@ namespace SoftwareHelper.CustomControls
 
         private void PART_Rectangle_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            SwitchMenu_MouseLeave(null,null);
+            //SwitchMenu_MouseLeave(null,null);
+            OnPreviewDragLeave(null);
         }
-
+        protected override void OnPreviewDragLeave(DragEventArgs e)
+        {
+            if (this.PART_ScrollViewer != null)
+            {
+                if (this.Orientation == Orientation.Horizontal)
+                {
+                    this.PART_PreviousButton.Visibility = Visibility.Collapsed;
+                    this.PART_NextButton.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    if (this.PART_UpButton.Visibility != Visibility.Collapsed 
+                        &&
+                        this.PART_DownButton.Visibility != Visibility.Collapsed)
+                    {
+                        this.PART_UpButton.Visibility = Visibility.Collapsed;
+                        this.PART_DownButton.Visibility = Visibility.Collapsed;
+                    }
+                   
+                }
+            }
+        }
         private void SwitchMenu_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             if (this.PART_ScrollViewer != null)
@@ -165,8 +187,7 @@ namespace SoftwareHelper.CustomControls
                 }
             }
         }
-
-        private void SwitchMenu_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        protected override void OnPreviewMouseMove(MouseEventArgs e)
         {
             if (this.PART_ScrollViewer != null && !IsDragDrop)
             {
@@ -182,6 +203,22 @@ namespace SoftwareHelper.CustomControls
                 }
             }
         }
+        //private void SwitchMenu_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        //{
+        //    if (this.PART_ScrollViewer != null && !IsDragDrop)
+        //    {
+        //        if (this.Orientation == Orientation.Horizontal)
+        //        {
+        //            this.PART_PreviousButton.Visibility = (this.PART_ScrollViewer.HorizontalOffset == 0.0) ? Visibility.Hidden : Visibility.Visible;
+        //            this.PART_NextButton.Visibility = (this.PART_ScrollViewer.ScrollableWidth == this.PART_ScrollViewer.HorizontalOffset) ? Visibility.Hidden : Visibility.Visible;
+        //        }
+        //        else
+        //        {
+        //            this.PART_UpButton.Visibility = (this.PART_ScrollViewer.VerticalOffset == 0.0) ? Visibility.Hidden : Visibility.Visible;
+        //            this.PART_DownButton.Visibility = (this.PART_ScrollViewer.ScrollableHeight == this.PART_ScrollViewer.VerticalOffset) ? Visibility.Hidden : Visibility.Visible;
+        //        }
+        //    }
+        //}
 
         private void PART_UpButton_Click(object sender, RoutedEventArgs e)
         {
