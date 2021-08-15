@@ -394,7 +394,11 @@
                                     FontSize="15"
                                     FontWeight="Medium"
                                     Text="SoftwareHelper" />
-                        <TextBlock Text="授之以鱼，不如授之以渔"/>
+                        <TextBlock>
+                            <Run>授之以鱼，不如授之以渔</Run>
+                            <LineBreak/>
+                            <Run>微信公众号：WPFDevelopers</Run>
+                        </TextBlock>
 
                     </StackPanel>
                 </Border>

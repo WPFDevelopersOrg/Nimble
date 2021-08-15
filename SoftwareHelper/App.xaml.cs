@@ -43,6 +43,9 @@ namespace SoftwareHelper
             }
             else
             {
+#if !DEBUG
+                Process.Start(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "AutoUpdater.exe"), System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString());
+#endif
                 //FPS设置为20
                 //Timeline.DesiredFrameRateProperty.OverrideMetadata(typeof(Timeline),
                 //    new FrameworkPropertyMetadata { DefaultValue = 20 });
