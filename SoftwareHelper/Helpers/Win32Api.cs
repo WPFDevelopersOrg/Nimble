@@ -41,6 +41,9 @@ namespace SoftwareHelper.Helpers
                         Marshal.StructureToPtr(wp, lParam, false);
                     }
                     break;
+                case 0x007e:
+                    RegisterDesktop();
+                    break;
             }
             return IntPtr.Zero;
         }
@@ -216,13 +219,16 @@ namespace SoftwareHelper.Helpers
             public int right;
             public int bottom;
         }
+        private static Window _window;
         /// <summary>
         /// 注册
         /// </summary>
         /// <param name="window"></param>
-        public static void RegisterDesktop(Window window)
+        public static void RegisterDesktop(Window window = null)
         {
-            WindowInteropHelper helper = new WindowInteropHelper(window);
+            if (window != null)
+                _window = window;
+            WindowInteropHelper helper = new WindowInteropHelper(_window);
             HwndSource mainWindowSrc = (HwndSource)HwndSource.FromHwnd(helper.Handle);
 
             APPBARDATA abd = new APPBARDATA();
@@ -230,9 +236,15 @@ namespace SoftwareHelper.Helpers
             abd.hWnd = mainWindowSrc.Handle;
             abd.uEdge = 2;
             abd.rc.top = 0;
-            abd.rc.bottom = (int)SystemParameters.PrimaryScreenHeight;
-            abd.rc.right = (int)SystemParameters.PrimaryScreenWidth;
-            abd.rc.left = abd.rc.right - (int)window.ActualWidth;
+            var _screen = System.Windows.Forms.Screen.PrimaryScreen.Bounds;
+            abd.rc.bottom = _screen.Height;
+            abd.rc.right = _screen.Width;
+            
+
+            //abd.rc.bottom = (int)SystemParameters.PrimaryScreenHeight;
+            //abd.rc.right = (int)SystemParameters.PrimaryScreenWidth;
+            abd.rc.left = abd.rc.right - (int)_window.ActualWidth;
+
 
             //注册新的应用栏，并指定系统应用于向应用栏发送通知消息的消息标识符。
             SHAppBarMessage((UInt32)AppBarMessages.New, ref abd);
@@ -241,15 +253,15 @@ namespace SoftwareHelper.Helpers
             //设置应用栏的大小和屏幕位置。
             SHAppBarMessage((UInt32)AppBarMessages.SetPos, ref abd);
             //设置应用所在平面位置。
-            MoveWindow(abd.hWnd, abd.rc.left, abd.rc.top, abd.rc.right - abd.rc.left, abd.rc.bottom - abd.rc.top, 1);
+            MoveWindow(abd.hWnd, abd.rc.left, 0, (int)_window.ActualWidth, abd.rc.bottom, 1);
         }
         /// <summary>
         /// 卸载
         /// </summary>
         /// <param name="window"></param>
-        public static void UnRegisterDesktop(Window window)
+        public static void UnRegisterDesktop()
         {
-            WindowInteropHelper helper = new WindowInteropHelper(window);
+            WindowInteropHelper helper = new WindowInteropHelper(_window);
             HwndSource mainWindowSrc = (HwndSource)HwndSource.FromHwnd(helper.Handle);
 
             APPBARDATA abd = new APPBARDATA();

@@ -1,20 +1,13 @@
 ﻿using SoftwareHelper.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace SoftwareHelper.Views
 {
@@ -202,13 +195,14 @@ namespace SoftwareHelper.Views
 
         private void EmbedDeasktopView_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            Win32Api.UnRegisterDesktop(this);
+            Win32Api.UnRegisterDesktop();
         }
 
         protected override void OnSourceInitialized(EventArgs e)
         {
             base.OnSourceInitialized(e);
             Win32Api.RegisterDesktop(this);
+            //Win32Api.HwndSourceAdd(this);
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
