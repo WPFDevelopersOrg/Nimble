@@ -413,6 +413,18 @@
                             <Setter Property="Stretch" Value="Fill"/>
                         </Style>
                     </ContextMenu.Resources>
+                    <MenuItem Header="公众号">
+                        <MenuItem.ToolTip>
+                            <ToolTip>
+                                <Rectangle Width="200" Height="300">
+                                    <Rectangle.Fill>
+                                        <ImageBrush ImageSource="/SoftwareHelper;component/Images/wechat.png"
+                                                    Stretch="Uniform"/>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                            </ToolTip>
+                        </MenuItem.ToolTip>
+                    </MenuItem>
                     <MenuItem Header="QQ群">
                         <MenuItem.ToolTip>
                             <ToolTip>
