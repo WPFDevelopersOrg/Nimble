@@ -236,13 +236,18 @@ namespace SoftwareHelper.Helpers
             abd.hWnd = mainWindowSrc.Handle;
             abd.uEdge = 2;
             abd.rc.top = 0;
-            var _screen = System.Windows.Forms.Screen.PrimaryScreen.Bounds;
-            abd.rc.bottom = _screen.Height;
-            abd.rc.right = _screen.Width;
-            
-
+            var workingAreaSize = WorkingArea;
+            var desktopSize = DESKTOP;
+            if (workingAreaSize.Width > desktopSize.Width)
+                abd.rc.right = desktopSize.Width;
+            else
+                abd.rc.right = workingAreaSize.Width - (desktopSize.Width - workingAreaSize.Width);
             //abd.rc.bottom = (int)SystemParameters.PrimaryScreenHeight;
             //abd.rc.right = (int)SystemParameters.PrimaryScreenWidth;
+            if (workingAreaSize.Height > desktopSize.Height)
+                abd.rc.bottom = desktopSize.Height;
+            else
+                abd.rc.bottom = workingAreaSize.Height - (desktopSize.Height - workingAreaSize.Height);
             abd.rc.left = abd.rc.right - (int)_window.ActualWidth;
 
 
@@ -269,6 +274,39 @@ namespace SoftwareHelper.Helpers
             abd.hWnd = mainWindowSrc.Handle;
 
             SHAppBarMessage((UInt32)AppBarMessages.Remove, ref abd);
+        }
+        [DllImport("gdi32.dll")]
+        static extern int GetDeviceCaps(
+        IntPtr hdc, // handle to DC
+        int nIndex // index of capability
+        );
+        const int DESKTOPVERTRES = 117;
+        const int DESKTOPHORZRES = 118;
+        const int HORZRES = 8;
+        const int VERTRES = 10;
+        static System.Drawing.Size DESKTOP
+        {
+            get
+            {
+                IntPtr hdc = GetDC(IntPtr.Zero);
+                System.Drawing.Size size = new System.Drawing.Size();
+                size.Width = GetDeviceCaps(hdc, DESKTOPHORZRES);
+                size.Height = GetDeviceCaps(hdc, DESKTOPVERTRES);
+                ReleaseDC(IntPtr.Zero, hdc);
+                return size;
+            }
+        }
+        static System.Drawing.Size WorkingArea
+        {
+            get
+            {
+                IntPtr hdc = GetDC(IntPtr.Zero);
+                System.Drawing.Size size = new System.Drawing.Size();
+                size.Width = GetDeviceCaps(hdc, HORZRES);
+                size.Height = GetDeviceCaps(hdc, VERTRES);
+                ReleaseDC(IntPtr.Zero, hdc);
+                return size;
+            }
         }
 
         #region 键盘转译

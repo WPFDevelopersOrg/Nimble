@@ -151,9 +151,9 @@ namespace SoftwareHelper.Helpers
             {
                 foreach (String keyName in key.GetSubKeyNames())
                 {
-                    using (RegistryKey subkey = key.OpenSubKey(keyName))
+                    try
                     {
-                        try
+                        using (RegistryKey subkey = key.OpenSubKey(keyName))
                         {
                             var displayName = subkey.GetValue("DisplayName");
                             if (displayName != null)
@@ -173,14 +173,11 @@ namespace SoftwareHelper.Helpers
                                         FormModel(model, applictionArray);
                                     }
                                 }
-
                             }
-
-
                         }
-                        catch (Exception ex)
-                        { }
                     }
+                    catch (Exception ex)
+                    { }
                 }
             }
 
@@ -191,10 +188,11 @@ namespace SoftwareHelper.Helpers
             {
                 foreach (String keyName in key.GetSubKeyNames())
                 {
-                    using (RegistryKey subkey = key.OpenSubKey(keyName))
+                    try
                     {
-                        try
+                        using (RegistryKey subkey = key.OpenSubKey(keyName))
                         {
+
                             var displayName = subkey.GetValue("DisplayName");
                             if (displayName != null)
                             {
@@ -213,14 +211,12 @@ namespace SoftwareHelper.Helpers
                                         FormModel(model, applictionArray);
                                     }
                                 }
-
                             }
-
-
                         }
-                        catch (Exception ex)
-                        { }
                     }
+                    catch (Exception ex)
+                    { }
+                   
                 }
             }
 
@@ -231,9 +227,9 @@ namespace SoftwareHelper.Helpers
             {
                 foreach (String keyName in key.GetSubKeyNames())
                 {
-                    using (RegistryKey subkey = key.OpenSubKey(keyName))
+                    try
                     {
-                        try
+                        using (RegistryKey subkey = key.OpenSubKey(keyName))
                         {
                             var displayName = subkey.GetValue("DisplayName");
                             if (displayName != null)
@@ -271,19 +267,15 @@ namespace SoftwareHelper.Helpers
                                                 IconPath = ApplicationIcon
                                             };
                                             FormModel(model, applictionArray);
-
                                         }
                                     }
-
                                 }
-
                             }
-
-
                         }
-                        catch (Exception ex)
-                        { }
                     }
+                    catch (Exception ex)
+                    { }
+                   
                 }
             }
 
