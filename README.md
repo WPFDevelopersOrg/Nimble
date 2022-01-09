@@ -1,4 +1,4 @@
-<div align="center"><img src="https://gitee.com/WPFDevelopersOrg/ResourcesCache/raw/main/resources/SoftwareHelperLogo.png"/></div>   
+<div align="center"><img src="https://github.com/WPFDevelopersOrg/ResourcesCache/raw/main/resources/SoftwareHelperLogo.png"/></div>   
 
 ##  Welcome to SoftwareHelper
 
@@ -12,14 +12,14 @@
 #### 此项目大家互相学习，互相进步。方便的话给一个<kbd>Star</kbd>，谢谢！
 
 ### 欢迎关注微信公众号  
-<img src="https://gitee.com/WPFDevelopersOrg/ResourcesCache/raw/main/resources/wxgzh.jpg"/>     
+<img src="https://github.com/WPFDevelopersOrg/ResourcesCache/raw/main/resources/wxgzh.jpg"/>     
 
 ----------
 ### 捐助
 如果您觉得我们的开源软件对你有所帮助，请扫下方二维码打赏我们一杯咖啡。
 | 微信 | 支付宝 |
 |----|-----|
-|  <img src="https://gitee.com/WPFDevelopersOrg/ResourcesCache/raw/main/resources/Alipay.png"/>   |   <img src="https://gitee.com/WPFDevelopersOrg/ResourcesCache/raw/main/resources/WeChatPay.png"/>   |
+|  <img src="https://github.com/WPFDevelopersOrg/ResourcesCache/raw/main/resources/Alipay.png"/>   |   <img src="https://github.com/WPFDevelopersOrg/ResourcesCache/raw/main/resources/WeChatPay.png"/>   |
 
 ### **下载安装后体验 [releases](https://github.com/yanjinhuagood/SoftwareHelper/releases/)**   
 
