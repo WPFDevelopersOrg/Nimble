@@ -21,15 +21,11 @@
 |----|-----|
 |  <img src="https://gitee.com/WPFDevelopersOrg/ResourcesCache/raw/main/resources/Alipay.png"/>   |   <img src="https://gitee.com/WPFDevelopersOrg/ResourcesCache/raw/main/resources/WeChatPay.png"/>   |
 
-#### **下载安装后体验 [releases](https://github.com/yanjinhuagood/SoftwareHelper/releases/)**   
-
-----------
+### **下载安装后体验 [releases](https://github.com/yanjinhuagood/SoftwareHelper/releases/)**   
 
 
-#### __效果图__   
+### __效果图预览如下↓↓↓↓↓↓__   
 
-
-***
 
 #### 自动更新  
 
