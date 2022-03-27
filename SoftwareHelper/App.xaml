@@ -44,6 +44,7 @@
                 <ResourceDictionary Source="pack://application:,,,/SoftwareHelper;component/Styles/ContextMenuStyle.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/SoftwareHelper;component/Themes/Dark.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/SoftwareHelper;component/Styles/ButtonsStyle.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/WPFDevelopers.Minimal;component/Themes/Theme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
