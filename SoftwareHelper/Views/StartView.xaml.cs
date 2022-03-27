@@ -1,22 +1,12 @@
 ﻿using SoftwareHelper.Helpers;
-using SoftwareHelper.Models;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace SoftwareHelper.Views
@@ -39,18 +29,14 @@ namespace SoftwareHelper.Views
             background.Fill = backgroundBrush;
             background2.Fill = backgroundBrush;
             Start();
-            this.Loaded += StartView_Loaded;
+            Loaded += StartView_Loaded;
         }
         
         private void StartView_Loaded(object sender, RoutedEventArgs e)
         {
             var bw = new BackgroundWorker();
-
             bw.DoWork += (s, y) =>
             {
-                //Action initAction = new Action(Common.Init);
-                //IAsyncResult result = initAction.BeginInvoke(null, null);
-                //initAction.EndInvoke(result);
                 Common.Init();
                 Thread.Sleep(1000);
             };
@@ -63,16 +49,16 @@ namespace SoftwareHelper.Views
                 mView.Show();
                 var closeAnimation = new DoubleAnimation
                 {
-                    From = this.Width,
+                    From = Width,
                     To = 0,
                     Duration = new Duration(TimeSpan.FromSeconds(0.5)),
                     EasingFunction = new BackEase { EasingMode = EasingMode.EaseIn }
                 };
                 closeAnimation.Completed += (s1, e1) =>
                 {
-                    this.Close();
+                    Close();
                 };
-                this.BeginAnimation(Window.WidthProperty, closeAnimation);
+                BeginAnimation(Window.WidthProperty, closeAnimation);
             };
             tbMsg.Text = "即将进入";
             bw.RunWorkerAsync();

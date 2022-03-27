@@ -1,13 +1,9 @@
 ﻿using SoftwareHelper.Helpers;
 using System;
-using System.Configuration;
-using System.Linq;
 using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Media;
 using System.Windows.Media.Animation;
 
 namespace SoftwareHelper.Views
@@ -21,12 +17,6 @@ namespace SoftwareHelper.Views
         private Rect desktopWorkingArea;
         private System.Windows.Point anchorPoint;
         private bool inDrag;
-        //private DoubleAnimation animationRight, animationRightBurden;
-        /// <summary>
-        /// 88 or 32
-        /// </summary>
-        //private double miniWdith = 32;
-        //private bool isLeave, isMove = true;
         #endregion
 
 
@@ -36,7 +26,6 @@ namespace SoftwareHelper.Views
             set { SetValue(IsEdgeHideProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for IsEdgeHide.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsEdgeHideProperty =
             DependencyProperty.Register("IsEdgeHide", typeof(bool), typeof(MainView), new PropertyMetadata(false));
 
@@ -44,19 +33,15 @@ namespace SoftwareHelper.Views
         public MainView()
         {
             InitializeComponent();
-            //if (!Microsoft.Windows.Shell.SystemParameters2.Current.IsGlassEnabled)
-            //{
-            //   
-            //}
             desktopWorkingArea = System.Windows.SystemParameters.WorkArea;
-            this.Height = desktopWorkingArea.Height / 2;
-            this.Left = desktopWorkingArea.Width - this.Width;
-            this.Top = desktopWorkingArea.Height / 2 - (this.Height / 2);
-            this.Loaded += Window_Loaded;
+            Height = desktopWorkingArea.Height / 2;
+            Left = desktopWorkingArea.Width - Width;
+            Top = desktopWorkingArea.Height / 2 - (Height / 2);
+            Loaded += Window_Loaded;
 
             #region 边缘隐藏
-            //this.MouseLeave += MainView_MouseLeave;
-            //this.MouseEnter += MainView_MouseEnter;
+            //MouseLeave += MainView_MouseLeave;
+            //MouseEnter += MainView_MouseEnter;
             #endregion
 
             Thread thread = new Thread(() =>
@@ -66,45 +51,16 @@ namespace SoftwareHelper.Views
                     Thread.Sleep(1000);
                     Dispatcher.BeginInvoke(new Action(delegate
                     {
-                        //Console.WriteLine(this.IsActive);
-                        this.Topmost = false;
-                        this.Topmost = true;
-                        //if (!this.IsActive)
-                        //{
-                        //    this.Topmost = false;
-                        //    this.Topmost = true;
-                        //}
+                        Topmost = false;
+                        Topmost = true;
+                        
                     }));
                 }
             });
             thread.IsBackground = true;
             thread.Start();
-            //this.Deactivated += MainView_Deactivated;
-            //this.PreviewLostKeyboardFocus += MainView_PreviewLostKeyboardFocus;
         }
-
-
-
-
-
-
-
-        #region 鼠标移入、鼠标移出
-        //private void MainView_MouseEnter(object sender, MouseEventArgs e)
-        //{
-        //    if (!IsEdgeHide)
-        //        return;
-        //    Unfold();
-        //    ToggleButtonMini.IsChecked = false;
-        //}
-        //private void MainView_MouseLeave(object sender, MouseEventArgs e)
-        //{
-        //    if (!IsEdgeHide)
-        //        return;
-        //    CollectRise();
-        //    ToggleButtonMini.IsChecked = true;
-        //}
-        #endregion
+       
 
         #region Deactivated,PreviewLostKeyboardFocus
         private void MainView_Deactivated(object sender, EventArgs e)
@@ -122,25 +78,12 @@ namespace SoftwareHelper.Views
         #region Loaded
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (Common.IsWin10)
-            {
-                //WindowBlur.SetIsEnabled(this, true);
-                //DataContext = new WindowBlureffect(this, AccentState.ACCENT_ENABLE_ACRYLICBLURBEHIND) { BlurOpacity = 100 };
-            }
-            //if (Environment.OSVersion.Version.Major >= 6)
-            //    Win32Api.SetProcessDPIAware();
-
             #region 注释
             WindowInteropHelper wndHelper = new WindowInteropHelper(this);
             int exStyle = (int)Win32Api.GetWindowLong(wndHelper.Handle, (int)Win32Api.GetWindowLongFields.GWL_EXSTYLE);
             exStyle |= (int)Win32Api.ExtendedWindowStyles.WS_EX_TOOLWINDOW;
             Win32Api.SetWindowLong(wndHelper.Handle, (int)Win32Api.GetWindowLongFields.GWL_EXSTYLE, (IntPtr)exStyle);
             #endregion
-
-            //IsEdgeHide = ConfigHelper.EdgeHide;
-            //this.MenuItemEdgeHide.IsChecked = IsEdgeHide;
-            //SetLightDark(SetConfig());
-            //Win32Api.HwndSourceAdd(this);
         }
         #endregion
 
@@ -160,7 +103,7 @@ namespace SoftwareHelper.Views
                 if (inDrag)
                 {
                     System.Windows.Point currentPoint = e.GetPosition(this);
-                    var y = this.Top + currentPoint.Y - anchorPoint.Y;
+                    var y = Top + currentPoint.Y - anchorPoint.Y;
                     Win32Api.RECT rect;
                     Win32Api.GetWindowRect(new WindowInteropHelper(this).Handle, out rect);
                     var w = rect.right - rect.left;
@@ -216,12 +159,12 @@ namespace SoftwareHelper.Views
                 };
                 widthAnimation.Completed += (s, e1) =>
                 {
-                    this.Left = desktopWorkingArea.Width - this.Width;
+                    Left = desktopWorkingArea.Width - Width;
                 };
                 //heightAnimation.Completed += Animation_Completed;
                 //widthAnimation.Completed += Animation_Completed;
-                this.BeginAnimation(Window.HeightProperty, heightAnimation);
-                this.BeginAnimation(Window.WidthProperty, widthAnimation);
+                BeginAnimation(Window.HeightProperty, heightAnimation);
+                BeginAnimation(Window.WidthProperty, widthAnimation);
                 #endregion
             }
             catch (Exception ex)
@@ -251,7 +194,7 @@ namespace SoftwareHelper.Views
                 };
                 widthAnimation.Completed += (s, e1) =>
                 {
-                    this.Left = desktopWorkingArea.Width - this.Width;
+                    Left = desktopWorkingArea.Width - Width;
                 };
 
                 var heightAnimation = new DoubleAnimation
@@ -260,8 +203,8 @@ namespace SoftwareHelper.Views
                     Duration = new Duration(TimeSpan.FromSeconds(0.5)),
                     EasingFunction = easeFunction
                 };
-                this.BeginAnimation(Window.WidthProperty, widthAnimation);
-                this.BeginAnimation(Window.HeightProperty, heightAnimation);
+                BeginAnimation(Window.WidthProperty, widthAnimation);
+                BeginAnimation(Window.HeightProperty, heightAnimation);
                 #endregion
             }
             catch (Exception ex)
@@ -279,168 +222,6 @@ namespace SoftwareHelper.Views
             Show();
             Activate();
             Focus();
-            //if (!IsEdgeHide)
-            //    Unfold();
-            //Unfold();
-            //ToggleButtonMini.IsChecked = false;
-
         }
-
-        //private void MenuItemEdgeHide_Checked(object sender, RoutedEventArgs e)
-        //{
-        //    IsEdgeHide = true;
-        //    SaveEdgeHide();
-        //}
-
-        //private void MenuItemEdgeHide_Unchecked(object sender, RoutedEventArgs e)
-        //{
-        //    IsEdgeHide = false;
-        //    SaveEdgeHide();
-        //}
-
-        #region 方法
-
-        //void SaveEdgeHide()
-        //{
-        //    if (IsEdgeHide != ConfigHelper.EdgeHide)
-        //    {
-        //        ConfigHelper.SaveEdgeHide(IsEdgeHide);
-        //    }
-        //}
-
-        #region 收起
-        //void CollectRise()
-        //{
-        //    //Console.WriteLine($"鼠标移出{this.ActualWidth}");
-        //    if (!isMove || animationRight != null)
-        //        return;
-        //    var xProp = this.ActualWidth - miniWdith;
-        //    animationRight = new DoubleAnimation
-        //    {
-        //        To = xProp,
-        //        Duration = new Duration(TimeSpan.FromMilliseconds(500)),
-        //        EasingFunction = new SineEase { EasingMode = EasingMode.EaseIn },
-        //    };
-        //    animationRight.Completed += (s1, e1) =>
-        //    {
-        //        Console.WriteLine($"收起translateForm.X：{translateForm.X}");
-        //        if (animationRightBurden != null)
-        //        {
-        //            animationRightBurden = null;
-        //        }
-        //        isLeave = true;
-        //        isMove = false;
-        //    };
-        //    translateForm.BeginAnimation(TranslateTransform.XProperty, animationRight);
-
-
-        //    #region 注释
-        //    //if (!IsEdgeHide || animationRight!=null)
-        //    //    return;
-        //    //if (!isMove)
-        //    //    return;
-        //    //EasingFunctionBase easeFunction = new SineEase()
-        //    //{
-        //    //    EasingMode = EasingMode.EaseIn,
-        //    //};
-        //    //animationRight = new DoubleAnimation
-        //    //{
-        //    //    To = desktopWorkingArea.Width - miniWdith,
-        //    //    Duration = new Duration(TimeSpan.FromMilliseconds(500)),
-        //    //    EasingFunction = easeFunction,
-        //    //};
-        //    //animationRight.Completed += (s1, e1) =>
-        //    //{
-        //    //    Console.WriteLine($"收起this.Left：{this.Left}");
-        //    //    if (animationRightBurden != null)
-        //    //    {
-        //    //        animationRightBurden = null;
-        //    //    }
-        //    //    var widthAnimation = new DoubleAnimation
-        //    //    {
-        //    //        To = miniWdith,
-        //    //        Duration = new Duration(TimeSpan.FromMilliseconds(300)),
-        //    //        EasingFunction = easeFunction
-        //    //    };
-        //    //    widthAnimation.Completed += (s2, e2) =>
-        //    //    {
-        //    //        isLeave = true;
-        //    //        isMove = false;
-        //    //    };
-        //    //    this.BeginAnimation(WidthProperty, widthAnimation);
-        //    //    //this.Width = miniWdith;
-        //    //};
-        //    //this.BeginAnimation(LeftProperty, animationRight); 
-        //    #endregion
-        //}
-        #endregion
-
-        #region 展开
-        //void Unfold()
-        //{
-        //    //Console.WriteLine($"鼠标移入{this.ActualWidth}");
-        //    if (!isLeave || animationRightBurden != null)
-        //        return;
-        //    animationRightBurden = new DoubleAnimation
-        //    {
-        //        To = 0,
-        //        Duration = new Duration(TimeSpan.FromMilliseconds(500)),
-        //        EasingFunction = new SineEase { EasingMode = EasingMode.EaseIn },
-        //    };
-        //    animationRightBurden.Completed += (s1, e1) =>
-        //    {
-        //        Console.WriteLine($"展开后translateForm.X：{translateForm.X}");
-        //        if (animationRight != null)
-        //        {
-        //            animationRight = null;
-        //        }
-        //        isMove = true;
-        //        isLeave = false;
-        //    };
-        //    translateForm.BeginAnimation(TranslateTransform.XProperty, animationRightBurden);
-
-        //    #region 注释
-        //    //if (!IsEdgeHide || animationRightBurden != null)
-        //    //    return;
-        //    //if (!isLeave)
-        //    //    return;
-        //    //EasingFunctionBase easeFunction = new SineEase()
-        //    //{
-        //    //    EasingMode = EasingMode.EaseIn,
-        //    //};
-        //    //var widthAnimation = new DoubleAnimation
-        //    //{
-        //    //    To = 120,
-        //    //    Duration = new Duration(TimeSpan.FromMilliseconds(100)),
-        //    //    EasingFunction = easeFunction
-        //    //};
-        //    //widthAnimation.Completed += (s, y) =>
-        //    //{
-        //    //    animationRightBurden = new DoubleAnimation
-        //    //    {
-        //    //        To = desktopWorkingArea.Width - this.ActualWidth,
-        //    //        Duration = new Duration(TimeSpan.FromMilliseconds(500)),
-        //    //        EasingFunction = easeFunction,
-        //    //    };
-        //    //    animationRightBurden.Completed += (s1, e1) =>
-        //    //    {
-        //    //        Console.WriteLine($"展开后this.Left：{this.Left}");
-        //    //        if (animationRight != null)
-        //    //        {
-        //    //            animationRight = null;
-        //    //        }
-        //    //        isMove = true;
-        //    //        isLeave = false;
-        //    //    };
-
-        //    //    this.BeginAnimation(LeftProperty, animationRightBurden);
-        //    //};
-        //    //this.BeginAnimation(WidthProperty, widthAnimation); 
-        //    #endregion
-        //}
-        #endregion
-
-        #endregion
-
     }
 }
