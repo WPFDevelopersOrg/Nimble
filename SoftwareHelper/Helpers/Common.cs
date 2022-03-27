@@ -8,10 +8,6 @@ using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Management;
-using System.Reflection;
-using System.Security.Permissions;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
@@ -19,7 +15,7 @@ using System.Windows.Media.Imaging;
 
 namespace SoftwareHelper.Helpers
 {
-    public class Common
+    public partial class Common
     {
         /// <summary>
         /// 路径

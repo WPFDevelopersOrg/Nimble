@@ -8,7 +8,7 @@ namespace SoftwareHelper.Helpers
     /// <summary>
     /// Themes 帮助类
     /// </summary>
-    public class ThemesHelper
+    public partial class ThemesHelper
     {
         /// <summary>
         /// 切换Themes

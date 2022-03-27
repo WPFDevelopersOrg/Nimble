@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
@@ -12,7 +10,7 @@ using System.Windows.Media.Imaging;
 
 namespace SoftwareHelper.Helpers
 {
-    public class Win32Api
+    public partial class Win32Api
     {
         public struct  WINDOWPOS
         {
@@ -236,20 +234,24 @@ namespace SoftwareHelper.Helpers
             abd.hWnd = mainWindowSrc.Handle;
             abd.uEdge = 2;
             abd.rc.top = 0;
+
+            var source = PresentationSource.FromVisual(window);
+            var dpiX = source.CompositionTarget.TransformToDevice.M11; 
+            var dpiY = source.CompositionTarget.TransformToDevice.M22;
+            window.Width = window.ActualWidth * dpiX;
+            window.Height = window.ActualHeight * dpiY;
+
             var workingAreaSize = WorkingArea;
             var desktopSize = DESKTOP;
             if (workingAreaSize.Width > desktopSize.Width)
                 abd.rc.right = desktopSize.Width;
             else
                 abd.rc.right = workingAreaSize.Width - (desktopSize.Width - workingAreaSize.Width);
-            //abd.rc.bottom = (int)SystemParameters.PrimaryScreenHeight;
-            //abd.rc.right = (int)SystemParameters.PrimaryScreenWidth;
             if (workingAreaSize.Height > desktopSize.Height)
                 abd.rc.bottom = desktopSize.Height;
             else
                 abd.rc.bottom = workingAreaSize.Height - (desktopSize.Height - workingAreaSize.Height);
             abd.rc.left = abd.rc.right - (int)_window.ActualWidth;
-
 
             //注册新的应用栏，并指定系统应用于向应用栏发送通知消息的消息标识符。
             SHAppBarMessage((UInt32)AppBarMessages.New, ref abd);

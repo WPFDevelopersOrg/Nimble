@@ -376,7 +376,7 @@
     </FrameworkElement.Triggers>-->
     <Grid  Name="MyGrid">
         <tb:TaskbarIcon x:Name="myNotifyIcon"
-                    IconSource="/comic.ico"
+                    IconSource="/Logo.ico"
                     PopupActivation="DoubleClick"
                     NoLeftClickDelay="True"
                     TrayLeftMouseUp="myNotifyIcon_TrayLeftMouseUp">

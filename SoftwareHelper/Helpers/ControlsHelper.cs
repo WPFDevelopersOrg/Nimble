@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
 
 namespace SoftwareHelper.Helpers
 {
-    public static class ControlsHelper
+    public static partial class ControlsHelper
     {
         public static T FindChild<T>(DependencyObject parent, string childName) where T : DependencyObject
         {

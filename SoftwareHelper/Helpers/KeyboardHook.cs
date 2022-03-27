@@ -5,7 +5,7 @@ using System.Windows.Input;
 
 namespace SoftwareHelper.Helpers
 {
-    public class KeyboardHook
+    public partial class KeyboardHook
     {
         #region pinvoke details
 

@@ -147,7 +147,7 @@
     </FrameworkElement.Resources>
     <Grid>
         <tb:TaskbarIcon x:Name="myNotifyIcon"
-                    IconSource="pack://application:,,,/comic.ico"
+                    IconSource="pack://application:,,,/Logo.ico"
                     PopupActivation="DoubleClick"
                     NoLeftClickDelay="True">
             <tb:TaskbarIcon.TrayToolTip>

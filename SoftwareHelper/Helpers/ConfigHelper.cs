@@ -6,7 +6,7 @@ namespace SoftwareHelper.Helpers
     /// <summary>
     /// Config帮助类
     /// </summary>
-    public class ConfigHelper
+    public partial class ConfigHelper
     {
         public static bool EdgeHide { get; set; }
         public static double Opacity { get; set; }

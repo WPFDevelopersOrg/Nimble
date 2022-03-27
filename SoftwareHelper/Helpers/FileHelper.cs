@@ -2,7 +2,7 @@
 
 namespace SoftwareHelper.Helpers
 {
-    public class FileHelper
+    public partial class FileHelper
     {
         /// <summary>
         /// 写入

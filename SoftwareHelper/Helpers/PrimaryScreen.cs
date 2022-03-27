@@ -7,7 +7,7 @@ using System.Text;
 
 namespace SoftwareHelper.Helpers
 {
-    public class PrimaryScreen
+    public partial class PrimaryScreen
     {
         #region Win32 API
         [DllImport("user32.dll")]

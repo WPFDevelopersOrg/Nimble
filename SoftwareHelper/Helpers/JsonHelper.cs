@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SoftwareHelper.Helpers
 {
-    public class JsonHelper
+    public partial class JsonHelper
     {
         #region 反序列化
         /// <summary>
