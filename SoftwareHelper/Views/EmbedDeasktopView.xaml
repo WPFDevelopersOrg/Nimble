@@ -3,12 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation/shell"
+        xmlns:shell="https://github.com/WPFDevelopersOrg.WPFDevelopers.Minimal"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:tb="http://www.hardcodet.net/taskbar"
         xmlns:drag="urn:gong-wpf-dragdrop"
         xmlns:vm="clr-namespace:SoftwareHelper.ViewModels"
-        xmlns:CustomControls="clr-namespace:SoftwareHelper.CustomControls"
+        xmlns:controls="clr-namespace:SoftwareHelper.Controls"
         xmlns:helpers="clr-namespace:SoftwareHelper.Helpers"
         xmlns:views="clr-namespace:SoftwareHelper.Views"
         mc:Ignorable="d"
@@ -30,7 +30,7 @@
     </FrameworkElement.DataContext>
     <FrameworkElement.Resources>
         <helpers:DarkAndLightConvert x:Key="darkAndLightConvert"/>
-
+        <helpers:EmbeddedConvert x:Key="EmbeddedConvert"></helpers:EmbeddedConvert>
         <SolidColorBrush x:Key="TitleBarBackgroundBrush" Color="#FF819F" />
         <Style x:Key="CloseButton" TargetType="{x:Type Button}">
             <Setter Property="ToolTip" Value="Remove"/>
@@ -174,7 +174,8 @@
                 </Border>
             </tb:TaskbarIcon.TrayToolTip>
             <tb:TaskbarIcon.ContextMenu>
-                <ContextMenu PlacementTarget="{Binding ElementName=myNotifyIcon}">
+                <ContextMenu PlacementTarget="{Binding ElementName=myNotifyIcon}"
+                             IsOpen="{Binding IsOpenContextMenu}">
                     <ContextMenu.Resources>
                         <Style TargetType="{x:Type Path}">
                             <Setter Property="Height" Value="15"/>
@@ -183,39 +184,17 @@
                             <Setter Property="Stretch" Value="Fill"/>
                         </Style>
                     </ContextMenu.Resources>
-                    <MenuItem Header="公众号">
-                        <MenuItem.ToolTip>
-                            <ToolTip>
-                                <Rectangle Width="200" Height="300">
-                                    <Rectangle.Fill>
-                                        <ImageBrush ImageSource="/SoftwareHelper;component/Images/wechat.png"
-                                                    Stretch="Uniform"/>
-                                    </Rectangle.Fill>
-                                </Rectangle>
-                            </ToolTip>
-                        </MenuItem.ToolTip>
-                    </MenuItem>
-                    <MenuItem Header="QQ群">
-                        <MenuItem.ToolTip>
-                            <ToolTip>
-                                <Rectangle Width="200" Height="300">
-                                    <Rectangle.Fill>
-                                        <ImageBrush ImageSource="/SoftwareHelper;component/Images/20201130100057.png"
-                                                    Stretch="Uniform"/>
-                                    </Rectangle.Fill>
-                                </Rectangle>
-                            </ToolTip>
-                        </MenuItem.ToolTip>
-                    </MenuItem>
-                    <MenuItem Header="关于" Command="{Binding GithubCommand}">
+
+                    <MenuItem Header="关于" Command="{Binding GithubCommand}" >
                         <MenuItem.Icon>
                             <Path Data="{DynamicResource GithubPath}"/>
                         </MenuItem.Icon>
                     </MenuItem>
 
-                    <MenuItem Header="透明度" ItemsSource="{Binding Path=OpacityItemList}" DisplayMemberPath="ItemName">
+                    <MenuItem Header="透明度" ItemsSource="{Binding Path=OpacityItemList}" 
+                              DisplayMemberPath="ItemName">
                         <MenuItem.ItemContainerStyle>
-                            <Style TargetType="MenuItem">
+                            <Style TargetType="MenuItem" >
                                 <Setter Property="IsCheckable" Value="True"/>
                                 <Setter Property="IsChecked" Value="{Binding Path=IsSelected, Mode=TwoWay}"/>
                                 <Setter Property="Padding" Value="2 6 2 6" />
@@ -223,7 +202,11 @@
                         </MenuItem.ItemContainerStyle>
                     </MenuItem>
                     <MenuItem Header="颜色拾取" Command="{Binding ColorCommand}"/>
-                    <MenuItem Header="{Binding IsDark,Converter={StaticResource darkAndLightConvert}}" Command="{Binding ThemesCommand}"/>
+                    <MenuItem Header="{Binding IsDark,Converter={StaticResource darkAndLightConvert}}" 
+                              Command="{Binding ThemesCommand}"/>
+                    <MenuItem Header="{Binding IsEmbedded,Converter={StaticResource EmbeddedConvert}}" 
+                              Command="{Binding EmbeddedCommand}"/>
+                    <MenuItem Header="截图" Command="{Binding ScreenCutCommand}"/>
                     <MenuItem Header="关闭" Click="MenuItem_Click"/>
                 </ContextMenu>
             </tb:TaskbarIcon.ContextMenu>
@@ -231,23 +214,17 @@
         <Rectangle Opacity="{Binding MainOpacity}" Margin="1,0,0,0"
                    Name="PageGround" Fill="{DynamicResource NormalBlackBrush}"/>
 
-        <CustomControls:SwitchMenu x:Name="AppSwitchList" ItemsSource="{Binding ApplicationList}" Orientation="Vertical"
+        <controls:SwitchMenu x:Name="AppSwitchList" ItemsSource="{Binding ApplicationList}" Orientation="Vertical"
                                        ItemTemplate="{StaticResource ApplicationTemplate}" IsDragDrop="{Binding IsDragDrop}"
                                        drag:DragDrop.UseDefaultDragAdorner="True" drag:DragDrop.DefaultDragAdornerOpacity="0.5"
                                        drag:DragDrop.IsDragSource="{Binding IsDragDrop}" drag:DragDrop.IsDropTarget="True"
                                        drag:DragDrop.ItemsPanelOrientation="Vertical" Margin="0,20">
-            <!--
-                                       VirtualizingStackPanel.IsVirtualizing="False"
-                                       VirtualizingStackPanel.VirtualizationMode="Standard"
-                                       IsTextSearchCaseSensitive="False"
-                                       IsTextSearchEnabled="True"
-                                       TextSearch.TextPath="Name"-->
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseRightButtonDown">
                     <i:InvokeCommandAction Command="{Binding MouseRightDragCommand}"></i:InvokeCommandAction>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
-        </CustomControls:SwitchMenu>
+        </controls:SwitchMenu>
         <Border x:Name="KeyDownPanel" 
                 Width="60" Height="60" 
                 HorizontalAlignment="Center"

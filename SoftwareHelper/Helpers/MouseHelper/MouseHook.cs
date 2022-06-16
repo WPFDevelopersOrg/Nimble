@@ -1,16 +1,22 @@
 ﻿using System;
-using System.Text;
-using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace SoftwareHelper.Helpers.MouseHelper
 {
-
     /// <summary>
-    /// Captures global mouse events
+    ///     Captures global mouse events
     /// </summary>
     public class MouseHook : GlobalHook
     {
+        #region Constructor
+
+        public MouseHook()
+        {
+            _hookType = WH_MOUSE_LL;
+        }
+
+        #endregion
 
         #region MouseEventType Enum
 
@@ -38,96 +44,56 @@ namespace SoftwareHelper.Helpers.MouseHelper
 
         #endregion
 
-        #region Constructor
-
-        public MouseHook()
-        {
-
-            _hookType = WH_MOUSE_LL;
-
-        }
-
-        #endregion
-
         #region Methods
 
         protected override int HookCallbackProcedure(int nCode, int wParam, IntPtr lParam)
         {
-            
             if (nCode > -1 && (MouseDown != null || MouseUp != null || MouseMove != null))
             {
-
-                MouseLLHookStruct mouseHookStruct =
+                var mouseHookStruct =
                     (MouseLLHookStruct)Marshal.PtrToStructure(lParam, typeof(MouseLLHookStruct));
 
-                MouseButtons button = GetButton(wParam);
-                MouseEventType eventType = GetEventType(wParam);
+                var button = GetButton(wParam);
+                var eventType = GetEventType(wParam);
 
-                MouseEventArgs e = new MouseEventArgs(
+                var e = new MouseEventArgs(
                     button,
-                    (eventType == MouseEventType.DoubleClick ? 2 : 1),
+                    eventType == MouseEventType.DoubleClick ? 2 : 1,
                     mouseHookStruct.pt.x,
                     mouseHookStruct.pt.y,
-                    (eventType == MouseEventType.MouseWheel ? (short)((mouseHookStruct.mouseData >> 16) & 0xffff) : 0));
+                    eventType == MouseEventType.MouseWheel ? (short)((mouseHookStruct.mouseData >> 16) & 0xffff) : 0);
 
                 // Prevent multiple Right Click events (this probably happens for popup menus)
-                if (button == MouseButtons.Right && mouseHookStruct.flags != 0)
-                {
-                    eventType = MouseEventType.None;
-                }
+                if (button == MouseButtons.Right && mouseHookStruct.flags != 0) eventType = MouseEventType.None;
 
                 switch (eventType)
                 {
                     case MouseEventType.MouseDown:
-                        if (MouseDown != null)
-                        {
-                            MouseDown(this, e);
-                        }
+                        if (MouseDown != null) MouseDown(this, e);
                         break;
                     case MouseEventType.MouseUp:
-                        if (Click != null)
-                        {
-                            Click(this, new EventArgs());
-                        }
-                        if (MouseUp != null)
-                        {
-                            MouseUp(this, e);
-                        }
+                        if (Click != null) Click(this, new EventArgs());
+                        if (MouseUp != null) MouseUp(this, e);
                         break;
                     case MouseEventType.DoubleClick:
-                        if (DoubleClick != null)
-                        {
-                            DoubleClick(this, new EventArgs());
-                        }
+                        if (DoubleClick != null) DoubleClick(this, new EventArgs());
                         break;
                     case MouseEventType.MouseWheel:
-                        if (MouseWheel != null)
-                        {
-                            MouseWheel(this, e);
-                        }
+                        if (MouseWheel != null) MouseWheel(this, e);
                         break;
                     case MouseEventType.MouseMove:
-                        if (MouseMove != null)
-                        {
-                            MouseMove(this, e);
-                        }
-                        break;
-                    default:
+                        if (MouseMove != null) MouseMove(this, e);
                         break;
                 }
-                
             }
 
             return CallNextHookEx(_handleToHook, nCode, wParam, lParam);
-
         }
 
-        private MouseButtons GetButton(Int32 wParam)
+        private MouseButtons GetButton(int wParam)
         {
-
             switch (wParam)
             {
-
                 case WM_LBUTTONDOWN:
                 case WM_LBUTTONUP:
                 case WM_LBUTTONDBLCLK:
@@ -142,17 +108,13 @@ namespace SoftwareHelper.Helpers.MouseHelper
                     return MouseButtons.Middle;
                 default:
                     return MouseButtons.None;
-
             }
-
         }
 
-        private MouseEventType GetEventType(Int32 wParam)
+        private MouseEventType GetEventType(int wParam)
         {
-
             switch (wParam)
             {
-
                 case WM_LBUTTONDOWN:
                 case WM_RBUTTONDOWN:
                 case WM_MBUTTONDOWN:
@@ -171,12 +133,9 @@ namespace SoftwareHelper.Helpers.MouseHelper
                     return MouseEventType.MouseMove;
                 default:
                     return MouseEventType.None;
-
             }
         }
 
         #endregion
-        
     }
-
 }

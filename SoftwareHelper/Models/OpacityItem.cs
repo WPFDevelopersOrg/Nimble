@@ -2,31 +2,27 @@
 
 namespace SoftwareHelper.Models
 {
-    public class OpacityItem: ViewModelBase
+    public class OpacityItem : ViewModelBase
     {
+        private bool _isSelected;
         private string _itemName;
+        private readonly string Symbol = "%";
+
         public string ItemName
         {
-            get 
-            { 
-                return Value + Symbol;
-            }
-            set
-            {
-                _itemName = value;
-            }
+            get => Value + Symbol;
+            set => _itemName = value;
         }
 
         public double Value { get; set; }
-        private string Symbol = "%";
-        private bool _isSelected;
+
         public bool IsSelected
         {
-            get { return _isSelected; }
+            get => _isSelected;
             set
             {
                 _isSelected = value;
-                this.NotifyPropertyChange("IsSelected");
+                NotifyPropertyChange("IsSelected");
             }
         }
     }

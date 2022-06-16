@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Windows.Data;
 
 namespace SoftwareHelper.Helpers
@@ -11,20 +8,19 @@ namespace SoftwareHelper.Helpers
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            string rel = "";
+            var rel = "";
             if (value == null)
+            {
                 rel = "Dark";
+            }
             else
             {
                 if ((bool)value)
-                {
-                    rel = "Light"; 
-                }
+                    rel = "Light";
                 else
-                {
                     rel = "Dark";
-                }
             }
+
             return rel;
         }
 

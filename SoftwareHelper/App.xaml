@@ -39,12 +39,13 @@
 
             <helpers:Bool2VisibilityConverter x:Key="bool2VisibilityConverter"/>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/SoftwareHelper;component/Themes/Dark.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/WPFDevelopers.Minimal;component/Themes/Theme.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/WPFDevelopers;component/Generic.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/SoftwareHelper;component/Styles/ButtonsStyle.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/SoftwareHelper;component/Styles/WindowsStyle.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/SoftwareHelper;component/Styles/SwitchMenuStyle.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/SoftwareHelper;component/Styles/ContextMenuStyle.xaml"/>
-                <ResourceDictionary Source="pack://application:,,,/SoftwareHelper;component/Themes/Dark.xaml"/>
-                <ResourceDictionary Source="pack://application:,,,/SoftwareHelper;component/Styles/ButtonsStyle.xaml"/>
-                <ResourceDictionary Source="pack://application:,,,/WPFDevelopers.Minimal;component/Themes/Theme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

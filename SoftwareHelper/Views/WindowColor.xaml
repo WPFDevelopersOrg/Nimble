@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SoftwareHelper.Views"
-        xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation/shell"
+        xmlns:shell="https://github.com/WPFDevelopersOrg.WPFDevelopers.Minimal"
         mc:Ignorable="d"
         Title="WindowColor"
         UseLayoutRounding="True" ResizeMode="NoResize"  Height="80" Width="80"

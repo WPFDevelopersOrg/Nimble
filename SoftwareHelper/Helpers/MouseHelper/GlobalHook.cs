@@ -1,17 +1,29 @@
 ﻿using System;
-using System.Text;
-using System.Runtime.InteropServices;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace SoftwareHelper.Helpers.MouseHelper
 {
-
     /// <summary>
-    /// Abstract base class for Mouse and Keyboard hooks
+    ///     Abstract base class for Mouse and Keyboard hooks
     /// </summary>
     public abstract class GlobalHook
     {
+        #region Constructor
+
+        public GlobalHook()
+        {
+            Application.ApplicationExit += Application_ApplicationExit;
+        }
+
+        #endregion
+
+        #region Properties
+
+        public bool IsStarted => _isStarted;
+
+        #endregion
 
         #region Windows API Code
 
@@ -25,34 +37,34 @@ namespace SoftwareHelper.Helpers.MouseHelper
         [StructLayout(LayoutKind.Sequential)]
         protected class MouseHookStruct
         {
-            public POINT pt;
-            public int hwnd;
-            public int wHitTestCode;
             public int dwExtraInfo;
+            public int hwnd;
+            public POINT pt;
+            public int wHitTestCode;
         }
 
         [StructLayout(LayoutKind.Sequential)]
         protected class MouseLLHookStruct
         {
-            public POINT pt;
-            public int mouseData;
-            public int flags;
-            public int time;
             public int dwExtraInfo;
+            public int flags;
+            public int mouseData;
+            public POINT pt;
+            public int time;
         }
 
         [StructLayout(LayoutKind.Sequential)]
         protected class KeyboardHookStruct
         {
-            public int vkCode;
-            public int scanCode;
-            public int flags;
-            public int time;
             public int dwExtraInfo;
+            public int flags;
+            public int scanCode;
+            public int time;
+            public int vkCode;
         }
 
         [DllImport("user32.dll", CharSet = CharSet.Auto,
-           CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+            CallingConvention = CallingConvention.StdCall, SetLastError = true)]
         protected static extern int SetWindowsHookEx(
             int idHook,
             HookProc lpfn,
@@ -65,7 +77,7 @@ namespace SoftwareHelper.Helpers.MouseHelper
 
 
         [DllImport("user32.dll", CharSet = CharSet.Auto,
-             CallingConvention = CallingConvention.StdCall)]
+            CallingConvention = CallingConvention.StdCall)]
         protected static extern int CallNextHookEx(
             int idHook,
             int nCode,
@@ -133,41 +145,16 @@ namespace SoftwareHelper.Helpers.MouseHelper
 
         #endregion
 
-        #region Properties
-
-        public bool IsStarted
-        {
-            get
-            {
-                return _isStarted;
-            }
-        }
-
-        #endregion
-
-        #region Constructor
-
-        public GlobalHook()
-        {
-
-            Application.ApplicationExit += new EventHandler(Application_ApplicationExit);
-
-        }
-
-        #endregion
-
         #region Methods
 
         public void Start()
         {
-
             if (!_isStarted &&
                 _hookType != 0)
             {
-
                 // Make sure we keep a reference to this delegate!
                 // If not, GC randomly collects it, and a NullReference exception is thrown
-                _hookCallback = new HookProc(HookCallbackProcedure);
+                _hookCallback = HookCallbackProcedure;
 
                 _handleToHook = SetWindowsHookEx(
                     _hookType,
@@ -176,49 +163,31 @@ namespace SoftwareHelper.Helpers.MouseHelper
                     0);
 
                 // Were we able to sucessfully start hook?
-                if (_handleToHook != 0)
-                {
-                    _isStarted = true;
-                }
-
+                if (_handleToHook != 0) _isStarted = true;
             }
-
         }
 
         public void Stop()
         {
-
             if (_isStarted)
             {
-
                 UnhookWindowsHookEx(_handleToHook);
 
                 _isStarted = false;
-
             }
-
         }
 
-        protected virtual int HookCallbackProcedure(int nCode, Int32 wParam, IntPtr lParam)
+        protected virtual int HookCallbackProcedure(int nCode, int wParam, IntPtr lParam)
         {
-           
             // This method must be overriden by each extending hook
             return 0;
-
         }
 
         protected void Application_ApplicationExit(object sender, EventArgs e)
         {
-
-            if (_isStarted)
-            {
-                Stop();
-            }
-
+            if (_isStarted) Stop();
         }
 
         #endregion
-
     }
-
 }

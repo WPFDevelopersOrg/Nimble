@@ -72,10 +72,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libs\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Windows.Shell, Version=3.5.41019.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Libs\Microsoft.Windows.Shell.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libs\Newtonsoft.Json.dll</HintPath>
@@ -105,8 +101,11 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="WPFDevelopers.Minimal, Version=3.2.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\WPFDevelopers.Minimal.3.2.1\lib\net40\WPFDevelopers.Minimal.dll</HintPath>
+    <Reference Include="WPFDevelopers, Version=1.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WPFDevelopers.1.0.4\lib\net40\WPFDevelopers.dll</HintPath>
+    </Reference>
+    <Reference Include="WPFDevelopers.Minimal, Version=3.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WPFDevelopers.Minimal.3.2.2\lib\net40\WPFDevelopers.Minimal.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -114,12 +113,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="CustomControls\SwitchMenu.cs" />
+    <Compile Include="Controls\SwitchMenu.cs" />
     <Compile Include="Helpers\Bool2VisibilityConverter.cs" />
     <Compile Include="Helpers\Common.cs" />
     <Compile Include="Helpers\ConfigHelper.cs" />
     <Compile Include="Helpers\ControlsHelper.cs" />
     <Compile Include="Helpers\DarkAndLightConvert.cs" />
+    <Compile Include="Helpers\EmbeddedConvert.cs" />
     <Compile Include="Helpers\FileHelper.cs" />
     <Compile Include="Helpers\JsonHelper.cs" />
     <Compile Include="Helpers\KeyboardHook.cs" />
@@ -138,18 +138,12 @@
     <Compile Include="Views\EmbedDeasktopView.xaml.cs">
       <DependentUpon>EmbedDeasktopView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\MainView.xaml.cs">
-      <DependentUpon>MainView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Views\StartView.xaml.cs">
       <DependentUpon>StartView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\StartWayView.xaml.cs">
-      <DependentUpon>StartWayView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\WindowColor.xaml.cs">
       <DependentUpon>WindowColor.xaml</DependentUpon>
@@ -182,15 +176,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\MainView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\StartView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\StartWayView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -255,18 +241,6 @@
   <ItemGroup>
     <Resource Include="Images\timg.jpg" />
     <Resource Include="Images\飞机132x48.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\20201130100057.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\topmost.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\embed.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\wechat.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Logo.ico" />

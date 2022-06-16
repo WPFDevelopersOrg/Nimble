@@ -1,15 +1,11 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation/shell">
+                    xmlns:shell="https://github.com/WPFDevelopersOrg.WPFDevelopers.Minimal">
     <Style x:Key="WindowStyleNone" TargetType="{x:Type Window}">
         <Setter Property="Foreground"
                 Value="White" />
         <Setter Property="Background"
                 Value="#FFF1F1F1" />
-        <!--<Setter Property="BorderBrush"
-                Value="#FF464775" />
-        <Setter Property="BorderThickness"
-                Value="1" />-->
         <Setter Property="IsTabStop"
                 Value="False" />
         <Setter Property="ResizeMode"

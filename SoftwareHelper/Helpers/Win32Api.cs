@@ -235,11 +235,11 @@ namespace SoftwareHelper.Helpers
             abd.uEdge = 2;
             abd.rc.top = 0;
 
-            var source = PresentationSource.FromVisual(window);
+            var source = PresentationSource.FromVisual(_window);
             var dpiX = source.CompositionTarget.TransformToDevice.M11; 
             var dpiY = source.CompositionTarget.TransformToDevice.M22;
-            window.Width = window.ActualWidth * dpiX;
-            window.Height = window.ActualHeight * dpiY;
+            _window.Width = _window.ActualWidth * dpiX;
+            _window.Height = _window.ActualHeight * dpiY;
 
             var workingAreaSize = WorkingArea;
             var desktopSize = DESKTOP;
@@ -276,6 +276,8 @@ namespace SoftwareHelper.Helpers
             abd.hWnd = mainWindowSrc.Handle;
 
             SHAppBarMessage((UInt32)AppBarMessages.Remove, ref abd);
+
+            _window.Topmost = true;
         }
         [DllImport("gdi32.dll")]
         static extern int GetDeviceCaps(

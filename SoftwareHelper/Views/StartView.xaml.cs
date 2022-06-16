@@ -1,5 +1,4 @@
-﻿using SoftwareHelper.Helpers;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Threading;
 using System.Windows;
@@ -8,16 +7,18 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using SoftwareHelper.Helpers;
 
 namespace SoftwareHelper.Views
 {
     /// <summary>
-    /// StartView.xaml 的交互逻辑
+    ///     StartView.xaml 的交互逻辑
     /// </summary>
     public partial class StartView : Window
     {
-        DispatcherTimer timer = new DispatcherTimer();
-        ImageBrush backgroundBrush = new ImageBrush();
+        private readonly ImageBrush backgroundBrush = new ImageBrush();
+        private readonly DispatcherTimer timer = new DispatcherTimer();
+
         public StartView()
         {
             InitializeComponent();
@@ -31,7 +32,7 @@ namespace SoftwareHelper.Views
             Start();
             Loaded += StartView_Loaded;
         }
-        
+
         private void StartView_Loaded(object sender, RoutedEventArgs e)
         {
             var bw = new BackgroundWorker();
@@ -40,25 +41,14 @@ namespace SoftwareHelper.Views
                 Common.Init();
                 Thread.Sleep(1000);
             };
-            bw.RunWorkerCompleted += (s, y) => 
+            bw.RunWorkerCompleted += (s, y) =>
             {
                 tbMsg.Text = "开始体验";
                 timer.Stop();
-                var mView = new StartWayView();
-                mView.Topmost = true;
-                mView.Show();
-                var closeAnimation = new DoubleAnimation
-                {
-                    From = Width,
-                    To = 0,
-                    Duration = new Duration(TimeSpan.FromSeconds(0.5)),
-                    EasingFunction = new BackEase { EasingMode = EasingMode.EaseIn }
-                };
-                closeAnimation.Completed += (s1, e1) =>
-                {
-                    Close();
-                };
-                BeginAnimation(Window.WidthProperty, closeAnimation);
+                var embedDeasktopView = new EmbedDeasktopView();
+                embedDeasktopView.Show();
+                Thread.Sleep(100);
+                this.Close();
             };
             tbMsg.Text = "即将进入";
             bw.RunWorkerAsync();
@@ -78,8 +68,8 @@ namespace SoftwareHelper.Views
                 timer.Stop();
                 Start();
             }
-
         }
+
         private void Start()
         {
             Canvas.SetLeft(background, 0);
