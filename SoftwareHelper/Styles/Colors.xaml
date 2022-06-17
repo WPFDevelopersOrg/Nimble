@@ -1,0 +1,41 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options">
+
+    <SolidColorBrush x:Key="TopMenuItemPressedFill" Color="#DEDEDE" po:Freeze="True"/>
+    <SolidColorBrush x:Key="TopMenuItemPressedStroke" Color="#E0717070" po:Freeze="True"/>
+    <SolidColorBrush x:Key="TopMenuItemSelectionStroke" Color="#90717070" po:Freeze="True"/>
+
+    <SolidColorBrush x:Key="DisabledMenuItemForeground" Color="#FF7F7F7F" po:Freeze="True"/>
+    <SolidColorBrush x:Key="DisabledMenuItemGlyphPanel" Color="#848589" po:Freeze="True"/>
+    <SolidColorBrush x:Key="MenuItemSelectionFill" Color="#DEDEDE" po:Freeze="True"/>
+    <SolidColorBrush x:Key="MenuItemSelectionStroke" Color="#DEDEDE" po:Freeze="True"/>
+
+    <Color x:Key="WhiteMenuColor">#FFFFFFFF</Color>
+    <Color x:Key="BlackMenuColor">#99000000</Color>
+
+    <SolidColorBrush x:Key="NormalMenuWhiteBrush" Color="{StaticResource WhiteMenuColor}" po:Freeze="True"/>
+    <SolidColorBrush x:Key="NormalMenuBlackBrush" Color="{StaticResource BlackMenuColor}" po:Freeze="True"/>
+
+    <SolidColorBrush x:Key="TitleBarBackgroundBrush" Color="#FF819F" po:Freeze="True"/>
+
+
+    <LinearGradientBrush x:Key="DefaultBackgroundBrush" 
+                         StartPoint="0,0" EndPoint="0,1" po:Freeze="True">
+        <GradientStop Color="#E2EAF3" Offset="0" />
+        <GradientStop Color="#C3CEDC" Offset="0.45" />
+        <GradientStop Color="#A2B1C4" Offset="0.45" />
+        <GradientStop Color="#B4C3DB" Offset="1" />
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="MouseOverBackgroundBrush" 
+                         StartPoint="0,0" EndPoint="0,1" po:Freeze="True">
+        <GradientStop Color="#ADCEE8" Offset="0" />
+        <GradientStop Color="#70A3C7" Offset="0.45" />
+        <GradientStop Color="#1E6FA5" Offset="0.45" />
+        <GradientStop Color="#2782B4" Offset="0.80" />
+        <GradientStop Color="#17FBFA" Offset="1" />
+    </LinearGradientBrush>
+
+
+</ResourceDictionary>

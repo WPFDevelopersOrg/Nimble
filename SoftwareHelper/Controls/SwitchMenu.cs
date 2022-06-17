@@ -59,10 +59,6 @@ namespace SoftwareHelper.Controls
             if (PART_UpButton != null) PART_UpButton.Click += PART_UpButton_Click;
             if (PART_DownButton != null) PART_DownButton.Click += PART_DownButton_Click;
             if (PART_ScrollViewer != null) PART_ScrollViewer.ScrollChanged += PART_ScrollViewer_ScrollChanged;
-            //PART_ScrollViewer.MouseMove += PART_ScrollViewer_MouseMove;
-            //PART_ScrollViewer.MouseLeave += PART_ScrollViewer_MouseLeave;
-            //MouseMove += SwitchMenu_MouseMove;
-            //MouseLeave += SwitchMenu_MouseLeave;
             if (PART_Rectangle != null) PART_Rectangle.IsVisibleChanged += PART_Rectangle_IsVisibleChanged;
 
             PART_ScrollViewer.SetValue(ScrollViewerBehavior.VerticalOffsetProperty, 0.0);
@@ -70,7 +66,6 @@ namespace SoftwareHelper.Controls
 
         private void PART_Rectangle_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            //SwitchMenu_MouseLeave(null,null);
             OnPreviewDragLeave(null);
         }
 
@@ -136,33 +131,14 @@ namespace SoftwareHelper.Controls
                 }
             }
         }
-        //private void SwitchMenu_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
-        //{
-        //    if (PART_ScrollViewer != null && !IsDragDrop)
-        //    {
-        //        if (Orientation == Orientation.Horizontal)
-        //        {
-        //            PART_PreviousButton.Visibility = (PART_ScrollViewer.HorizontalOffset == 0.0) ? Visibility.Hidden : Visibility.Visible;
-        //            PART_NextButton.Visibility = (PART_ScrollViewer.ScrollableWidth == PART_ScrollViewer.HorizontalOffset) ? Visibility.Hidden : Visibility.Visible;
-        //        }
-        //        else
-        //        {
-        //            PART_UpButton.Visibility = (PART_ScrollViewer.VerticalOffset == 0.0) ? Visibility.Hidden : Visibility.Visible;
-        //            PART_DownButton.Visibility = (PART_ScrollViewer.ScrollableHeight == PART_ScrollViewer.VerticalOffset) ? Visibility.Hidden : Visibility.Visible;
-        //        }
-        //    }
-        //}
-
         private void PART_UpButton_Click(object sender, RoutedEventArgs e)
         {
             BeginScrollViewerAnimation(-ActualHeight);
-            //ScrollToOffset(Orientation.Vertical, -offset);
         }
 
         private void PART_DownButton_Click(object sender, RoutedEventArgs e)
         {
             BeginScrollViewerAnimation(ActualHeight);
-            //ScrollToOffset(Orientation.Vertical, offset);
         }
 
         private void PART_ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
@@ -223,7 +199,6 @@ namespace SoftwareHelper.Controls
 
         private void DoubleAnimation_Completed(object sender, EventArgs e)
         {
-            //Console.WriteLine($"PART_ScrollViewer.VerticalOffset Completed {PART_ScrollViewer.VerticalOffset }");
             if (PART_ScrollViewer != null && !IsDragDrop)
                 if (Orientation == Orientation.Vertical)
                 {

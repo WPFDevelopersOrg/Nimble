@@ -49,7 +49,7 @@ namespace SoftwareHelper
                     Process.Start(autoUpdater, System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString());
                 }
                 else
-                    Log.Error("警告:未找到AutoUpdater.exe，无法及时更新到最新版。");
+                    Log.Warn("警告:未找到AutoUpdater.exe，无法及时更新到最新版。");
 #endif
                 //FPS设置为20
                 //Timeline.DesiredFrameRateProperty.OverrideMetadata(typeof(Timeline),

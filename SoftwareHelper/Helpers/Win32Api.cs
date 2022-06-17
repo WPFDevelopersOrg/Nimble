@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SoftwareHelper.Views;
+using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -217,12 +218,12 @@ namespace SoftwareHelper.Helpers
             public int right;
             public int bottom;
         }
-        private static Window _window;
+        private static EmbedDeasktopView _window;
         /// <summary>
         /// 注册
         /// </summary>
         /// <param name="window"></param>
-        public static void RegisterDesktop(Window window = null)
+        public static void RegisterDesktop(EmbedDeasktopView window = null)
         {
             if (window != null)
                 _window = window;
@@ -277,6 +278,7 @@ namespace SoftwareHelper.Helpers
 
             SHAppBarMessage((UInt32)AppBarMessages.Remove, ref abd);
 
+            _window.ExitEmbedded();
             _window.Topmost = true;
         }
         [DllImport("gdi32.dll")]

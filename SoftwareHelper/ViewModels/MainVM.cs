@@ -247,7 +247,7 @@ namespace SoftwareHelper.ViewModels
         /// </summary>
         public ICommand GithubCommand => new RelayCommand(obj =>
         {
-            Process.Start("chrome.exe", "https://github.com/yanjinhuagood/SoftwareHelper");
+            Process.Start("https://github.com/yanjinhuagood/SoftwareHelper");
         });
 
         /// <summary>

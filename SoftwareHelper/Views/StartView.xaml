@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:shell="https://github.com/WPFDevelopersOrg.WPFDevelopers.Minimal"
+        xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
         xmlns:local="clr-namespace:SoftwareHelper.Views"
         mc:Ignorable="d"
         Title="启动页" Height="320" Width="500"
@@ -16,7 +17,10 @@
                             CaptionHeight="{Binding ElementName=mainView,Path=ActualHeight}"/>
     </shell:WindowChrome.WindowChrome>
     <Window.Resources>
-        <ImageBrush x:Key="freeMachineImageBrush" ImageSource="/SoftwareHelper;component/Images/飞机132x48.png" Stretch="None" AlignmentY="Center" />
+        <ImageBrush x:Key="freeMachineImageBrush" 
+                    ImageSource="/SoftwareHelper;component/Images/airplane.png" 
+                    Stretch="None" AlignmentY="Center"
+                    po:Freeze="True"/>
     </Window.Resources>
     <Canvas Name="myCanvas" Focusable="True">
         <Rectangle Name="background" Height="320" Width="1262"/>

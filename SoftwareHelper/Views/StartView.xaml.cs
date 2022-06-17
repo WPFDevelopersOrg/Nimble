@@ -26,9 +26,13 @@ namespace SoftwareHelper.Views
 
             timer.Tick += Engine;
             timer.Interval = TimeSpan.FromMilliseconds(20);
-            backgroundBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Images/timg.jpg"));
+            backgroundBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Images/background.jpg"));
             background.Fill = backgroundBrush;
+            if (background.Fill.CanFreeze)
+                background.Fill.Freeze();
             background2.Fill = backgroundBrush;
+            if (background2.Fill.CanFreeze)
+                background2.Fill.Freeze();
             Start();
             Loaded += StartView_Loaded;
         }
@@ -36,19 +40,29 @@ namespace SoftwareHelper.Views
         private void StartView_Loaded(object sender, RoutedEventArgs e)
         {
             var bw = new BackgroundWorker();
-            bw.DoWork += (s, y) =>
+            bw.DoWork += delegate
             {
                 Common.Init();
                 Thread.Sleep(1000);
             };
-            bw.RunWorkerCompleted += (s, y) =>
+            bw.RunWorkerCompleted += delegate
             {
                 tbMsg.Text = "开始体验";
                 timer.Stop();
                 var embedDeasktopView = new EmbedDeasktopView();
                 embedDeasktopView.Show();
-                Thread.Sleep(100);
-                this.Close();
+                var closeAnimation = new DoubleAnimation
+                {
+                    From = Width,
+                    To = 0,
+                    Duration = new Duration(TimeSpan.FromSeconds(0.5)),
+                    EasingFunction = new BackEase { EasingMode = EasingMode.EaseIn }
+                };
+                closeAnimation.Completed += delegate
+                {
+                    Close();
+                };
+                BeginAnimation(WidthProperty, closeAnimation);
             };
             tbMsg.Text = "即将进入";
             bw.RunWorkerAsync();

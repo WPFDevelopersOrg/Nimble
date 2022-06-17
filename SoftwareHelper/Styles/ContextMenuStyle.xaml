@@ -1,26 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:PresentationOptions="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options" >
-
-    <Geometry x:Key="Checkmark" PresentationOptions:Freeze="True">M 0,5.1 L 1.7,5.2 L 3.4,7.1 L 8,0.4 L 9.2,0 L 3.3,10.8 Z</Geometry>
-    <Geometry x:Key="RightArrow" PresentationOptions:Freeze="True">M 0,0 L 4,3.5 L 0,7 Z</Geometry>
-    <Geometry x:Key="DownArrow" PresentationOptions:Freeze="True">M 0,0 L 3.5,4 L 7,0 Z</Geometry>
-    <Geometry x:Key="UpArrow" PresentationOptions:Freeze="True">M 0,4 L 3.5,0 L 7,4 Z</Geometry>
-
-    <SolidColorBrush x:Key="TopMenuItemPressedFill" Color="#DEDEDE" PresentationOptions:Freeze="True"/>
-    <SolidColorBrush x:Key="TopMenuItemPressedStroke" Color="#E0717070" PresentationOptions:Freeze="True"/>
-    <SolidColorBrush x:Key="TopMenuItemSelectionStroke" Color="#90717070" PresentationOptions:Freeze="True"/>
-
-    <SolidColorBrush x:Key="DisabledMenuItemForeground" Color="#FF7F7F7F" PresentationOptions:Freeze="True"/>
-    <SolidColorBrush x:Key="DisabledMenuItemGlyphPanel" Color="#848589" PresentationOptions:Freeze="True"/>
-    <SolidColorBrush x:Key="MenuItemSelectionFill" Color="#DEDEDE" PresentationOptions:Freeze="True"/>
-    <SolidColorBrush x:Key="MenuItemSelectionStroke" Color="#DEDEDE" PresentationOptions:Freeze="True"/>
-
-    <Color x:Key="WhiteMenuColor">#FFFFFFFF</Color>
-    <Color x:Key="BlackMenuColor">#99000000</Color>
-
-    <SolidColorBrush x:Key="NormalMenuWhiteBrush" Color="{StaticResource WhiteMenuColor}" PresentationOptions:Freeze="True"/>
-    <SolidColorBrush x:Key="NormalMenuBlackBrush" Color="{StaticResource BlackMenuColor}" PresentationOptions:Freeze="True"/>
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Style TargetType="{x:Type Menu}">
         <Setter Property="Background" Value="{DynamicResource NormalMenuWhiteBrush}" />

@@ -54,10 +54,8 @@ namespace SoftwareHelper.Helpers
         IntPtr _hookHandle = IntPtr.Zero;
         HookProc _hookFunction = null;
 
-        // hook method called by system
         private delegate int HookProc(int code, IntPtr wParam, ref KBDLLHOOKSTRUCT lParam);
 
-        // events
         public delegate void HookEventHandler(object sender, HookEventArgs e);
         public event HookEventHandler KeyDown;
         public event HookEventHandler KeyUp;
@@ -73,17 +71,14 @@ namespace SoftwareHelper.Helpers
             Uninstall();
         }
 
-        // hook function called by system
         private int HookCallback(int code, IntPtr wParam, ref KBDLLHOOKSTRUCT lParam)
         {
             if (code < 0)
                 return CallNextHookEx(_hookHandle, code, wParam, ref lParam);
 
-            // KeyUp event
             if ((lParam.flags & 0x80) != 0 && this.KeyUp != null)
                 this.KeyUp(this, new HookEventArgs(lParam.vkCode));
 
-            // KeyDown event
             if ((lParam.flags & 0x80) == 0 && this.KeyDown != null)
                 this.KeyDown(this, new HookEventArgs(lParam.vkCode));
 
@@ -92,15 +87,12 @@ namespace SoftwareHelper.Helpers
 
         private void Install()
         {
-            // make sure not already installed
             if (_hookHandle != IntPtr.Zero)
                 return;
 
-            // need instance handle to module to create a system-wide hook
             Module[] list = System.Reflection.Assembly.GetExecutingAssembly().GetModules();
             System.Diagnostics.Debug.Assert(list != null && list.Length > 0);
 
-            // install system-wide hook
             _hookHandle = SetWindowsHookEx(_hookType,
                 _hookFunction, Marshal.GetHINSTANCE(list[0]), 0);
         }
@@ -109,7 +101,6 @@ namespace SoftwareHelper.Helpers
         {
             if (_hookHandle != IntPtr.Zero)
             {
-                // uninstall system-wide hook
                 UnhookWindowsHookEx(_hookHandle);
                 _hookHandle = IntPtr.Zero;
             }
@@ -118,27 +109,14 @@ namespace SoftwareHelper.Helpers
 
     public class HookEventArgs : EventArgs
     {
-        // using Windows.Forms.Keys instead of Input.Key since the Forms.Keys maps
-        // to the Win32 KBDLLHOOKSTRUCT virtual key member, where Input.Key does not
         public Key Key;
         public bool Alt;
-        //public bool Control;
-        //public bool Shift;
-
+       
         public HookEventArgs(UInt32 keyCode)
         {
-            // detect what modifier keys are pressed, using 
-            // Windows.Forms.Control.ModifierKeys instead of Keyboard.Modifiers
-            // since Keyboard.Modifiers does not correctly get the state of the 
-            // modifier keys when the application does not have focus
-            this.Key = System.Windows.Input.KeyInterop.KeyFromVirtualKey((int)keyCode);//(Key)keyCode;
-            //this.Alt = Key.LeftCtrl != 0;
-            //this.Alt = (System.Windows.Forms.Control.ModifierKeys & Keys.Alt) != 0;
-            //this.Control = (System.Windows.Forms.Control.ModifierKeys & Keys.Control) != 0;
-            //this.Shift = (System.Windows.Forms.Control.ModifierKeys & Keys.Shift) != 0;
+            this.Key = System.Windows.Input.KeyInterop.KeyFromVirtualKey((int)keyCode);
         }
     }
 
-    // The callback method converts the low-level keyboard data into something more .NET friendly with the HookEventArgs class.
 
 }
