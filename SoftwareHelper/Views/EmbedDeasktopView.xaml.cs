@@ -24,10 +24,12 @@ namespace SoftwareHelper.Views
         private Point anchorPoint;
         private readonly KeyboardHook _hook;
         private readonly List<Key> keys = new List<Key>();
+        private MainVM mainVM;
 
         public EmbedDeasktopView()
         {
             InitializeComponent();
+            mainVM = DataContext as MainVM;
             desktopWorkingArea = SystemParameters.WorkArea;
             Loaded += EmbedDeasktopView_Loaded;
             Closing += EmbedDeasktopView_Closing;
@@ -38,13 +40,14 @@ namespace SoftwareHelper.Views
 
         private void OnHookKeyUp(object sender, HookEventArgs e)
         {
+            if (!mainVM.IsEmbedded) return;
             SetKeyUp(e.Key);
-            Thread.Sleep(300);
             KeyDownPanel.Visibility = Visibility.Collapsed;
         }
 
         private void OnHookKeyDown(object sender, HookEventArgs e)
         {
+            if (!mainVM.IsEmbedded) return;
             SetKeyDown(e.Key);
             if (IsKeyDown(Key.PrintScreen))
             {
@@ -191,10 +194,18 @@ namespace SoftwareHelper.Views
         #endregion
         public void ExitEmbedded()
         {
-            Width = 110;
+            if(ToggleButtonMini.IsChecked == true)
+                Width = 30;
+            else
+                Width = 120;
             Height = desktopWorkingArea.Height / 2;
             Left = desktopWorkingArea.Width - Width;
             Top = desktopWorkingArea.Height / 2 - (Height / 2);
+        }
+        public void OepnEmbedded()
+        {
+            if (mainVM.IsEmbedded) return;
+
         }
         #region 窗体动画
         private void ToggleButtonMini_Checked(object sender, RoutedEventArgs e)
@@ -210,24 +221,30 @@ namespace SoftwareHelper.Views
                 var heightAnimation = new DoubleAnimation
                 {
                     Name = "heightMini",
+                    From = desktopWorkingArea.Height / 2,
                     To = 60,
                     Duration = new Duration(TimeSpan.FromSeconds(0.5)),
-                    EasingFunction = easeFunction
+                    EasingFunction = easeFunction,
+                };
+                heightAnimation.Completed += delegate
+                {
+                    BeginAnimation(HeightProperty, null);
                 };
                 var widthAnimation = new DoubleAnimation
                 {
                     Name = "widthMini",
+                    From = 120,
                     To = 30,
                     Duration = new Duration(TimeSpan.FromSeconds(0.51)),
-                    EasingFunction = easeFunction
+                    EasingFunction = easeFunction,
                 };
                 widthAnimation.Completed += delegate
                 {
-                    this.Left = desktopWorkingArea.Width - this.Width;
+                    Left = desktopWorkingArea.Width - this.Width;
+                    BeginAnimation(WidthProperty, null);
                 };
-               
-                this.BeginAnimation(HeightProperty, heightAnimation);
-                this.BeginAnimation(WidthProperty, widthAnimation);
+                BeginAnimation(HeightProperty, heightAnimation);
+                BeginAnimation(WidthProperty, widthAnimation);
             }
             catch (Exception ex)
             {
@@ -248,23 +265,30 @@ namespace SoftwareHelper.Views
                 };
                 var widthAnimation = new DoubleAnimation
                 {
+                    From = 30,
                     To = 120,
                     Duration = new Duration(TimeSpan.FromSeconds(0.01)),
-                    EasingFunction = easeFunction
+                    EasingFunction = easeFunction,
                 };
                 widthAnimation.Completed += delegate
                 {
-                    this.Left = desktopWorkingArea.Width - this.Width;
+                    Left = desktopWorkingArea.Width - this.Width;
+                    BeginAnimation(WidthProperty, null);
                 };
 
                 var heightAnimation = new DoubleAnimation
                 {
+                    From = 60,
                     To = desktopWorkingArea.Height / 2,
                     Duration = new Duration(TimeSpan.FromSeconds(0.5)),
-                    EasingFunction = easeFunction
+                    EasingFunction = easeFunction,
                 };
-                this.BeginAnimation(WidthProperty, widthAnimation);
-                this.BeginAnimation(HeightProperty, heightAnimation);
+                heightAnimation.Completed += delegate
+                {
+                    BeginAnimation(HeightProperty, null);
+                };
+                BeginAnimation(WidthProperty, widthAnimation);
+                BeginAnimation(HeightProperty, heightAnimation);
             }
             catch (Exception ex)
             {
@@ -278,8 +302,7 @@ namespace SoftwareHelper.Views
 
         private void myNotifyIcon_TrayLeftMouseUp(object sender, RoutedEventArgs e)
         {
-            var vm = DataContext as MainVM;
-            if (vm == null && vm.IsEmbedded) return;
+            if (mainVM.IsEmbedded) return;
             Show();
             Activate();
             Focus();

@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 
 namespace SoftwareHelper.Helpers
@@ -239,6 +240,9 @@ namespace SoftwareHelper.Helpers
             var source = PresentationSource.FromVisual(_window);
             var dpiX = source.CompositionTarget.TransformToDevice.M11; 
             var dpiY = source.CompositionTarget.TransformToDevice.M22;
+
+            if (_window.ActualWidth < 90)
+                _window.Width = 90;
             _window.Width = _window.ActualWidth * dpiX;
             _window.Height = _window.ActualHeight * dpiY;
 
