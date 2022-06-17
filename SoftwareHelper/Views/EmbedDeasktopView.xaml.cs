@@ -46,7 +46,6 @@ namespace SoftwareHelper.Views
         private void OnHookKeyDown(object sender, HookEventArgs e)
         {
             SetKeyDown(e.Key);
-            Log.Debug(e.Key.ToString());
             if (IsKeyDown(Key.PrintScreen))
             {
                 var screenCut = new WPFDevelopers.Controls.ScreenCut();
