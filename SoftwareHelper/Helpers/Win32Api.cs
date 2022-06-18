@@ -241,8 +241,7 @@ namespace SoftwareHelper.Helpers
             var dpiX = source.CompositionTarget.TransformToDevice.M11; 
             var dpiY = source.CompositionTarget.TransformToDevice.M22;
 
-            if (_window.ActualWidth < 90)
-                _window.Width = 90;
+            _window.Width = 90;
             _window.Width = _window.ActualWidth * dpiX;
             _window.Height = _window.ActualHeight * dpiY;
 

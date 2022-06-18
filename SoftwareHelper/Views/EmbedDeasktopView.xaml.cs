@@ -11,6 +11,7 @@ using System.Windows.Interop;
 using System.Windows.Media.Animation;
 using SoftwareHelper.Helpers;
 using SoftwareHelper.ViewModels;
+using WPFDevelopers.Controls;
 
 namespace SoftwareHelper.Views
 {
@@ -19,12 +20,12 @@ namespace SoftwareHelper.Views
     /// </summary>
     public partial class EmbedDeasktopView : Window
     {
-        private bool inDrag;
-        private readonly Rect desktopWorkingArea;
-        private Point anchorPoint;
         private readonly KeyboardHook _hook;
+        private readonly Rect desktopWorkingArea;
         private readonly List<Key> keys = new List<Key>();
-        private MainVM mainVM;
+        private Point anchorPoint;
+        private bool inDrag;
+        private readonly MainVM mainVM;
 
         public EmbedDeasktopView()
         {
@@ -51,7 +52,7 @@ namespace SoftwareHelper.Views
             SetKeyDown(e.Key);
             if (IsKeyDown(Key.PrintScreen))
             {
-                var screenCut = new WPFDevelopers.Controls.ScreenCut();
+                var screenCut = new ScreenCut();
                 screenCut.ShowDialog();
             }
             else
@@ -152,7 +153,33 @@ namespace SoftwareHelper.Views
             myNotifyIcon.Dispose();
             Environment.Exit(0);
         }
+
+        public void ExitEmbedded()
+        {
+            if (ToggleButtonMini.IsChecked == true)
+                Width = 30;
+            else
+                Width = 120;
+            Height = desktopWorkingArea.Height / 2;
+            Left = desktopWorkingArea.Width - Width;
+            Top = desktopWorkingArea.Height / 2 - Height / 2;
+        }
+
+        public void OepnEmbedded()
+        {
+            if (mainVM.IsEmbedded) return;
+        }
+
+        private void myNotifyIcon_TrayLeftMouseUp(object sender, RoutedEventArgs e)
+        {
+            if (mainVM.IsEmbedded) return;
+            Show();
+            Activate();
+            Focus();
+        }
+
         #region 移动窗体
+
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             anchorPoint = e.GetPosition(this);
@@ -165,16 +192,9 @@ namespace SoftwareHelper.Views
         {
             try
             {
-                if (!inDrag) return;
+                if (!inDrag && e.LeftButton != MouseButtonState.Pressed) return;
                 var currentPoint = e.GetPosition(this);
-                var y = this.Top + currentPoint.Y - anchorPoint.Y;
-                Win32Api.RECT rect;
-                Win32Api.GetWindowRect(new WindowInteropHelper(this).Handle, out rect);
-                var w = rect.right - rect.left;
-                var h = rect.bottom - rect.top;
-                int x = Convert.ToInt32(PrimaryScreen.DESKTOP.Width - w);
-                Win32Api.MoveWindow(new WindowInteropHelper(this).Handle, x, (int)y, w, h, 1);
-
+                Top = Top + (currentPoint.Y - anchorPoint.Y);
             }
             catch (Exception ex)
             {
@@ -191,31 +211,18 @@ namespace SoftwareHelper.Views
                 e.Handled = true;
             }
         }
-        #endregion
-        public void ExitEmbedded()
-        {
-            if(ToggleButtonMini.IsChecked == true)
-                Width = 30;
-            else
-                Width = 120;
-            Height = desktopWorkingArea.Height / 2;
-            Left = desktopWorkingArea.Width - Width;
-            Top = desktopWorkingArea.Height / 2 - (Height / 2);
-        }
-        public void OepnEmbedded()
-        {
-            if (mainVM.IsEmbedded) return;
 
-        }
+        #endregion
+
         #region 窗体动画
+
         private void ToggleButtonMini_Checked(object sender, RoutedEventArgs e)
         {
-
             try
             {
-                EasingFunctionBase easeFunction = new CubicEase()
+                EasingFunctionBase easeFunction = new CubicEase
                 {
-                    EasingMode = EasingMode.EaseOut,
+                    EasingMode = EasingMode.EaseOut
                 };
 
                 var heightAnimation = new DoubleAnimation
@@ -224,23 +231,20 @@ namespace SoftwareHelper.Views
                     From = desktopWorkingArea.Height / 2,
                     To = 60,
                     Duration = new Duration(TimeSpan.FromSeconds(0.5)),
-                    EasingFunction = easeFunction,
+                    EasingFunction = easeFunction
                 };
-                heightAnimation.Completed += delegate
-                {
-                    BeginAnimation(HeightProperty, null);
-                };
+                heightAnimation.Completed += delegate { BeginAnimation(HeightProperty, null); };
                 var widthAnimation = new DoubleAnimation
                 {
                     Name = "widthMini",
                     From = 120,
                     To = 30,
                     Duration = new Duration(TimeSpan.FromSeconds(0.51)),
-                    EasingFunction = easeFunction,
+                    EasingFunction = easeFunction
                 };
                 widthAnimation.Completed += delegate
                 {
-                    Left = desktopWorkingArea.Width - this.Width;
+                    Left = desktopWorkingArea.Width - Width;
                     BeginAnimation(WidthProperty, null);
                 };
                 BeginAnimation(HeightProperty, heightAnimation);
@@ -253,26 +257,24 @@ namespace SoftwareHelper.Views
         }
 
 
-
         private void UnToggleButtonMini_Checked(object sender, RoutedEventArgs e)
         {
-
             try
             {
-                var easeFunction = new CubicEase()
+                var easeFunction = new CubicEase
                 {
-                    EasingMode = EasingMode.EaseIn,
+                    EasingMode = EasingMode.EaseIn
                 };
                 var widthAnimation = new DoubleAnimation
                 {
                     From = 30,
                     To = 120,
                     Duration = new Duration(TimeSpan.FromSeconds(0.01)),
-                    EasingFunction = easeFunction,
+                    EasingFunction = easeFunction
                 };
                 widthAnimation.Completed += delegate
                 {
-                    Left = desktopWorkingArea.Width - this.Width;
+                    Left = desktopWorkingArea.Width - Width;
                     BeginAnimation(WidthProperty, null);
                 };
 
@@ -281,12 +283,9 @@ namespace SoftwareHelper.Views
                     From = 60,
                     To = desktopWorkingArea.Height / 2,
                     Duration = new Duration(TimeSpan.FromSeconds(0.5)),
-                    EasingFunction = easeFunction,
+                    EasingFunction = easeFunction
                 };
-                heightAnimation.Completed += delegate
-                {
-                    BeginAnimation(HeightProperty, null);
-                };
+                heightAnimation.Completed += delegate { BeginAnimation(HeightProperty, null); };
                 BeginAnimation(WidthProperty, widthAnimation);
                 BeginAnimation(HeightProperty, heightAnimation);
             }
@@ -294,18 +293,8 @@ namespace SoftwareHelper.Views
             {
                 Log.Error($"MainView.UnToggleButtonMini_Checked{ex.Message}");
             }
-
         }
-
 
         #endregion
-
-        private void myNotifyIcon_TrayLeftMouseUp(object sender, RoutedEventArgs e)
-        {
-            if (mainVM.IsEmbedded) return;
-            Show();
-            Activate();
-            Focus();
-        }
     }
 }

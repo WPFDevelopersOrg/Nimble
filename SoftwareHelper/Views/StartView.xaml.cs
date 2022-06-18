@@ -33,12 +33,12 @@ namespace SoftwareHelper.Views
             background2.Fill = backgroundBrush;
             if (background2.Fill.CanFreeze)
                 background2.Fill.Freeze();
-            Start();
             Loaded += StartView_Loaded;
         }
 
         private void StartView_Loaded(object sender, RoutedEventArgs e)
         {
+            Start();
             var bw = new BackgroundWorker();
             bw.DoWork += delegate
             {
