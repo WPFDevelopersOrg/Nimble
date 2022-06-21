@@ -41,14 +41,12 @@ namespace SoftwareHelper.Views
 
         private void OnHookKeyUp(object sender, HookEventArgs e)
         {
-            if (!mainVM.IsEmbedded) return;
             SetKeyUp(e.Key);
             KeyDownPanel.Visibility = Visibility.Collapsed;
         }
 
         private void OnHookKeyDown(object sender, HookEventArgs e)
         {
-            if (!mainVM.IsEmbedded) return;
             SetKeyDown(e.Key);
             if (IsKeyDown(Key.PrintScreen))
             {
