@@ -71,7 +71,11 @@ namespace SoftwareHelper
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
         }
 
-
+        protected override void OnExit(ExitEventArgs e)
+        {
+            base.OnExit(e);
+            Win32Api.UnRegisterDesktop(true);
+        }
         private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             try

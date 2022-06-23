@@ -1,14 +1,18 @@
-﻿using SoftwareHelper.Views;
+﻿using SoftwareHelper.ViewModels;
+using SoftwareHelper.Views;
 using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace SoftwareHelper.Helpers
 {
@@ -183,6 +187,15 @@ namespace SoftwareHelper.Helpers
         #endregion
 
 
+        static readonly IntPtr GWL_EXSTYLE = new IntPtr(-20);
+        static readonly UInt32 WS_EX_TOPMOST = 0x0008;
+
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern UInt32 GetWindowLong(IntPtr hWnd, IntPtr nIndex);
+        static bool IsTopMost(IntPtr hwnd)
+        {
+            return (GetWindowLong(hwnd, GWL_EXSTYLE) & (int)WS_EX_TOPMOST) != 0;
+        }
 
         [DllImport("shell32.dll")]
         public static extern UInt32 SHAppBarMessage(UInt32 dwMessage, ref APPBARDATA pData);
@@ -220,6 +233,7 @@ namespace SoftwareHelper.Helpers
             public int bottom;
         }
         private static EmbedDeasktopView _window;
+        private static HwndSource mainWindowSrc;
         /// <summary>
         /// 注册
         /// </summary>
@@ -229,8 +243,18 @@ namespace SoftwareHelper.Helpers
             if (window != null)
                 _window = window;
             WindowInteropHelper helper = new WindowInteropHelper(_window);
-            HwndSource mainWindowSrc = (HwndSource)HwndSource.FromHwnd(helper.Handle);
-
+            mainWindowSrc = (HwndSource)HwndSource.FromHwnd(helper.Handle);
+            if (task != null)
+            {
+                cancelTokenSource.Cancel();
+                task.Wait();
+                task.Dispose();
+                task = null;
+            }
+            MoveWindowDPI();
+        }
+        static void MoveWindowDPI(bool isDpi = false)
+        {
             APPBARDATA abd = new APPBARDATA();
             abd.cbSize = (uint)Marshal.SizeOf(abd);
             abd.hWnd = mainWindowSrc.Handle;
@@ -238,7 +262,7 @@ namespace SoftwareHelper.Helpers
             abd.rc.top = 0;
 
             var source = PresentationSource.FromVisual(_window);
-            var dpiX = source.CompositionTarget.TransformToDevice.M11; 
+            var dpiX = source.CompositionTarget.TransformToDevice.M11;
             var dpiY = source.CompositionTarget.TransformToDevice.M22;
 
             _window.Width = 90;
@@ -256,25 +280,29 @@ namespace SoftwareHelper.Helpers
             else
                 abd.rc.bottom = workingAreaSize.Height - (desktopSize.Height - workingAreaSize.Height);
             abd.rc.left = abd.rc.right - (int)_window.ActualWidth;
-
-            //注册新的应用栏，并指定系统应用于向应用栏发送通知消息的消息标识符。
-            SHAppBarMessage((UInt32)AppBarMessages.New, ref abd);
-            //请求应用栏的大小和屏幕位置。
-            SHAppBarMessage((UInt32)AppBarMessages.QueryPos, ref abd);
-            //设置应用栏的大小和屏幕位置。
-            SHAppBarMessage((UInt32)AppBarMessages.SetPos, ref abd);
-            //设置应用所在平面位置。
+            if (!isDpi)
+            {
+                //注册新的应用栏，并指定系统应用于向应用栏发送通知消息的消息标识符。
+                SHAppBarMessage((UInt32)AppBarMessages.New, ref abd);
+                //请求应用栏的大小和屏幕位置。
+                SHAppBarMessage((UInt32)AppBarMessages.QueryPos, ref abd);
+                //设置应用栏的大小和屏幕位置。
+                SHAppBarMessage((UInt32)AppBarMessages.SetPos, ref abd);
+                //设置应用所在平面位置。
+            }
             MoveWindow(abd.hWnd, abd.rc.left, 0, (int)_window.ActualWidth, abd.rc.bottom, 1);
         }
+
+
+        static Task task;
+        static CancellationTokenSource cancelTokenSource;
         /// <summary>
         /// 卸载
         /// </summary>
         /// <param name="window"></param>
-        public static void UnRegisterDesktop()
+        public static void UnRegisterDesktop(bool isExit = false)
         {
-            WindowInteropHelper helper = new WindowInteropHelper(_window);
-            HwndSource mainWindowSrc = (HwndSource)HwndSource.FromHwnd(helper.Handle);
-
+            if (mainWindowSrc == null) return;
             APPBARDATA abd = new APPBARDATA();
             abd.cbSize = (uint)Marshal.SizeOf(abd);
             abd.hWnd = mainWindowSrc.Handle;
@@ -282,7 +310,25 @@ namespace SoftwareHelper.Helpers
             SHAppBarMessage((UInt32)AppBarMessages.Remove, ref abd);
 
             _window.ExitEmbedded();
-            _window.Topmost = true;
+            if (isExit) return;
+
+            cancelTokenSource = new CancellationTokenSource();
+            task = new Task(() =>
+            {
+                while (true)
+                {
+                    if (cancelTokenSource.IsCancellationRequested) break;
+                    //if (IsTopMost(mainWindowSrc.Handle)) continue;
+                    _window.Dispatcher.BeginInvoke(new Action(delegate
+                    {
+                        _window.Topmost = false;
+                        _window.Topmost = true;
+                    }));
+                    Thread.Sleep(1000);
+                }
+            }, cancelTokenSource.Token);
+            task.Start();
+            
         }
         [DllImport("gdi32.dll")]
         static extern int GetDeviceCaps(

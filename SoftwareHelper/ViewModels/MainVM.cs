@@ -301,7 +301,7 @@ namespace SoftwareHelper.ViewModels
         public ICommand ScreenCutCommand => new RelayCommand(obj =>
         {
             IsOpenContextMenu = false;
-            Thread.Sleep(1000);
+            Keyboard.ClearFocus();
             var screenCut = new WPFDevelopers.Controls.ScreenCut();
             screenCut.ShowDialog();
 
@@ -309,32 +309,38 @@ namespace SoftwareHelper.ViewModels
         #endregion
 
         #region 方法
-
+        private Color color;
+        private string hex;
         private void Timer_Tick(object sender, EventArgs e)
         {
             var point = new MousePoint.POINT();
             var isMouseDown = MousePoint.GetCursorPos(out point);
-            var color = Win32Api.GetPixelColor(point.X, point.Y);
-
-            if (point.X >= desktopWorkingArea.Width)
-                colorView.Left = point.X - 40;
+            color = Win32Api.GetPixelColor(point.X, point.Y);
+            var source = PresentationSource.FromVisual(colorView);
+            var dpiX = source.CompositionTarget.TransformToDevice.M11;
+            var dpiY = source.CompositionTarget.TransformToDevice.M22;
+            if (point.X / dpiX >= desktopWorkingArea.Width)
+                colorView.Left = point.X / dpiX - 40;
             else if (point.X <= 10)
-                colorView.Left = point.X;
+                colorView.Left = point.X / dpiX;
             else
-                colorView.Left = point.X;
-
-            if (point.Y >= desktopWorkingArea.Height - 40)
-                colorView.Top = point.Y - 40;
+                colorView.Left = point.X / dpiX;
+            if (point.Y / dpiY >= desktopWorkingArea.Height - 40)
+                colorView.Top = point.Y / dpiY - 40;
             else
-                colorView.Top = point.Y;
+                colorView.Top = point.Y / dpiY;
 
             colorView.MouseColor = new SolidColorBrush(color);
+            hex = color.ToString();
+            if (hex.Length > 7)
+                hex = hex.Remove(1, 2);
+            colorView.MouseColorText = hex;
         }
 
         private void MouseHook_MouseDown(object sender, MouseEventArgs e)
         {
-            Clipboard.SetText(colorView.MouseColor.ToString());
-            ShowBalloon("提示", $"已复制到剪切板  {colorView.MouseColor.ToString()}  SoftwareHelper");
+            Clipboard.SetText(hex);
+            ShowBalloon("提示", $"已复制到剪切板  {hex}  SoftwareHelper");
             if (_timer.IsEnabled)
             {
                 _timer.Stop();

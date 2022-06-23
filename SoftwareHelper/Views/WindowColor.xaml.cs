@@ -15,9 +15,19 @@ namespace SoftwareHelper.Views
             set { SetValue(MouseColorProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for MouseColor.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty MouseColorProperty =
             DependencyProperty.Register("MouseColor", typeof(Brush), typeof(WindowColor), new PropertyMetadata(null));
+
+
+
+        public string MouseColorText
+        {
+            get { return (string)GetValue(MouseColorTextProperty); }
+            set { SetValue(MouseColorTextProperty, value); }
+        }
+
+        public static readonly DependencyProperty MouseColorTextProperty =
+            DependencyProperty.Register("MouseColorText", typeof(string), typeof(WindowColor), new PropertyMetadata(null));
 
 
         public WindowColor()

@@ -50,8 +50,13 @@ namespace SoftwareHelper.Views
             SetKeyDown(e.Key);
             if (IsKeyDown(Key.PrintScreen))
             {
-                var screenCut = new ScreenCut();
-                screenCut.ShowDialog();
+                var screenCut = new ScreenCut() {Topmost = true};
+                screenCut.Activate();
+                screenCut.Closing += delegate 
+                {
+                    SetKeyUp(Key.PrintScreen);
+                };
+                screenCut.ShowDialog();   
             }
             else
             {
@@ -112,16 +117,6 @@ namespace SoftwareHelper.Views
                 Win32Api.LoadKeyboardLayout("0000409", Win32Api.KLF_ACTIVATE));
         }
 
-        private void EmbedDeasktopView_KeyUp(object sender, KeyEventArgs e)
-        {
-            Thread.Sleep(300);
-            KeyDownPanel.Visibility = Visibility.Collapsed;
-        }
-
-        private void EmbedDeasktopView_KeyDown(object sender, KeyEventArgs e)
-        {
-        }
-
         private void EmbedDeasktopView_Loaded(object sender, RoutedEventArgs e)
         {
             #region 注释
@@ -133,10 +128,9 @@ namespace SoftwareHelper.Views
 
             #endregion
         }
-
         private void EmbedDeasktopView_Closing(object sender, CancelEventArgs e)
         {
-            Win32Api.UnRegisterDesktop();
+            Win32Api.UnRegisterDesktop(true);
         }
 
         protected override void OnSourceInitialized(EventArgs e)
