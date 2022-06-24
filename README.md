@@ -26,6 +26,11 @@
 
 ### __效果图预览如下↓↓↓↓↓↓__   
 
+### 新增截图  
+<img src="https://github.com/WPFDevelopersOrg/ResourcesCache/raw/main/resources/WPFDevelopersResource/DrawInk.gif"/> 
+<img src="https://github.com/WPFDevelopersOrg/ResourcesCache/raw/main/resources/WPFDevelopersResource/DrawArrow.gif"/>   
+
+----------
 
 #### 自动更新  
 
