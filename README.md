@@ -41,12 +41,16 @@
 #### 启动页  
 
 <img src="https://github.com/WPFDevelopersOrg/ResourcesCache/raw/main/resources/SoftwareHelperResource/GIFfree.gif"/>  
-<img src="https://github.com/WPFDevelopersOrg/ResourcesCache/raw/main/resources/SoftwareHelperResource/free1.png"/>  
-![启动页](https://raw.githubusercontent.com/WPFDevelopersOrg/ResourcesCache/main/resources/SoftwareHelperResource/启动.gif)
+
+<img src="https://github.com/WPFDevelopersOrg/ResourcesCache/raw/main/resources/SoftwareHelperResource/free1.png"/>   
+
+![启动页](https://raw.githubusercontent.com/WPFDevelopersOrg/ResourcesCache/main/resources/SoftwareHelperResource/启动.gif)    
+
 ----------
 
-#### 颜色拾取
-![颜色拾取](https://raw.githubusercontent.com/WPFDevelopersOrg/ResourcesCache/main/resources/SoftwareHelperResource/ColorSelect.gif)
+#### 颜色拾取 
+
+![颜色拾取](https://raw.githubusercontent.com/WPFDevelopersOrg/ResourcesCache/main/resources/SoftwareHelperResource/ColorSelect.gif)   
 <img src="https://github.com/WPFDevelopersOrg/ResourcesCache/raw/main/resources/SoftwareHelperResource/GIFColor.gif"/>  
 
 ----------
