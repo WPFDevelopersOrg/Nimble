@@ -42,16 +42,16 @@
 
 <img src="https://github.com/WPFDevelopersOrg/ResourcesCache/raw/main/resources/SoftwareHelperResource/GIFfree.gif"/>  
 <img src="https://github.com/WPFDevelopersOrg/ResourcesCache/raw/main/resources/SoftwareHelperResource/free1.png"/>  
-
+![启动页](https://raw.githubusercontent.com/WPFDevelopersOrg/ResourcesCache/main/resources/SoftwareHelperResource/启动.gif)
 ----------
 
 #### 颜色拾取
-
+![颜色拾取](https://raw.githubusercontent.com/WPFDevelopersOrg/ResourcesCache/main/resources/SoftwareHelperResource/ColorSelect.gif)
 <img src="https://github.com/WPFDevelopersOrg/ResourcesCache/raw/main/resources/SoftwareHelperResource/GIFColor.gif"/>  
 
 ----------
 
-#### 可以自行定义 C:\Users\用户\AppData\Local\SoftwareHelper\application.json 路径修改
+#### 可以自行定义 C:\Users\用户\AppData\Local\SoftwareHelper\application.json 路径修改需要展示的应用
 
 <img src="https://github.com/WPFDevelopersOrg/ResourcesCache/raw/main/resources/SoftwareHelperResource/jsonconfig.png"/>  
 
@@ -65,6 +65,8 @@
 
 #### 启动选择 __嵌入|悬浮__ 
 
+![嵌入黑皮肤与白皮肤](https://raw.githubusercontent.com/WPFDevelopersOrg/ResourcesCache/main/resources/SoftwareHelperResource/嵌入黑皮肤与白皮肤.png)
+![悬浮黑皮肤与白皮肤](https://raw.githubusercontent.com/WPFDevelopersOrg/ResourcesCache/main/resources/SoftwareHelperResource/悬浮黑皮肤与白皮肤.png)
 <img src="https://github.com/WPFDevelopersOrg/ResourcesCache/raw/main/resources/SoftwareHelperResource/desktop.gif"/>  
 <img src="https://github.com/WPFDevelopersOrg/ResourcesCache/raw/main/resources/SoftwareHelperResource/select.png"/>  
 
