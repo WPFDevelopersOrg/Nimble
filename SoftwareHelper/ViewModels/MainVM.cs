@@ -8,11 +8,11 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using Hardcodet.Wpf.TaskbarNotification;
 using SoftwareHelper.Helpers;
 using SoftwareHelper.Helpers.MouseHelper;
 using SoftwareHelper.Models;
 using SoftwareHelper.Views;
+using WPFDevelopers.Controls;
 using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 
 namespace SoftwareHelper.ViewModels
@@ -38,7 +38,6 @@ namespace SoftwareHelper.ViewModels
         private readonly MouseHook mouseHook;
         private WindowColor colorView;
         private Rect desktopWorkingArea;
-        private TaskbarIcon taskbar;
 
         #endregion
 
@@ -133,6 +132,20 @@ namespace SoftwareHelper.ViewModels
                 NotifyPropertyChange("IsEmbedded");
             }
         }
+        private bool _isStartup = true;
+
+        /// <summary>
+        /// 是否自启
+        /// </summary>
+        public bool IsStartup
+        {
+            get => _isStartup;
+            set
+            {
+                _isStartup = value;
+                NotifyPropertyChange("IsStartup");
+            }
+        }
         private bool _isOpenContextMenu = false;
 
         /// <summary>
@@ -157,8 +170,7 @@ namespace SoftwareHelper.ViewModels
         /// </summary>
         public ICommand ViewLoaded => new RelayCommand(obj =>
         {
-            if (obj != null && obj is TaskbarIcon taskbarIcon)
-                taskbar = taskbarIcon;
+            
 
             #region Themes
 
@@ -181,6 +193,7 @@ namespace SoftwareHelper.ViewModels
 
             IsDark = ThemesHelper.GetLightDark();
             ThemesHelper.SetLightDark(IsDark);
+            IsStartup = ConfigHelper.Startup;
 
             #endregion
 
@@ -306,6 +319,18 @@ namespace SoftwareHelper.ViewModels
             screenCut.ShowDialog();
 
         });
+        /// <summary>
+        ///     StartUpCommand
+        /// </summary>
+        public ICommand StartUpCommand => new RelayCommand(obj =>
+        {
+            IsStartup = !IsStartup;
+            if (IsStartup)
+                Common.AppShortcutToStartup(IsStartup);
+            else
+                Common.AppShortcutToStartup();
+            ConfigHelper.SaveStartup(IsStartup);
+        });
         #endregion
 
         #region 方法
@@ -351,7 +376,7 @@ namespace SoftwareHelper.ViewModels
 
         private void ShowBalloon(string title, string message)
         {
-            if (taskbar != null) taskbar.ShowBalloonTip(title, message, BalloonIcon.None);
+            NotifyIcon.ShowBalloonTip(title, message, NotifyIconInfoType.None);
         }
 
         #endregion

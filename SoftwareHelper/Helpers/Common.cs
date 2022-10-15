@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
@@ -703,5 +704,34 @@ namespace SoftwareHelper.Helpers
 
         }
         #endregion
+
+        public static void AppShortcutToStartup(bool isDel = false)
+        {
+            var startupDir = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
+            if (!Directory.Exists(startupDir)) return;
+            var path = startupDir + "\\" + "SoftwareHelperStart" + ".url";
+            if (isDel)
+            {
+                if (File.Exists(path))
+                    File.Delete(path);
+            }
+            else
+            {
+                if (!File.Exists(path))
+                {
+                    using (var writer = new StreamWriter(path))
+                    {
+                        var app = Assembly.GetExecutingAssembly().Location;
+                        writer.WriteLine("[InternetShortcut]");
+                        writer.WriteLine("URL=file:///" + app);
+                        writer.WriteLine("IconIndex=0");
+                        var icon = app.Replace('\\', '/');
+                        writer.WriteLine("IconFile=" + icon);
+                    }
+                }
+            }
+            
+            
+        }
     }
 }

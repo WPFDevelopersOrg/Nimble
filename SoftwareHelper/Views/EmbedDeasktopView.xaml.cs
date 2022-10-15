@@ -142,8 +142,7 @@ namespace SoftwareHelper.Views
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             Close();
-            myNotifyIcon.Dispose();
-            Environment.Exit(0);
+            App.Current.Shutdown();
         }
 
         public void ExitEmbedded()

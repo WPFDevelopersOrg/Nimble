@@ -11,6 +11,7 @@ namespace SoftwareHelper.Helpers
         public static bool EdgeHide { get; set; }
         public static double Opacity { get; set; }
         public static bool CustomJson { get;private set; }
+        public static bool Startup { get; set; }
         public static void GetConfigHelper()
         {
             double opacity = 80;
@@ -28,6 +29,12 @@ namespace SoftwareHelper.Helpers
                 CustomJson = false;
             else
                 CustomJson = Convert.ToBoolean(string.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["CustomJson"]) ? "false" : ConfigurationManager.AppSettings["CustomJson"]);
+
+            bool startup;
+            if (!bool.TryParse(string.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["Startup"]) ? "false" : ConfigurationManager.AppSettings["Startup"], out startup))
+                startup = false;
+            else
+                startup = Convert.ToBoolean(string.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["Startup"]) ? "false" : ConfigurationManager.AppSettings["Startup"]);
         }
         double GetOpacity()
         {
@@ -55,6 +62,11 @@ namespace SoftwareHelper.Helpers
         public static void SaveEdgeHide(bool edgeHide)
         {
             SaveConfig("EdgeHide", edgeHide.ToString());
+        }
+
+        public static void SaveStartup(bool startUp)
+        {
+            SaveConfig("Startup", startUp.ToString());
         }
         static void SaveConfig(string key,string value)
         {

@@ -56,7 +56,6 @@ namespace SoftwareHelper
                 //    new FrameworkPropertyMetadata { DefaultValue = 20 });
                 var common = new Common();
                 ConfigHelper.GetConfigHelper();
-                appShortcutToStartup();
                 var main = new StartView();
                 main.Show();
             }
@@ -109,21 +108,6 @@ namespace SoftwareHelper
             e.SetObserved(); //设置该异常已察觉（这样处理后就不会引起程序崩溃）
         }
 
-        private void appShortcutToStartup()
-        {
-            var startupDir = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
-            if (!Directory.Exists(startupDir)) return;
-            var path = startupDir + "\\" + "SoftwareHelperStart" + ".url";
-            if (!File.Exists(path))
-                using (var writer = new StreamWriter(path))
-                {
-                    var app = Assembly.GetExecutingAssembly().Location;
-                    writer.WriteLine("[InternetShortcut]");
-                    writer.WriteLine("URL=file:///" + app);
-                    writer.WriteLine("IconIndex=0");
-                    var icon = app.Replace('\\', '/');
-                    writer.WriteLine("IconFile=" + icon);
-                }
-        }
+        
     }
 }

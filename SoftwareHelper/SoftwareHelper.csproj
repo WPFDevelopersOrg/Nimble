@@ -71,10 +71,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libs\GongSolutions.Wpf.DragDrop.dll</HintPath>
     </Reference>
-    <Reference Include="Hardcodet.Wpf.TaskbarNotification, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Libs\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libs\Newtonsoft.Json.dll</HintPath>
@@ -104,11 +100,8 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="WPFDevelopers, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\WPFDevelopers.1.0.5-preview\lib\net40\WPFDevelopers.dll</HintPath>
-    </Reference>
-    <Reference Include="WPFDevelopers.Minimal, Version=3.2.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\WPFDevelopers.Minimal.3.2.2\lib\net40\WPFDevelopers.Minimal.dll</HintPath>
+    <Reference Include="WPFDevelopers, Version=1.0.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WPFDevelopers.1.0.9.1-preview\lib\net40\WPFDevelopers.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -131,6 +124,7 @@
     <Compile Include="Helpers\MouseHelper\MouseHook.cs" />
     <Compile Include="Helpers\PrimaryScreen.cs" />
     <Compile Include="Helpers\RelayCommand.cs" />
+    <Compile Include="Helpers\StartupConvert.cs" />
     <Compile Include="Helpers\ThemesHelper.cs" />
     <Compile Include="Helpers\Win32Api.cs" />
     <Compile Include="Helpers\WindowBlur.cs" />

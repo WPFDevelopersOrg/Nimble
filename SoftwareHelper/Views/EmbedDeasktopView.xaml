@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:shell="https://github.com/WPFDevelopersOrg.WPFDevelopers.Minimal"
+        xmlns:wpfdev="https://github.com/WPFDevelopersOrg/WPFDevelopers"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
         xmlns:tb="http://www.hardcodet.net/taskbar"
@@ -18,12 +18,12 @@
         SnapsToDevicePixels="True" WindowStyle="None" Background="Transparent"
         Title="SoftwareHelper" Height="600" Width="90"
         ShowInTaskbar="False" x:Name="embedDeasktopView">
-    <shell:WindowChrome.WindowChrome>
-        <shell:WindowChrome GlassFrameThickness="-1" CaptionHeight="0"/>
-    </shell:WindowChrome.WindowChrome>
+    <wpfdev:WindowChrome.WindowChrome>
+        <wpfdev:WindowChrome GlassFrameThickness="-1" CaptionHeight="0"/>
+    </wpfdev:WindowChrome.WindowChrome>
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding ViewLoaded}" CommandParameter="{Binding ElementName=myNotifyIcon}"></i:InvokeCommandAction>
+            <i:InvokeCommandAction Command="{Binding ViewLoaded}"></i:InvokeCommandAction>
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <FrameworkElement.DataContext>
@@ -36,7 +36,8 @@
     </FrameworkElement.RenderTransform>
     <FrameworkElement.Resources>
         <helpers:DarkAndLightConvert x:Key="darkAndLightConvert"/>
-        <helpers:EmbeddedConvert x:Key="EmbeddedConvert"></helpers:EmbeddedConvert>
+        <helpers:EmbeddedConvert x:Key="EmbeddedConvert"/>
+        <helpers:StartupConvert x:Key="StartupConvert"></helpers:StartupConvert>
         <Style x:Key="CloseButton" TargetType="{x:Type Button}">
             <Setter Property="ToolTip" Value="Remove"/>
             <Setter Property="Foreground" Value="{DynamicResource NormalBlackBrush}"/>
@@ -232,35 +233,9 @@
         </Style>
     </FrameworkElement.Resources>
     <Grid>
-        <tb:TaskbarIcon x:Name="myNotifyIcon"
-                    IconSource="pack://application:,,,/Logo.ico"
-                    PopupActivation="DoubleClick"
-                    NoLeftClickDelay="True"
-                    TrayLeftMouseUp="myNotifyIcon_TrayLeftMouseUp">
-            <tb:TaskbarIcon.TrayToolTip>
-                <Border
-                            Padding="8"
-                            Background="{StaticResource NormalWhiteBrush}"
-                            BorderBrush="{StaticResource NormalBlackBrush}"
-                            BorderThickness="1"
-                            TextElement.Foreground="{StaticResource NormalBlackBrush}">
-                    <StackPanel Orientation="Vertical">
-                        <!--  Title  -->
-                        <TextBlock
-                                    Margin="0,0,0,2"
-                                    FontSize="15"
-                                    FontWeight="Medium"
-                                    Text="SoftwareHelper" />
-                        <TextBlock>
-                            <Run>授之以鱼，不如授之以渔</Run>
-                            <LineBreak/>
-                            <Run>微信公众号：WPFDevelopers</Run>
-                        </TextBlock>
-
-                    </StackPanel>
-                </Border>
-            </tb:TaskbarIcon.TrayToolTip>
-            <tb:TaskbarIcon.ContextMenu>
+        <wpfdev:NotifyIcon x:Name="myNotifyIcon"
+                           Title="授之以鱼，不如授之以渔 &#13;微信公众号：WPFDevelopers">
+            <wpfdev:NotifyIcon.ContextMenu>
                 <ContextMenu PlacementTarget="{Binding ElementName=myNotifyIcon}"
                              IsOpen="{Binding IsOpenContextMenu}">
                     <ContextMenu.Resources>
@@ -281,7 +256,7 @@
                     <MenuItem Header="透明度" ItemsSource="{Binding Path=OpacityItemList}" 
                               DisplayMemberPath="ItemName">
                         <MenuItem.ItemContainerStyle>
-                            <Style TargetType="MenuItem" >
+                            <Style TargetType="MenuItem">
                                 <Setter Property="IsCheckable" Value="True"/>
                                 <Setter Property="IsChecked" Value="{Binding Path=IsSelected, Mode=TwoWay}"/>
                                 <Setter Property="Padding" Value="2 6 2 6" />
@@ -293,11 +268,13 @@
                               Command="{Binding ThemesCommand}"/>
                     <MenuItem Header="{Binding IsEmbedded,Converter={StaticResource EmbeddedConvert}}" 
                               Command="{Binding EmbeddedCommand}"/>
+                    <MenuItem Header="开机启动" IsChecked="{Binding IsStartup}"
+                              Command="{Binding StartUpCommand}"/>
                     <MenuItem Header="截图" ToolTip="按下快捷键PrintScreen" Command="{Binding ScreenCutCommand}"/>
                     <MenuItem Header="关闭" Click="MenuItem_Click"/>
                 </ContextMenu>
-            </tb:TaskbarIcon.ContextMenu>
-        </tb:TaskbarIcon>
+            </wpfdev:NotifyIcon.ContextMenu>
+        </wpfdev:NotifyIcon>
         <Grid Visibility="{Binding IsEmbedded,Converter={StaticResource booleanToVisibilityConverter}}">
             <Rectangle Opacity="{Binding MainOpacity}" Margin="1,0,0,0"
                    Fill="{DynamicResource NormalBlackBrush}"/>

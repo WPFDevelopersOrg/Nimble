@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-xmlns:shell="https://github.com/WPFDevelopersOrg.WPFDevelopers.Minimal"
+xmlns:shell="https://github.com/WPFDevelopersOrg/WPFDevelopers"
 xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
     <Style x:Key="CairoButtonStyle"
