@@ -173,6 +173,7 @@ namespace SoftwareHelper.Views
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
+            if (mainVM.IsEmbedded) return;
             anchorPoint = e.GetPosition(this);
             inDrag = true;
             CaptureMouse();
@@ -183,6 +184,7 @@ namespace SoftwareHelper.Views
         {
             try
             {
+                if (mainVM.IsEmbedded) return;
                 if (!inDrag && e.LeftButton != MouseButtonState.Pressed) return;
                 var currentPoint = e.GetPosition(this);
                 Top = Top + (currentPoint.Y - anchorPoint.Y);
