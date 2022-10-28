@@ -160,7 +160,20 @@ namespace SoftwareHelper.ViewModels
                 NotifyPropertyChange("IsOpenContextMenu");
             }
         }
+        private Cursor _cursor = Cursors.SizeAll;
 
+        /// <summary>
+        /// 鼠标样式
+        /// </summary>
+        public Cursor Cursor
+        {
+            get => _cursor;
+            set
+            {
+                _cursor = value;
+                NotifyPropertyChange("Cursor");
+            }
+        }
         #endregion
 
         #region 命令
@@ -270,6 +283,10 @@ namespace SoftwareHelper.ViewModels
         {
             var drag = !IsDragDrop;
             IsDragDrop = drag;
+            if (!IsDragDrop)
+                Cursor = Cursors.SizeAll;
+            else
+                Cursor = Cursors.No;
         });
 
         /// <summary>
@@ -303,6 +320,7 @@ namespace SoftwareHelper.ViewModels
         {
             IsEmbedded = !IsEmbedded;
             if(IsEmbedded)
+           
                 Win32Api.RegisterDesktop();
             else
                 Win32Api.UnRegisterDesktop();

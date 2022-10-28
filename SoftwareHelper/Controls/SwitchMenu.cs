@@ -282,7 +282,6 @@ namespace SoftwareHelper.Controls
             set => SetValue(IsDragDropProperty, value);
         }
 
-        // Using a DependencyProperty as the backing store for IsDragDrop.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsDragDropProperty =
             DependencyProperty.Register("IsDragDrop", typeof(bool), typeof(SwitchMenu),
                 new PropertyMetadata(false, UpdateDragDropPropertyMetadata));
