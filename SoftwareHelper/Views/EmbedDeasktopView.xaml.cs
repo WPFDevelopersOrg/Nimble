@@ -8,7 +8,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
 using SoftwareHelper.Helpers;
 using SoftwareHelper.ViewModels;
 using WPFDevelopers.Controls;
@@ -290,5 +292,71 @@ namespace SoftwareHelper.Views
         }
 
         #endregion
+
+
+        private void Grid_DragOver(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+               var msg = ((System.Array)e.Data.GetData(DataFormats.FileDrop)).GetValue(0).ToString();
+                DragTextBlock.Text = System.IO.Path.GetFileName(msg);
+                DragImage.Source = (BitmapSource)Common.GetIcon(msg);
+                var point = e.GetPosition(this);
+                Canvas.SetLeft(DragStackPanel, point.X - DragStackPanel.ActualWidth / 2);
+                Canvas.SetTop(DragStackPanel, point.Y - DragStackPanel.ActualHeight / 2);
+            }
+           
+        }
+
+        private void embedDeasktopView_DragEnter(object sender, DragEventArgs e)
+        {
+            AppSwitchListEmbedded.IsHitTestVisible = false;
+            AppSwitchList.IsHitTestVisible = false;
+            DragScaleTransform.ScaleX = 1;
+            DragScaleTransform.ScaleY = 1;
+            DragCanvas.Visibility = Visibility.Visible;
+        }
+
+        private void embedDeasktopView_DragLeave(object sender, DragEventArgs e)
+        {
+            //DragInitial();
+        }
+        void DisposeDrag()
+        {
+            var storyboard = new Storyboard();
+            var doubleXAnimation = new DoubleAnimation
+            {
+                From = 1,
+                To = 0,
+                Duration = new Duration(TimeSpan.FromSeconds(0.5)),
+            };
+            Storyboard.SetTargetName(doubleXAnimation, "DragStackPanel");
+            Storyboard.SetTargetProperty(doubleXAnimation, new PropertyPath("(StackPanel.RenderTransform).(ScaleTransform.ScaleX)"));
+            var doubleYAnimation = new DoubleAnimation
+            {
+                From = 1,
+                To = 0,
+                Duration = new Duration(TimeSpan.FromSeconds(0.5)),
+            };
+            Storyboard.SetTargetName(doubleYAnimation, "DragStackPanel");
+            Storyboard.SetTargetProperty(doubleYAnimation, new PropertyPath("(StackPanel.RenderTransform).(ScaleTransform.ScaleY)"));
+            storyboard.Children.Add(doubleXAnimation);
+            storyboard.Children.Add(doubleYAnimation);
+            storyboard.Completed += delegate 
+            {
+                DragInitial();
+            };
+            storyboard.Begin(DragStackPanel);
+        }
+        void DragInitial()
+        {
+            DragCanvas.Visibility = Visibility.Collapsed;
+            AppSwitchListEmbedded.IsHitTestVisible = true;
+            AppSwitchList.IsHitTestVisible = true;
+        }
+        private void DragCanvas_Drop(object sender, DragEventArgs e)
+        {
+            DisposeDrag();
+        }
     }
 }

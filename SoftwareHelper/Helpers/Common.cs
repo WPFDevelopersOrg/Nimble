@@ -21,15 +21,15 @@ namespace SoftwareHelper.Helpers
         /// <summary>
         /// 路径
         /// </summary>
-        public static string temporaryFile { get; set; }
+        public static string TemporaryFile { get; set; }
         /// <summary>
         /// 存放路径图标
         /// </summary>
-        public static string temporaryIconFile { get; set; }
+        public static string TemporaryIconFile { get; set; }
         /// <summary>
         /// 应用程序json
         /// </summary>
-        public static string temporaryApplicationJson { get; set; }
+        public static string TemporaryApplicationJson { get; set; }
         /// <summary>
         /// 默认图标
         /// </summary>
@@ -312,7 +312,7 @@ namespace SoftwareHelper.Helpers
                     model = new ApplicationModel();
                     model.ExePath = appliction;
                     model.Name = fileVersion.FileDescription;
-                    var iconPath = System.IO.Path.Combine(temporaryIconFile, model.Name);
+                    var iconPath = System.IO.Path.Combine(TemporaryIconFile, model.Name);
                     iconPath = iconPath + ".png";
                     model.IconPath = iconPath;
                     string first = model.Name.Substring(0, 1);
@@ -354,7 +354,7 @@ namespace SoftwareHelper.Helpers
                         model = new ApplicationModel();
                         model.ExePath = lnk;
                         model.Name = name;
-                        var iconPath = System.IO.Path.Combine(temporaryIconFile, model.Name);
+                        var iconPath = System.IO.Path.Combine(TemporaryIconFile, model.Name);
                         iconPath = iconPath + ".png";
                         model.IconPath = iconPath;
                         string first = model.Name.Substring(0, 1);
@@ -381,22 +381,22 @@ namespace SoftwareHelper.Helpers
         #endregion
 
         #region 文件夹
-        public static void TemporaryFile()
+        public static void TemporaryFiles()
         {
             try
             {
-                temporaryFile = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), System.IO.Path.GetFileNameWithoutExtension(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName));
-                if (!System.IO.Directory.Exists(temporaryFile))
+                TemporaryFile = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), System.IO.Path.GetFileNameWithoutExtension(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName));
+                if (!System.IO.Directory.Exists(TemporaryFile))
                 {
-                    System.IO.Directory.CreateDirectory(temporaryFile);
+                    System.IO.Directory.CreateDirectory(TemporaryFile);
                 }
-                temporaryIconFile = System.IO.Path.Combine(temporaryFile, "Icon");
-                if (!System.IO.Directory.Exists(temporaryIconFile))
+                TemporaryIconFile = System.IO.Path.Combine(TemporaryFile, "Icon");
+                if (!System.IO.Directory.Exists(TemporaryIconFile))
                 {
-                    System.IO.Directory.CreateDirectory(temporaryIconFile);
+                    System.IO.Directory.CreateDirectory(TemporaryIconFile);
                 }
-                temporaryApplicationJson = Path.Combine(temporaryFile, "application.json");
-                ApplicationIcon = Path.Combine(temporaryIconFile, "ApplicationIcon.png");
+                TemporaryApplicationJson = Path.Combine(TemporaryFile, "application.json");
+                ApplicationIcon = Path.Combine(TemporaryIconFile, "ApplicationIcon.png");
                 if (!File.Exists(ApplicationIcon))
                 {
                     SaveImage((BitmapSource)GetSystemIcon(), ApplicationIcon);
@@ -475,7 +475,7 @@ namespace SoftwareHelper.Helpers
                 return;
             model.ExePath = model.ExePath.Trim('"');
             var exe = Path.GetExtension(model.ExePath);
-            var iconPath = System.IO.Path.Combine(temporaryIconFile, model.Name);
+            var iconPath = System.IO.Path.Combine(TemporaryIconFile, model.Name);
 
 
             switch (exe)
@@ -502,18 +502,18 @@ namespace SoftwareHelper.Helpers
 
         public static void Init()
         {
-            Common.TemporaryFile();
+            Common.TemporaryFiles();
             if(!ConfigHelper.CustomJson)
             {
                 Common.ApplicationListCache = Common.AllApplictionInstalled();
                 Common.GetDesktopAppliction(Common.ApplicationListCache);
                 Common.ApplicationListCache = new ObservableCollection<ApplicationModel>(Common.ApplicationListCache.OrderBy(x => x.Group));
                 string json = JsonHelper.Serialize(Common.ApplicationListCache);
-                FileHelper.WriteFile(ConvertJsonString(json), Common.temporaryApplicationJson);
+                FileHelper.WriteFile(ConvertJsonString(json), Common.TemporaryApplicationJson);
             }
             else
             {
-                var json = FileHelper.ReadFile(temporaryApplicationJson);
+                var json = FileHelper.ReadFile(TemporaryApplicationJson);
                 var applications = JsonHelper.Deserialize<ObservableCollection<ApplicationModel>>(json);
                 if (applications == null && applications.Count == 0) return;
                 var iconNull = applications.Where(z => string.IsNullOrWhiteSpace(z.IconPath));
@@ -522,7 +522,7 @@ namespace SoftwareHelper.Helpers
                     foreach (var item in iconNull)
                     {
                         if (string.IsNullOrWhiteSpace(item.ExePath) && string.IsNullOrWhiteSpace(item.Name)) return;
-                        var iconPath = System.IO.Path.Combine(temporaryIconFile, item.Name);
+                        var iconPath = System.IO.Path.Combine(TemporaryIconFile, item.Name);
                         iconPath = $"{iconPath}.png";
                         if (applications.Any(z => z.Name == item.Name))
                         {
@@ -546,7 +546,7 @@ namespace SoftwareHelper.Helpers
                 }
                 Common.ApplicationListCache = new ObservableCollection<ApplicationModel>(applications.OrderBy(x => x.Group));
                 var json1 = JsonHelper.Serialize(Common.ApplicationListCache);
-                FileHelper.WriteFile(ConvertJsonString(json1), Common.temporaryApplicationJson);
+                FileHelper.WriteFile(ConvertJsonString(json1), Common.TemporaryApplicationJson);
             }
         }
 
