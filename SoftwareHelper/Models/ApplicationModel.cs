@@ -24,5 +24,9 @@
         ///     是否移除
         /// </summary>
         public bool IsRemove { get; set; }
+        /// <summary>
+        ///     是否是拖拽进来的
+        /// </summary>
+        public bool IsDrag { get; set; }
     }
 }

@@ -18,7 +18,9 @@
         SnapsToDevicePixels="True" WindowStyle="None" Background="Transparent"
         Title="SoftwareHelper" Height="600" Width="90"
         ShowInTaskbar="False" x:Name="embedDeasktopView"
-        AllowDrop="True" PreviewDragEnter="embedDeasktopView_DragEnter" PreviewDragLeave="embedDeasktopView_DragLeave">
+        AllowDrop="True" 
+        PreviewDragEnter="embedDeasktopView_DragEnter" 
+        PreviewDragLeave="embedDeasktopView_DragLeave">
     <wpfdev:WindowChrome.WindowChrome>
         <wpfdev:WindowChrome GlassFrameThickness="-1" CaptionHeight="0"/>
     </wpfdev:WindowChrome.WindowChrome>
@@ -356,12 +358,15 @@
                        HorizontalAlignment="Center" VerticalAlignment="Center"
                        FontSize="22" Foreground="{DynamicResource NormalWhiteBrush}" />
         </Border>
-        <Canvas Background="Transparent" x:Name="DragCanvas"
-                AllowDrop="True" DragOver="Grid_DragOver"
+        <Canvas Background="Transparent" 
+                x:Name="DragCanvas"
+                AllowDrop="True" 
+                DragOver="DragCanvas_DragOver"
                 Drop="DragCanvas_Drop"
                 Visibility="Collapsed">
             <StackPanel Orientation="Vertical" Name="DragStackPanel"
-                        RenderTransformOrigin=".5,.5">
+                        RenderTransformOrigin=".5,.5"
+                        Opacity=".5">
                 <StackPanel.RenderTransform>
                     <ScaleTransform x:Name="DragScaleTransform" ScaleX="1" ScaleY="1"/>
                 </StackPanel.RenderTransform>

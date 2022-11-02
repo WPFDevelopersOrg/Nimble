@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using Microsoft.Expression.Drawing.Core;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using SoftwareHelper.Models;
 using System;
@@ -30,6 +31,10 @@ namespace SoftwareHelper.Helpers
         /// 应用程序json
         /// </summary>
         public static string TemporaryApplicationJson { get; set; }
+        /// <summary>
+        /// 自己推拽的应用程序json
+        /// </summary>
+        public static string LocalTemporaryApplicationJson { get; set; }
         /// <summary>
         /// 默认图标
         /// </summary>
@@ -396,6 +401,7 @@ namespace SoftwareHelper.Helpers
                     System.IO.Directory.CreateDirectory(TemporaryIconFile);
                 }
                 TemporaryApplicationJson = Path.Combine(TemporaryFile, "application.json");
+                LocalTemporaryApplicationJson = Path.Combine(TemporaryFile, "localapplication.json");
                 ApplicationIcon = Path.Combine(TemporaryIconFile, "ApplicationIcon.png");
                 if (!File.Exists(ApplicationIcon))
                 {
@@ -548,11 +554,16 @@ namespace SoftwareHelper.Helpers
                 var json1 = JsonHelper.Serialize(Common.ApplicationListCache);
                 FileHelper.WriteFile(ConvertJsonString(json1), Common.TemporaryApplicationJson);
             }
+            var jsonLocal = FileHelper.ReadFile(LocalTemporaryApplicationJson);
+            var applicationsLocal = JsonHelper.Deserialize<ObservableCollection<ApplicationModel>>(jsonLocal);
+            Common.ApplicationListCache.AddRange(applicationsLocal);
+            Common.ApplicationListCache = new ObservableCollection<ApplicationModel>(Common.ApplicationListCache.OrderBy(x => x.Group));
+
         }
 
 
         #region 格式化json字符串
-        static string ConvertJsonString(string str)
+        public static string ConvertJsonString(string str)
         {
             //格式化json字符串
             JsonSerializer serializer = new JsonSerializer();
@@ -579,7 +590,7 @@ namespace SoftwareHelper.Helpers
         #endregion
 
         #region 判断首字母是否为中文,如果为中文 首字母转为英语
-        static bool IsChinese(string text)
+        public static bool IsChinese(string text)
         {
             bool chinese = false;
             Regex regChina = new Regex("[^\x00-\xFF]");
@@ -600,7 +611,7 @@ namespace SoftwareHelper.Helpers
         /// <param name="CnChar">单个汉字</param>
         /// <returns>单个大写字母</returns>
 
-        static string GetCharSpellCode(string CnChar)
+        public static string GetCharSpellCode(string CnChar)
         {
             long iCnChar;
             byte[] ZW = System.Text.Encoding.Default.GetBytes(CnChar);

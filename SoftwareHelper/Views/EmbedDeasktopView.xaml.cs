@@ -11,9 +11,14 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
+using Newtonsoft.Json.Linq;
+using System.Xml.Linq;
 using SoftwareHelper.Helpers;
+using SoftwareHelper.Models;
 using SoftwareHelper.ViewModels;
 using WPFDevelopers.Controls;
+using static System.Windows.Forms.LinkLabel;
+using System.IO;
 
 namespace SoftwareHelper.Views
 {
@@ -28,6 +33,8 @@ namespace SoftwareHelper.Views
         private Point anchorPoint;
         private bool inDrag;
         private readonly MainVM mainVM;
+        private string filePath;
+        private BitmapSource fileIcon;
 
         public EmbedDeasktopView()
         {
@@ -133,6 +140,8 @@ namespace SoftwareHelper.Views
         private void EmbedDeasktopView_Closing(object sender, CancelEventArgs e)
         {
             Win32Api.UnRegisterDesktop(true);
+            string json = JsonHelper.Serialize(mainVM.ApplicationList.Where(x=>x.IsDrag == true).OrderBy(x => x.Group));
+            FileHelper.WriteFile(Common.ConvertJsonString(json), Common.LocalTemporaryApplicationJson);
         }
 
         protected override void OnSourceInitialized(EventArgs e)
@@ -294,16 +303,28 @@ namespace SoftwareHelper.Views
         #endregion
 
 
-        private void Grid_DragOver(object sender, DragEventArgs e)
+        private void DragCanvas_DragOver(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            try
             {
-               var msg = ((System.Array)e.Data.GetData(DataFormats.FileDrop)).GetValue(0).ToString();
-                DragTextBlock.Text = System.IO.Path.GetFileName(msg);
-                DragImage.Source = (BitmapSource)Common.GetIcon(msg);
-                var point = e.GetPosition(this);
-                Canvas.SetLeft(DragStackPanel, point.X - DragStackPanel.ActualWidth / 2);
-                Canvas.SetTop(DragStackPanel, point.Y - DragStackPanel.ActualHeight / 2);
+                if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                {
+                    var msg = ((System.Array)e.Data.GetData(DataFormats.FileDrop)).GetValue(0).ToString();
+                    filePath = msg;
+                    DragTextBlock.Text = System.IO.Path.GetFileName(filePath);
+                    var icon = (BitmapSource)Common.GetIcon(filePath);
+                    fileIcon = icon;
+                    DragImage.Source = fileIcon;
+                    var point = e.GetPosition(this);
+                    var x = point.X - DragStackPanel.ActualWidth / 2;
+                    var y = point.Y - DragStackPanel.ActualHeight / 2;
+                    Canvas.SetLeft(DragStackPanel, x);
+                    Canvas.SetTop(DragStackPanel, y);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error("DragCanvas_DragOver:" + ex.Message);
             }
            
         }
@@ -312,14 +333,26 @@ namespace SoftwareHelper.Views
         {
             AppSwitchListEmbedded.IsHitTestVisible = false;
             AppSwitchList.IsHitTestVisible = false;
-            DragScaleTransform.ScaleX = 1;
-            DragScaleTransform.ScaleY = 1;
+            var doubleXAnimation = new DoubleAnimation
+            {
+                From = 0,
+                To = 1,
+                Duration = new Duration(TimeSpan.FromSeconds(0)),
+            };
+            DragScaleTransform.BeginAnimation(ScaleTransform.ScaleXProperty,doubleXAnimation);
+            var doubleYAnimation = new DoubleAnimation
+            {
+                From = 0,
+                To = 1,
+                Duration = new Duration(TimeSpan.FromSeconds(0)),
+            };
+            DragScaleTransform.BeginAnimation(ScaleTransform.ScaleYProperty, doubleXAnimation);
             DragCanvas.Visibility = Visibility.Visible;
         }
 
         private void embedDeasktopView_DragLeave(object sender, DragEventArgs e)
         {
-            //DragInitial();
+            DragInitial();
         }
         void DisposeDrag()
         {
@@ -329,6 +362,7 @@ namespace SoftwareHelper.Views
                 From = 1,
                 To = 0,
                 Duration = new Duration(TimeSpan.FromSeconds(0.5)),
+                EasingFunction = new BackEase { EasingMode = EasingMode.EaseIn },
             };
             Storyboard.SetTargetName(doubleXAnimation, "DragStackPanel");
             Storyboard.SetTargetProperty(doubleXAnimation, new PropertyPath("(StackPanel.RenderTransform).(ScaleTransform.ScaleX)"));
@@ -337,6 +371,7 @@ namespace SoftwareHelper.Views
                 From = 1,
                 To = 0,
                 Duration = new Duration(TimeSpan.FromSeconds(0.5)),
+                EasingFunction = new BackEase { EasingMode = EasingMode.EaseIn },
             };
             Storyboard.SetTargetName(doubleYAnimation, "DragStackPanel");
             Storyboard.SetTargetProperty(doubleYAnimation, new PropertyPath("(StackPanel.RenderTransform).(ScaleTransform.ScaleY)"));
@@ -345,18 +380,58 @@ namespace SoftwareHelper.Views
             storyboard.Completed += delegate 
             {
                 DragInitial();
+                var model = new ApplicationModel();
+                model.ExePath = filePath;
+                model.Name = DragTextBlock.Text;
+                var iconPath = System.IO.Path.Combine(Common.TemporaryIconFile, model.Name);
+                iconPath = iconPath + ".png";
+                model.IconPath = iconPath;
+                model.IsDrag = true;
+                var firstModel = mainVM.ApplicationList.FirstOrDefault(x => x.Name == model.Name && x.ExePath == model.ExePath);
+                if (firstModel != null) return;
+                string first = model.Name.Substring(0, 1);
+                if (!Common.IsChinese(first))
+                {
+                    if (char.IsUpper(first.ToCharArray()[0]))
+                        model.Group = first;
+                    model.Group = model.Name.Substring(0, 1).ToUpper();
+                }
+                else
+                {
+                    model.Group = Common.GetCharSpellCode(first);
+                }
+                mainVM.ApplicationList.Insert(0, model);
+                if (File.Exists(iconPath))
+                    return;
+                Common.SaveImage(fileIcon, iconPath);
             };
             storyboard.Begin(DragStackPanel);
         }
         void DragInitial()
         {
-            DragCanvas.Visibility = Visibility.Collapsed;
-            AppSwitchListEmbedded.IsHitTestVisible = true;
-            AppSwitchList.IsHitTestVisible = true;
+            try
+            {
+                DragCanvas.Visibility = Visibility.Collapsed;
+                AppSwitchListEmbedded.IsHitTestVisible = true;
+                AppSwitchList.IsHitTestVisible = true;
+            }
+            catch (Exception ex)
+            {
+
+                Log.Error("DragInitial:" + ex.Message);
+            }
         }
         private void DragCanvas_Drop(object sender, DragEventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(filePath))
+            {
+                DragInitial();
+                return; 
+            }
             DisposeDrag();
         }
+
+        
+
     }
 }
