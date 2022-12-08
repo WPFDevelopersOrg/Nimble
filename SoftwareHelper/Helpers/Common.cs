@@ -554,9 +554,12 @@ namespace SoftwareHelper.Helpers
                 var json1 = JsonHelper.Serialize(Common.ApplicationListCache);
                 FileHelper.WriteFile(ConvertJsonString(json1), Common.TemporaryApplicationJson);
             }
-            var jsonLocal = FileHelper.ReadFile(LocalTemporaryApplicationJson);
-            var applicationsLocal = JsonHelper.Deserialize<ObservableCollection<ApplicationModel>>(jsonLocal);
-            Common.ApplicationListCache.AddRange(applicationsLocal);
+            if (File.Exists(LocalTemporaryApplicationJson))
+            {
+                var jsonLocal = FileHelper.ReadFile(LocalTemporaryApplicationJson);
+                var applicationsLocal = JsonHelper.Deserialize<ObservableCollection<ApplicationModel>>(jsonLocal);
+                Common.ApplicationListCache.AddRange(applicationsLocal);
+            }
             Common.ApplicationListCache = new ObservableCollection<ApplicationModel>(Common.ApplicationListCache.OrderBy(x => x.Group));
 
         }
