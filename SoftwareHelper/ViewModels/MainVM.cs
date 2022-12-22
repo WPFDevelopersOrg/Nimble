@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -38,6 +37,7 @@ namespace SoftwareHelper.ViewModels
         private readonly MouseHook mouseHook;
         private WindowColor colorView;
         private Rect desktopWorkingArea;
+        private MousePoint.POINT point;
 
         #endregion
 
@@ -121,7 +121,7 @@ namespace SoftwareHelper.ViewModels
         private bool _isEmbedded = true;
 
         /// <summary>
-        /// 是否嵌入
+        ///     是否嵌入
         /// </summary>
         public bool IsEmbedded
         {
@@ -132,10 +132,11 @@ namespace SoftwareHelper.ViewModels
                 NotifyPropertyChange("IsEmbedded");
             }
         }
+
         private bool _isStartup = true;
 
         /// <summary>
-        /// 是否自启
+        ///     是否自启
         /// </summary>
         public bool IsStartup
         {
@@ -146,10 +147,11 @@ namespace SoftwareHelper.ViewModels
                 NotifyPropertyChange("IsStartup");
             }
         }
-        private bool _isOpenContextMenu = false;
+
+        private bool _isOpenContextMenu;
 
         /// <summary>
-        /// 是否关闭
+        ///     是否关闭
         /// </summary>
         public bool IsOpenContextMenu
         {
@@ -160,10 +162,11 @@ namespace SoftwareHelper.ViewModels
                 NotifyPropertyChange("IsOpenContextMenu");
             }
         }
+
         private Cursor _cursor = Cursors.SizeAll;
 
         /// <summary>
-        /// 鼠标样式
+        ///     鼠标样式
         /// </summary>
         public Cursor Cursor
         {
@@ -174,6 +177,7 @@ namespace SoftwareHelper.ViewModels
                 NotifyPropertyChange("Cursor");
             }
         }
+
         #endregion
 
         #region 命令
@@ -183,16 +187,14 @@ namespace SoftwareHelper.ViewModels
         /// </summary>
         public ICommand ViewLoaded => new RelayCommand(obj =>
         {
-            
-
             #region Themes
 
             OpacityItemList = new ObservableCollection<OpacityItem>
             {
-                new OpacityItem { Value = 100.00 },
-                new OpacityItem { Value = 80.00 },
-                new OpacityItem { Value = 60.00 },
-                new OpacityItem { Value = 40.00 }
+                new OpacityItem {Value = 100.00},
+                new OpacityItem {Value = 80.00},
+                new OpacityItem {Value = 60.00},
+                new OpacityItem {Value = 40.00}
             };
             currentOpacity = ConfigHelper.Opacity;
             MainOpacity = currentOpacity / 100;
@@ -221,8 +223,16 @@ namespace SoftwareHelper.ViewModels
             {
                 ApplicationList = Common.ApplicationListCache;
             }
+
+            mouseHook.MouseMove += MouseHook_MouseMove;
             mouseHook.MouseDown += MouseHook_MouseDown;
         });
+
+        private void MouseHook_MouseMove(object sender, MouseEventArgs e)
+        {
+            point.X = e.Location.X;
+            point.Y = e.Location.Y;
+        }
 
         private void Item_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -253,10 +263,7 @@ namespace SoftwareHelper.ViewModels
         /// <summary>
         ///     ExitCommand
         /// </summary>
-        public ICommand ExitCommand => new RelayCommand(obj =>
-        {
-            Environment.Exit(0);
-        });
+        public ICommand ExitCommand => new RelayCommand(obj => { Environment.Exit(0); });
 
         /// <summary>
         ///     ThemesCommand
@@ -313,19 +320,20 @@ namespace SoftwareHelper.ViewModels
                 mouseHook.Start();
             }
         });
+
         /// <summary>
         ///     EmbeddedCommand
         /// </summary>
         public ICommand EmbeddedCommand => new RelayCommand(obj =>
         {
             IsEmbedded = !IsEmbedded;
-            if(IsEmbedded)
-           
+            if (IsEmbedded)
+
                 Win32Api.RegisterDesktop();
             else
                 Win32Api.UnRegisterDesktop();
-
         });
+
         /// <summary>
         ///     ScreenCutCommand
         /// </summary>
@@ -333,10 +341,10 @@ namespace SoftwareHelper.ViewModels
         {
             IsOpenContextMenu = false;
             Keyboard.ClearFocus();
-            var screenCut = new WPFDevelopers.Controls.ScreenCut();
+            var screenCut = new ScreenCut();
             screenCut.ShowDialog();
-
         });
+
         /// <summary>
         ///     StartUpCommand
         /// </summary>
@@ -349,15 +357,33 @@ namespace SoftwareHelper.ViewModels
                 Common.AppShortcutToStartup();
             ConfigHelper.SaveStartup(IsStartup);
         });
+
         #endregion
 
         #region 方法
+
         private Color color;
         private string hex;
+
         private void Timer_Tick(object sender, EventArgs e)
         {
-            var point = new MousePoint.POINT();
-            var isMouseDown = MousePoint.GetCursorPos(out point);
+            //var point = new MousePoint.POINT();
+            //var isMouseDown = MousePoint.GetCursorPos(out point);
+            //color = Win32Api.GetPixelColor(point.X, point.Y);
+            //var source = PresentationSource.FromVisual(colorView);
+            //var dpiX = source.CompositionTarget.TransformToDevice.M11;
+            //var dpiY = source.CompositionTarget.TransformToDevice.M22;
+            //if (point.X / dpiX >= desktopWorkingArea.Width)
+            //    colorView.Left = point.X / dpiX - 40;
+            //else if (point.X <= 10)
+            //    colorView.Left = point.X / dpiX;
+            //else
+            //    colorView.Left = point.X / dpiX;
+            //if (point.Y / dpiY >= desktopWorkingArea.Height - 40)
+            //    colorView.Top = point.Y / dpiY - 40;
+            //else
+            //    colorView.Top = point.Y / dpiY;
+
             color = Win32Api.GetPixelColor(point.X, point.Y);
             var source = PresentationSource.FromVisual(colorView);
             var dpiX = source.CompositionTarget.TransformToDevice.M11;
@@ -372,7 +398,6 @@ namespace SoftwareHelper.ViewModels
                 colorView.Top = point.Y / dpiY - 40;
             else
                 colorView.Top = point.Y / dpiY;
-
             colorView.MouseColor = new SolidColorBrush(color);
             hex = color.ToString();
             if (hex.Length > 7)

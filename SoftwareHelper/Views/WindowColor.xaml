@@ -7,10 +7,14 @@
         xmlns:shell="https://github.com/WPFDevelopersOrg/WPFDevelopers"
         mc:Ignorable="d"
         Title="WindowColor"
-        UseLayoutRounding="True" ResizeMode="NoResize" Height="60"
+        UseLayoutRounding="True" 
+        ResizeMode="NoResize" 
+        Height="60"
         SizeToContent="Width"
-        SnapsToDevicePixels="True" WindowStyle="None" Background="Transparent"
-        Topmost="True" ShowInTaskbar="False" >
+        SnapsToDevicePixels="True" WindowStyle="None" 
+        Background="Transparent"
+        Topmost="True" 
+        ShowInTaskbar="False">
     <shell:WindowChrome.WindowChrome>
         <shell:WindowChrome GlassFrameThickness="-1" CaptionHeight="0"/>
     </shell:WindowChrome.WindowChrome>

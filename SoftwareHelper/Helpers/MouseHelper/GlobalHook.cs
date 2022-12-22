@@ -30,17 +30,17 @@ namespace SoftwareHelper.Helpers.MouseHelper
         [StructLayout(LayoutKind.Sequential)]
         protected class POINT
         {
-            public int x;
-            public int y;
+            public int X;
+            public int Y;
         }
 
         [StructLayout(LayoutKind.Sequential)]
         protected class MouseHookStruct
         {
-            public int dwExtraInfo;
-            public int hwnd;
             public POINT pt;
+            public int hwnd;
             public int wHitTestCode;
+            public int dwExtraInfo;
         }
 
         [StructLayout(LayoutKind.Sequential)]

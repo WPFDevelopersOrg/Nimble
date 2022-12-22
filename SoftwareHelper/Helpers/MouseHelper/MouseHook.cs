@@ -51,7 +51,7 @@ namespace SoftwareHelper.Helpers.MouseHelper
             if (nCode > -1 && (MouseDown != null || MouseUp != null || MouseMove != null))
             {
                 var mouseHookStruct =
-                    (MouseLLHookStruct)Marshal.PtrToStructure(lParam, typeof(MouseLLHookStruct));
+                    (MouseHookStruct)Marshal.PtrToStructure(lParam, typeof(MouseHookStruct));
 
                 var button = GetButton(wParam);
                 var eventType = GetEventType(wParam);
@@ -59,12 +59,12 @@ namespace SoftwareHelper.Helpers.MouseHelper
                 var e = new MouseEventArgs(
                     button,
                     eventType == MouseEventType.DoubleClick ? 2 : 1,
-                    mouseHookStruct.pt.x,
-                    mouseHookStruct.pt.y,
-                    eventType == MouseEventType.MouseWheel ? (short)((mouseHookStruct.mouseData >> 16) & 0xffff) : 0);
+                    mouseHookStruct.pt.X,
+                    mouseHookStruct.pt.Y,
+                    0);
 
                 // Prevent multiple Right Click events (this probably happens for popup menus)
-                if (button == MouseButtons.Right && mouseHookStruct.flags != 0) eventType = MouseEventType.None;
+                if (button == MouseButtons.Right) eventType = MouseEventType.None;
 
                 switch (eventType)
                 {
