@@ -51,7 +51,7 @@ namespace SoftwareHelper
                     Process.Start(autoUpdater, version);
                 }
                 else
-                    Log.Warn("警告:未找到AutoUpdater.exe，无法及时更新到最新版。");
+                    Log.Warn("警告:未找到 AutoUpdater.exe，无法及时更新到最新版。");
 #endif
                 //FPS设置为20
                 //Timeline.DesiredFrameRateProperty.OverrideMetadata(typeof(Timeline),

@@ -17,8 +17,8 @@ using SoftwareHelper.Helpers;
 using SoftwareHelper.Models;
 using SoftwareHelper.ViewModels;
 using WPFDevelopers.Controls;
-using static System.Windows.Forms.LinkLabel;
 using System.IO;
+using WPFDevelopers.Controls.ScreenCapturer;
 
 namespace SoftwareHelper.Views
 {
@@ -47,7 +47,6 @@ namespace SoftwareHelper.Views
             _hook.KeyDown += OnHookKeyDown;
             _hook.KeyUp += OnHookKeyUp;
         }
-
         private void OnHookKeyUp(object sender, HookEventArgs e)
         {
             SetKeyUp(e.Key);
@@ -59,13 +58,15 @@ namespace SoftwareHelper.Views
             SetKeyDown(e.Key);
             if (IsKeyDown(Key.PrintScreen))
             {
-                var screenCut = new ScreenCut() {Topmost = true};
-                screenCut.Activate();
-                screenCut.Closing += delegate 
+                Application.Current.Dispatcher.Invoke(new Action(delegate
                 {
-                    SetKeyUp(Key.PrintScreen);
-                };
-                screenCut.ShowDialog();   
+                    var screenCapturer = new ScreenCapture();
+                    screenCapturer.SnapCanceled += delegate
+                    {
+                        SetKeyUp(Key.PrintScreen);
+                    };
+                    screenCapturer.Capture();
+                }));
             }
             else
             {
@@ -149,7 +150,6 @@ namespace SoftwareHelper.Views
             base.OnSourceInitialized(e);
             Win32Api.RegisterDesktop(this);
         }
-
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             Close();

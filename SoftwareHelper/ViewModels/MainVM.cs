@@ -6,12 +6,14 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using SoftwareHelper.Helpers;
 using SoftwareHelper.Helpers.MouseHelper;
 using SoftwareHelper.Models;
 using SoftwareHelper.Views;
 using WPFDevelopers.Controls;
+using WPFDevelopers.Controls.ScreenCapturer;
 using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 
 namespace SoftwareHelper.ViewModels
@@ -341,9 +343,24 @@ namespace SoftwareHelper.ViewModels
         {
             IsOpenContextMenu = false;
             Keyboard.ClearFocus();
-            var screenCut = new ScreenCut();
-            screenCut.ShowDialog();
+            Application.Current.Dispatcher.Invoke(new Action(delegate
+             {
+                 var screenCapturer = new ScreenCapture();
+                 screenCapturer.SnapCompleted += ScreenCapturer_SnapCompleted;
+                 screenCapturer.SnapCanceled += ScreenCapturer_SnapCanceled;
+                 screenCapturer.Capture();
+             }));
+            //var screenCapturer = new ScreenCapture();
+            //screenCapturer.Capture();
         });
+
+        private void ScreenCapturer_SnapCanceled()
+        {
+        }
+
+        private void ScreenCapturer_SnapCompleted(CroppedBitmap bitmap)
+        {
+        }
 
         /// <summary>
         ///     StartUpCommand
