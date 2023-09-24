@@ -1,0 +1,508 @@
+﻿<Window
+    x:Class="Nimble.Views.EmbedDeasktopView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:Nimble.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:drag="urn:gong-wpf-dragdrop"
+    xmlns:helpers="clr-namespace:Nimble.Helpers"
+    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
+    xmlns:tb="http://www.hardcodet.net/taskbar"
+    xmlns:views="clr-namespace:Nimble.Views"
+    xmlns:vm="clr-namespace:Nimble.ViewModels"
+    xmlns:wd="https://github.com/WPFDevelopersOrg/WPFDevelopers"
+    x:Name="embedDeasktopView"
+    Title="Nimble"
+    Width="90"
+    Height="600"
+    AllowDrop="True"
+    Background="Transparent"
+    PreviewDragEnter="embedDeasktopView_DragEnter"
+    PreviewDragLeave="embedDeasktopView_DragLeave"
+    ResizeMode="NoResize"
+    ShowInTaskbar="False"
+    SnapsToDevicePixels="True"
+    TextOptions.TextFormattingMode="Display"
+    UseLayoutRounding="True"
+    WindowStyle="None"
+    mc:Ignorable="d">
+    <wd:WindowChrome.WindowChrome>
+        <wd:WindowChrome CaptionHeight="0" GlassFrameThickness="-1" />
+    </wd:WindowChrome.WindowChrome>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding ViewLoaded}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <FrameworkElement.DataContext>
+        <vm:MainVM />
+    </FrameworkElement.DataContext>
+    <FrameworkElement.RenderTransform>
+        <TransformGroup>
+            <TranslateTransform x:Name="translateForm" />
+        </TransformGroup>
+    </FrameworkElement.RenderTransform>
+    <FrameworkElement.Resources>
+        <helpers:DarkAndLightConvert x:Key="darkAndLightConvert" />
+        <helpers:EmbeddedConvert x:Key="EmbeddedConvert" />
+        <helpers:StartupConvert x:Key="StartupConvert" />
+        <Style x:Key="CloseButton" TargetType="{x:Type Button}">
+            <Setter Property="ToolTip" Value="Remove" />
+            <Setter Property="Foreground" Value="{DynamicResource NormalBlackBrush}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid>
+                            <Ellipse
+                                x:Name="_Ellipse"
+                                Width="12"
+                                Height="12"
+                                Fill="{DynamicResource NormalWhiteBrush}"
+                                Opacity=".8" />
+                            <ContentPresenter Name="TextArea" />
+                        </Grid>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="_Ellipse" Property="Fill" Value="{StaticResource TitleBarBackgroundBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="TextArea" Property="Margin" Value="0,2,0,0" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <DataTemplate x:Key="ApplicationTemplate">
+            <DataTemplate.Resources>
+                <Storyboard x:Key="OnMouseEnter">
+                    <DoubleAnimationUsingKeyFrames
+                        BeginTime="00:00:00"
+                        Storyboard.TargetName="border"
+                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)">
+                        <SplineDoubleKeyFrame KeyTime="00:00:00" Value="1" />
+                        <SplineDoubleKeyFrame KeyTime="00:00:00.2000000" Value="1.3" />
+                    </DoubleAnimationUsingKeyFrames>
+                    <DoubleAnimationUsingKeyFrames
+                        BeginTime="00:00:00"
+                        Storyboard.TargetName="border"
+                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)">
+                        <SplineDoubleKeyFrame KeyTime="00:00:00" Value="1" />
+                        <SplineDoubleKeyFrame KeyTime="00:00:00.2000000" Value="1.3" />
+                    </DoubleAnimationUsingKeyFrames>
+                    <DoubleAnimationUsingKeyFrames
+                        BeginTime="00:00:00"
+                        Storyboard.TargetName="border"
+                        Storyboard.TargetProperty="(UIElement.Opacity)">
+                        <SplineDoubleKeyFrame KeyTime="00:00:00.2000000" Value="0.4" />
+                        <SplineDoubleKeyFrame KeyTime="00:00:00.5000000" Value="1" />
+                    </DoubleAnimationUsingKeyFrames>
+                </Storyboard>
+                <Storyboard x:Key="OnMouseLeave">
+                    <DoubleAnimationUsingKeyFrames
+                        BeginTime="00:00:00"
+                        Storyboard.TargetName="border"
+                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)">
+                        <SplineDoubleKeyFrame KeyTime="00:00:00" Value="1.3" />
+                        <SplineDoubleKeyFrame KeyTime="00:00:00.2000000" Value="1" />
+                    </DoubleAnimationUsingKeyFrames>
+                    <DoubleAnimationUsingKeyFrames
+                        BeginTime="00:00:00"
+                        Storyboard.TargetName="border"
+                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)">
+                        <SplineDoubleKeyFrame KeyTime="00:00:00" Value="1.3" />
+                        <SplineDoubleKeyFrame KeyTime="00:00:00.2000000" Value="1" />
+                    </DoubleAnimationUsingKeyFrames>
+                </Storyboard>
+            </DataTemplate.Resources>
+            <Border
+                x:Name="border"
+                MaxHeight="90"
+                Padding="4"
+                Background="Transparent"
+                Cursor="Hand"
+                RenderTransformOrigin="0.5,0.5"
+                Tag="{Binding Group}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseLeftButtonDown">
+                        <i:InvokeCommandAction Command="{Binding DataContext.SelectionChangedCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <Border.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform ScaleX="1" ScaleY="1" />
+                        <SkewTransform AngleX="0" AngleY="0" />
+                        <RotateTransform Angle="0" />
+                        <TranslateTransform X="0" Y="0" />
+                    </TransformGroup>
+                </Border.RenderTransform>
+                <Grid>
+                    <StackPanel Orientation="Vertical">
+                        <Image
+                            Margin="0,4,0,0"
+                            po:Freeze="True"
+                            Source="{Binding IconPath}" />
+                        <TextBlock
+                            MaxWidth="70"
+                            MaxHeight="40"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Block.TextAlignment="Center"
+                            Foreground="{DynamicResource NormalWhiteBrush}"
+                            Text="{Binding Name}"
+                            TextTrimming="CharacterEllipsis"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                    <Button
+                        x:Name="PART_Button"
+                        Margin="30,0,0,0"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Top"
+                        Cursor="Hand"
+                        Style="{StaticResource CloseButton}"
+                        Visibility="{Binding DataContext.IsDragDrop, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource booleanToVisibilityConverter}}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Click">
+                                <i:InvokeCommandAction Command="{Binding DataContext.RemoveApplictionCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <Button.Content>
+                            <Path
+                                Width="6"
+                                Height="6"
+                                Data="{StaticResource ClosePath}"
+                                Stretch="Fill"
+                                Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                StrokeThickness="0.5" />
+                        </Button.Content>
+                    </Button>
+                </Grid>
+            </Border>
+            <DataTemplate.Triggers>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsMouseOver" Value="True" />
+                        <Condition SourceName="PART_Button" Property="Visibility" Value="Collapsed" />
+                    </MultiTrigger.Conditions>
+                    <MultiTrigger.EnterActions>
+                        <BeginStoryboard Storyboard="{StaticResource OnMouseEnter}" />
+                    </MultiTrigger.EnterActions>
+                    <MultiTrigger.ExitActions>
+                        <BeginStoryboard Storyboard="{StaticResource OnMouseLeave}" />
+                    </MultiTrigger.ExitActions>
+                </MultiTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+        <Storyboard x:Key="WindowPutItAway">
+            <DoubleAnimation
+                BeginTime="0:0:0"
+                Storyboard.TargetName="embedDeasktopView"
+                Storyboard.TargetProperty="(Window.Height)"
+                To="60"
+                Duration="0:0:00.10" />
+            <DoubleAnimation
+                BeginTime="0:0:00.10"
+                Storyboard.TargetName="embedDeasktopView"
+                Storyboard.TargetProperty="(Window.Width)"
+                To="30"
+                Duration="0:0:00.101" />
+        </Storyboard>
+
+        <Storyboard x:Key="WindowStretchOut">
+            <DoubleAnimation
+                BeginTime="0:0:0"
+                Storyboard.TargetName="embedDeasktopView"
+                Storyboard.TargetProperty="(Window.Width)"
+                To="110"
+                Duration="0:0:00.02" />
+            <DoubleAnimation
+                BeginTime="0:0:00.02"
+                Storyboard.TargetName="embedDeasktopView"
+                Storyboard.TargetProperty="(Window.Height)"
+                To="600"
+                Duration="0:0:00.32" />
+        </Storyboard>
+
+        <Style x:Key="tbSwitchMiniAndNormal" TargetType="{x:Type ToggleButton}">
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="ToolTip" Value="Mini" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Grid x:Name="PART_Grid">
+                            <Rectangle x:Name="PART_Rectangle" Fill="{DynamicResource DefaultBackgroundBrush}" />
+                            <Path
+                                x:Name="_Path"
+                                Width="10"
+                                Height="10"
+                                Data="{DynamicResource PutItAwayPath}"
+                                Fill="{StaticResource NormalBlackBrush}"
+                                Stretch="Fill" />
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="PART_Rectangle" Property="Fill" Value="{DynamicResource MouseOverBackgroundBrush}" />
+                                <Setter TargetName="_Path" Property="Fill" Value="{DynamicResource NormalWhiteBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="_Path" Property="Data" Value="{DynamicResource StretchOutPath}" />
+                                <Setter Property="ToolTip" Value="Normal" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Margin" Value="0,2,0,0" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="ToolTip" Value="Exit" />
+            <Setter Property="Foreground" Value="{StaticResource NormalBlackBrush}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid x:Name="PART_Grid">
+                            <Rectangle x:Name="PART_Rectangle" Fill="{DynamicResource DefaultBackgroundBrush}" />
+                            <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="PART_Rectangle" Property="Fill" Value="{DynamicResource MouseOverBackgroundBrush}" />
+                                <Setter Property="Foreground" Value="{DynamicResource NormalWhiteBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Margin" Value="0,2,0,0" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="MenuItemSub" TargetType="MenuItem">
+            <Setter Property="IsCheckable" Value="True" />
+            <Setter Property="IsChecked" Value="{Binding Path=IsSelected, Mode=TwoWay}" />
+            <Setter Property="Padding" Value="2,6,2,6" />
+        </Style>
+    </FrameworkElement.Resources>
+    <Grid>
+        <wd:NotifyIcon x:Name="myNotifyIcon" Title="授之以鱼，不如授之以渔 &#13;微信公众号：WPFDevelopers">
+            <wd:NotifyIcon.ContextMenu>
+                <ContextMenu IsOpen="{Binding IsOpenContextMenu}" PlacementTarget="{Binding ElementName=myNotifyIcon}">
+                    <ContextMenu.Resources>
+                        <Style TargetType="{x:Type Path}">
+                            <Setter Property="Height" Value="15" />
+                            <Setter Property="Width" Value="15" />
+                            <Setter Property="Fill" Value="{DynamicResource NormalMenuBlackBrush}" />
+                            <Setter Property="Stretch" Value="Fill" />
+                        </Style>
+                    </ContextMenu.Resources>
+
+                    <MenuItem Command="{Binding GithubCommand}" Header="关于">
+                        <MenuItem.Icon>
+                            <Path Data="{DynamicResource GithubPath}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                    <MenuItem
+                        DisplayMemberPath="ItemName"
+                        Header="透明度"
+                        ItemContainerStyle="{StaticResource MenuItemSub}"
+                        ItemsSource="{Binding Path=OpacityItemList}" />
+                    <MenuItem Command="{Binding ColorCommand}" Header="颜色拾取" />
+                    <MenuItem Command="{Binding ThemesCommand}" Header="{Binding IsDark, Converter={StaticResource darkAndLightConvert}}" />
+                    <MenuItem Command="{Binding EmbeddedCommand}" Header="{Binding IsEmbedded, Converter={StaticResource EmbeddedConvert}}" />
+                    <MenuItem
+                        DisplayMemberPath="ItemName"
+                        Header="动态壁纸"
+                        ItemsSource="{Binding Path=WallpaperArray}"
+                        ToolTip="更多壁纸请加QQ群：929469013">
+                        <MenuItem.ItemContainerStyle>
+                            <Style BasedOn="{StaticResource MenuItemSub}" TargetType="MenuItem">
+                                <Setter Property="Command" Value="{Binding DataContext.WallpaperSelectedCommand, RelativeSource={RelativeSource AncestorType=MenuItem}}" />
+                                <Setter Property="CommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding DataContext.VideoPath, RelativeSource={RelativeSource Self}}" Value="{x:Null}">
+                                        <Setter Property="IsHitTestVisible" Value="False" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </MenuItem.ItemContainerStyle>
+                    </MenuItem>
+                    <MenuItem
+                        Command="{Binding StartUpCommand}"
+                        Header="开机启动"
+                        IsChecked="{Binding IsStartup}" />
+                    <MenuItem
+                        Command="{Binding ScreenCutCommand}"
+                        Header="截图"
+                        ToolTip="按下快捷键PrintScreen" />
+                    <MenuItem Click="MenuItem_Click" Header="关闭" />
+                </ContextMenu>
+            </wd:NotifyIcon.ContextMenu>
+        </wd:NotifyIcon>
+        <Grid Visibility="{Binding IsEmbedded, Converter={StaticResource booleanToVisibilityConverter}}">
+            <Rectangle
+                Margin="1,0,0,0"
+                Fill="{DynamicResource NormalBlackBrush}"
+                Opacity="{Binding MainOpacity}" />
+
+            <controls:SwitchMenu
+                x:Name="AppSwitchList"
+                Margin="0,20"
+                drag:DragDrop.DefaultDragAdornerOpacity="0.5"
+                drag:DragDrop.IsDragSource="{Binding IsDragDrop}"
+                drag:DragDrop.IsDropTarget="True"
+                drag:DragDrop.ItemsPanelOrientation="Vertical"
+                drag:DragDrop.UseDefaultDragAdorner="True"
+                IsDragDrop="{Binding IsDragDrop}"
+                ItemTemplate="{StaticResource ApplicationTemplate}"
+                ItemsSource="{Binding ApplicationList}"
+                Orientation="Vertical">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseRightButtonDown">
+                        <i:InvokeCommandAction Command="{Binding MouseRightDragCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </controls:SwitchMenu>
+        </Grid>
+        <Grid Visibility="{Binding IsEmbedded, Converter={StaticResource bool2VisibilityConverter}}">
+            <Rectangle
+                Margin="30,10,0,10"
+                Effect="{DynamicResource NormalShadowDepth}"
+                Fill="{DynamicResource NormalBlackBrush}"
+                Opacity="{Binding MainOpacity}" />
+            <Grid
+                Margin="10,10,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top">
+                <Rectangle Fill="{DynamicResource DefaultBackgroundBrush}" />
+                <StackPanel>
+                    <Button
+                        x:Name="borderExit"
+                        Width="20"
+                        Height="20"
+                        Margin="0,2,0,0"
+                        ToolTip="Exit">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Click">
+                                <i:InvokeCommandAction Command="{Binding DataContext.ExitCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <Path
+                            Width="10"
+                            Height="10"
+                            Data="{DynamicResource ClosePath}"
+                            Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                            IsHitTestVisible="False"
+                            Stretch="Fill" />
+                    </Button>
+                    <ToggleButton
+                        x:Name="ToggleButtonMini"
+                        Width="20"
+                        Height="20"
+                        Margin="0,2"
+                        Checked="ToggleButtonMini_Checked"
+                        IsChecked="False"
+                        Style="{DynamicResource tbSwitchMiniAndNormal}"
+                        Unchecked="UnToggleButtonMini_Checked" />
+                </StackPanel>
+            </Grid>
+            <Grid x:Name="GridGround" Margin="30,10,0,14">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <controls:SwitchMenu
+                    x:Name="AppSwitchListEmbedded"
+                    Grid.Row="1"
+                    drag:DragDrop.DefaultDragAdornerOpacity="0.5"
+                    drag:DragDrop.IsDragSource="{Binding IsDragDrop}"
+                    drag:DragDrop.IsDropTarget="True"
+                    drag:DragDrop.ItemsPanelOrientation="Vertical"
+                    drag:DragDrop.UseDefaultDragAdorner="True"
+                    IsDragDrop="{Binding IsDragDrop}"
+                    ItemTemplate="{StaticResource ApplicationTemplate}"
+                    ItemsSource="{Binding ApplicationList}"
+                    Orientation="Vertical">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseRightButtonDown">
+                            <i:InvokeCommandAction Command="{Binding MouseRightDragCommand}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </controls:SwitchMenu>
+                <Grid
+                    Height="20"
+                    Margin="0,10"
+                    Background="Transparent"
+                    Cursor="{Binding Cursor}">
+                    <Path
+                        Width="20"
+                        Data="{DynamicResource DragPath}"
+                        Fill="{DynamicResource NormalWhiteBrush}"
+                        IsHitTestVisible="False"
+                        Stretch="Fill" />
+                </Grid>
+                <Line
+                    Margin="10,0"
+                    VerticalAlignment="Bottom"
+                    Stroke="{DynamicResource NormalWhiteBrush}"
+                    X1="0"
+                    X2="80"
+                    Y1="1"
+                    Y2="1" />
+            </Grid>
+        </Grid>
+        <Border
+            x:Name="KeyDownPanel"
+            Width="60"
+            Height="60"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="{DynamicResource NormalBlackBrush}"
+            CornerRadius="7"
+            SnapsToDevicePixels="True"
+            UseLayoutRounding="True"
+            Visibility="Collapsed">
+            <TextBlock
+                x:Name="KeyDownText"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontSize="22"
+                Foreground="{DynamicResource NormalWhiteBrush}" />
+        </Border>
+        <Canvas
+            x:Name="DragCanvas"
+            AllowDrop="True"
+            Background="Transparent"
+            DragOver="DragCanvas_DragOver"
+            Drop="DragCanvas_Drop"
+            Visibility="Collapsed">
+            <StackPanel
+                Name="DragStackPanel"
+                Opacity=".5"
+                Orientation="Vertical"
+                RenderTransformOrigin=".5,.5">
+                <StackPanel.RenderTransform>
+                    <ScaleTransform x:Name="DragScaleTransform" ScaleX="1" ScaleY="1" />
+                </StackPanel.RenderTransform>
+                <Image x:Name="DragImage" Stretch="Uniform" />
+                <TextBlock
+                    Name="DragTextBlock"
+                    MaxWidth="70"
+                    MaxHeight="40"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Block.TextAlignment="Center"
+                    Foreground="{DynamicResource NormalWhiteBrush}"
+                    TextTrimming="CharacterEllipsis"
+                    TextWrapping="Wrap" />
+            </StackPanel>
+        </Canvas>
+    </Grid>
+</Window>

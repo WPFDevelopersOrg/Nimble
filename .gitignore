@@ -2,11 +2,12 @@
 # 此 .gitignore 文件已由 Microsoft(R) Visual Studio 自动创建。
 ################################################################################
 
-/SoftWareHelper/obj/Debug
-/SoftWareHelper/bin
-/SoftWareHelper/obj/Release/TempPE
-/SoftWareHelper/obj/Release
+/Nimble/obj/Debug
+/Nimble/bin
+/Nimble/obj/Release/TempPE
+/Nimble/obj/Release
 /.vs
-/SoftwareHelper.v12.suo
+/Nimble.v12.suo
 /packages
-/SoftwareHelper.sln.DotSettings.user
+/Nimble.sln.DotSettings.user
+/Output
