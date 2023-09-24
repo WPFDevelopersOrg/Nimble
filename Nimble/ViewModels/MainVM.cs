@@ -442,7 +442,7 @@ namespace Nimble.ViewModels
 
         void ShowWallpaper(string wallpaperPath)
         {
-            if (string.IsNullOrWhiteSpace(wallpaperPath)) return;
+            if (string.IsNullOrWhiteSpace(wallpaperPath) || !File.Exists(wallpaperPath)) return;
             StopFFplayProcess();
             WallpaperArray.Where(x => x.VideoPath != wallpaperPath).ToList().ForEach(x =>
             {
