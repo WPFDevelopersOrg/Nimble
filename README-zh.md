@@ -1,6 +1,6 @@
 <div align="center"><img src="https://github.com/WPFDevelopersOrg/ResourcesCache/raw/main/resources/SoftwareHelperLogo.png"/></div>   
 
-##  Welcome to SoftwareHelper
+##  Welcome to Nimble
 
 ### [Github](https://github.com/WPFDevelopersOrg) https://github.com/WPFDevelopersOrg  
 
