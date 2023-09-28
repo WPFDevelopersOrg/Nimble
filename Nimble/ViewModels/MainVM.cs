@@ -509,7 +509,8 @@ namespace Nimble.ViewModels
             {
                 _timer.Stop();
                 mouseHook.Stop();
-                if (colorView != null) colorView.Close();
+                if (colorView != null) 
+                    colorView.Close();
             }
         }
 
