@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Configuration;
+using System.IO.Ports;
+using System.Windows.Media;
 
 namespace Nimble.Helpers
 {
@@ -10,8 +12,9 @@ namespace Nimble.Helpers
     {
         public static bool EdgeHide { get; set; }
         public static double Opacity { get; set; }
-        public static bool CustomJson { get;private set; }
+        public static bool CustomJson { get; private set; }
         public static bool Startup { get; set; }
+        public static bool OpenWallpaper { get; set; }
         public static string WallpaperPath { get; set; }
         public static void GetConfigHelper()
         {
@@ -33,9 +36,15 @@ namespace Nimble.Helpers
 
             bool startup;
             if (!bool.TryParse(string.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["Startup"]) ? "false" : ConfigurationManager.AppSettings["Startup"], out startup))
-                startup = false;
+                Startup = false;
             else
-                startup = Convert.ToBoolean(string.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["Startup"]) ? "false" : ConfigurationManager.AppSettings["Startup"]);
+                Startup = Convert.ToBoolean(string.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["Startup"]) ? "false" : ConfigurationManager.AppSettings["Startup"]);
+
+            bool openWallpaper;
+            if (!bool.TryParse(string.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["OpenWallpaper"]) ? "false" : ConfigurationManager.AppSettings["OpenWallpaper"], out openWallpaper))
+                OpenWallpaper = false;
+            else
+                OpenWallpaper = Convert.ToBoolean(string.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["OpenWallpaper"]) ? "false" : ConfigurationManager.AppSettings["OpenWallpaper"]);
 
             WallpaperPath = string.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["WallpaperPath"]) ? string.Empty : ConfigurationManager.AppSettings["WallpaperPath"];
         }
@@ -50,6 +59,7 @@ namespace Nimble.Helpers
         }
         public static void SaveOpacity(double opacity)
         {
+            Opacity = opacity;
             SaveConfig("Opacity", opacity.ToString());
         }
 
@@ -64,18 +74,27 @@ namespace Nimble.Helpers
         }
         public static void SaveEdgeHide(bool edgeHide)
         {
+            EdgeHide = edgeHide;
             SaveConfig("EdgeHide", edgeHide.ToString());
         }
 
         public static void SaveStartup(bool startUp)
         {
+            Startup = startUp;
             SaveConfig("Startup", startUp.ToString());
+        }
+
+        public static void SaveOpenWallpaper(bool openWallpaper)
+        {
+            OpenWallpaper = openWallpaper;
+            SaveConfig("OpenWallpaper", openWallpaper.ToString());
         }
         public static void SaveWallpaperPath(string path)
         {
+            WallpaperPath = path;
             SaveConfig("WallpaperPath", path);
         }
-        static void SaveConfig(string key,string value)
+        static void SaveConfig(string key, string value)
         {
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             config.AppSettings.Settings.Remove(key);

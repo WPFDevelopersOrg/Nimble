@@ -48,6 +48,7 @@ namespace Nimble.ViewModels
         private IntPtr desktopHandle;
         private Process ffplayProcess;
         private IntPtr ffplayWindowHandle;
+        private readonly string _exitWallpaper = "ExitWallpaper";
 
         #endregion
 
@@ -237,23 +238,7 @@ namespace Nimble.ViewModels
 
             #endregion
 
-            #region Wallpaper
-            var wallpaersPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Video");
-            if (Directory.Exists(wallpaersPath))
-            {
-                var names = new List<WallpaperItem>();
-                var files = Directory.GetFiles(wallpaersPath);
-                foreach (var filePath in files)
-                {
-                    var fileName = Path.GetFileNameWithoutExtension(filePath);
-                    names.Add(new WallpaperItem { ItemName = fileName, VideoPath = filePath, IsSelected = ConfigHelper.WallpaperPath == filePath ? true : false });
-                }
-                names.Add(new WallpaperItem { ItemName = "更多壁纸请加QQ群：929469013" });
-                WallpaperArray = names;
-                if (WallpaperArray.Count > 0)
-                    ShowWallpaper(ConfigHelper.WallpaperPath);
-            }
-            #endregion
+            WallpaersFilePlay();
 
             if (Common.ApplicationListCache == null)
             {
@@ -430,8 +415,30 @@ namespace Nimble.ViewModels
         {
             if (obj is WallpaperItem wallpaper)
             {
-                if (string.IsNullOrWhiteSpace(wallpaper.VideoPath)) return;
-                ShowWallpaper(wallpaper.VideoPath);
+                if (wallpaper.VideoPath == _exitWallpaper)
+                {
+                    if (!wallpaper.IsSelected)
+                    {
+                        StopFFplayProcess();
+                        wallpaper.ItemName = "壁纸已关闭";
+                        wallpaper.IsSelected = false;
+                    }
+                    else
+                    {
+                        WallpaersFilePlay();
+                        wallpaper.ItemName = "壁纸已开启";
+                        wallpaper.IsSelected = true;
+                    }
+                }
+                else
+                {
+                    if (string.IsNullOrWhiteSpace(wallpaper.VideoPath)) return;
+                    if (File.Exists(wallpaper.VideoPath))
+                    {
+                        ShowWallpaper(wallpaper.VideoPath);
+                    }
+
+                }
             }
 
         });
@@ -444,10 +451,16 @@ namespace Nimble.ViewModels
         {
             if (string.IsNullOrWhiteSpace(wallpaperPath) || !File.Exists(wallpaperPath)) return;
             StopFFplayProcess();
-            WallpaperArray.Where(x => x.VideoPath != wallpaperPath).ToList().ForEach(x =>
+            WallpaperArray.Where(x => x.VideoPath != wallpaperPath && x.VideoPath != _exitWallpaper).ToList().ForEach(x =>
             {
                 x.IsSelected = false;
             });
+            var wallpaper = WallpaperArray.FirstOrDefault(x => x.VideoPath == _exitWallpaper);
+            if (wallpaper != null)
+            {
+                wallpaper.ItemName = "壁纸已开启";
+                wallpaper.IsSelected = true;
+            }
             StartFFplayProcess(wallpaperPath);
             if (ffplayWindowHandle != IntPtr.Zero)
             {
@@ -509,7 +522,7 @@ namespace Nimble.ViewModels
             {
                 _timer.Stop();
                 mouseHook.Stop();
-                if (colorView != null) 
+                if (colorView != null)
                     colorView.Close();
             }
         }
@@ -586,6 +599,29 @@ namespace Nimble.ViewModels
             {
                 Log.Error($"Error: StopFFplayProcess {ex.Message}");
             }
+        }
+        void WallpaersFilePlay()
+        {
+            WallpaperArray = null;
+            #region Wallpaper
+            var wallpaersPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Video");
+            if (Directory.Exists(wallpaersPath))
+            {
+                var names = new List<WallpaperItem>();
+                var files = Directory.GetFiles(wallpaersPath);
+                foreach (var filePath in files)
+                {
+                    var fileName = Path.GetFileNameWithoutExtension(filePath);
+                    names.Add(new WallpaperItem { ItemName = fileName, VideoPath = filePath, IsSelected = ConfigHelper.WallpaperPath == filePath ? true : false });
+                }
+                if (names.Count > 0)
+                    names.Add(new WallpaperItem { ItemName = ConfigHelper.OpenWallpaper == true ? "壁纸已开启" : "壁纸已关闭", VideoPath = _exitWallpaper, IsSelected = ConfigHelper.OpenWallpaper });
+                names.Add(new WallpaperItem { ItemName = "更多壁纸请加QQ群：929469013" });
+                WallpaperArray = names;
+                if (WallpaperArray.Count > 0)
+                    ShowWallpaper(ConfigHelper.WallpaperPath);
+            }
+            #endregion
         }
         #endregion
     }
