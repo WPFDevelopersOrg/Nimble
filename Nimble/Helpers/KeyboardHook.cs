@@ -2,11 +2,14 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace Nimble.Helpers
 {
     public partial class KeyboardHook
     {
+        private DispatcherTimer _dispatcherTimer;
+
         #region pinvoke details
 
         private enum HookType : int
@@ -64,6 +67,27 @@ namespace Nimble.Helpers
         {
             _hookFunction = new HookProc(HookCallback);
             Install();
+            var osVersion = Environment.OSVersion.Version;
+            if (osVersion.Major > 6 || (osVersion.Major == 6 && osVersion.Minor >= 2))
+            {
+                _dispatcherTimer = new DispatcherTimer();
+                _dispatcherTimer.Tick += _dispatcherTimer_Tick;
+                _dispatcherTimer.Interval = new TimeSpan(3, 0, 0);
+                _dispatcherTimer.Start();
+            }
+        }
+
+        void CreateKeyHook()
+        {
+            Uninstall();
+            Install();
+        }
+
+        private void _dispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            _dispatcherTimer.Stop();
+            CreateKeyHook();
+            _dispatcherTimer.Start();
         }
 
         ~KeyboardHook()
@@ -76,11 +100,11 @@ namespace Nimble.Helpers
             if (code < 0)
                 return CallNextHookEx(_hookHandle, code, wParam, ref lParam);
 
-            if ((lParam.flags & 0x80) != 0 && this.KeyUp != null)
-                this.KeyUp(this, new HookEventArgs(lParam.vkCode));
+            if ((lParam.flags & 0x80) != 0 && KeyUp != null)
+                KeyUp(this, new HookEventArgs(lParam.vkCode));
 
-            if ((lParam.flags & 0x80) == 0 && this.KeyDown != null)
-                this.KeyDown(this, new HookEventArgs(lParam.vkCode));
+            if ((lParam.flags & 0x80) == 0 && KeyDown != null)
+                KeyDown(this, new HookEventArgs(lParam.vkCode));
 
             return CallNextHookEx(_hookHandle, code, wParam, ref lParam);
         }
@@ -90,7 +114,7 @@ namespace Nimble.Helpers
             if (_hookHandle != IntPtr.Zero)
                 return;
 
-            Module[] list = System.Reflection.Assembly.GetExecutingAssembly().GetModules();
+            Module[] list = Assembly.GetExecutingAssembly().GetModules();
             System.Diagnostics.Debug.Assert(list != null && list.Length > 0);
 
             _hookHandle = SetWindowsHookEx(_hookType,
@@ -114,7 +138,7 @@ namespace Nimble.Helpers
        
         public HookEventArgs(UInt32 keyCode)
         {
-            this.Key = System.Windows.Input.KeyInterop.KeyFromVirtualKey((int)keyCode);
+            Key = KeyInterop.KeyFromVirtualKey((int)keyCode);
         }
     }
 
