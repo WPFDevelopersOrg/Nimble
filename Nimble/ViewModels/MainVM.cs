@@ -315,7 +315,7 @@ namespace Nimble.ViewModels
         /// </summary>
         public ICommand GithubCommand => new RelayCommand(obj =>
         {
-            Process.Start("https://github.com/yanjinhuagood/Nimble");
+            Process.Start("https://github.com/WPFDevelopersOrg/Nimble");
         });
 
         /// <summary>
@@ -419,12 +419,14 @@ namespace Nimble.ViewModels
                 {
                     if (!wallpaper.IsSelected)
                     {
+                        ConfigHelper.SaveOpenWallpaper(false);
                         StopFFplayProcess();
                         wallpaper.ItemName = "壁纸已关闭";
                         wallpaper.IsSelected = false;
                     }
                     else
                     {
+                        ConfigHelper.SaveOpenWallpaper(true);
                         WallpaersFilePlay();
                         wallpaper.ItemName = "壁纸已开启";
                         wallpaper.IsSelected = true;
@@ -449,18 +451,31 @@ namespace Nimble.ViewModels
 
         void ShowWallpaper(string wallpaperPath)
         {
-            if (string.IsNullOrWhiteSpace(wallpaperPath) || !File.Exists(wallpaperPath)) return;
+            if(string.IsNullOrWhiteSpace(wallpaperPath))
+            {
+                if(WallpaperArray.Count >= 3 && ConfigHelper.OpenWallpaper)
+                {
+                    WallpaperArray.First().IsSelected = true;
+                    wallpaperPath = WallpaperArray[0].VideoPath;
+                }
+                    
+            }
+            if (!File.Exists(wallpaperPath) || !ConfigHelper.OpenWallpaper) return;
             StopFFplayProcess();
             WallpaperArray.Where(x => x.VideoPath != wallpaperPath && x.VideoPath != _exitWallpaper).ToList().ForEach(x =>
             {
                 x.IsSelected = false;
             });
-            var wallpaper = WallpaperArray.FirstOrDefault(x => x.VideoPath == _exitWallpaper);
-            if (wallpaper != null)
+            if(ConfigHelper.OpenWallpaper)
             {
-                wallpaper.ItemName = "壁纸已开启";
-                wallpaper.IsSelected = true;
+                var wallpaper = WallpaperArray.FirstOrDefault(x => x.VideoPath == _exitWallpaper);
+                if (wallpaper != null)
+                {
+                    wallpaper.ItemName = "壁纸已开启";
+                    wallpaper.IsSelected = true;
+                }
             }
+            
             StartFFplayProcess(wallpaperPath);
             if (ffplayWindowHandle != IntPtr.Zero)
             {
@@ -556,7 +571,7 @@ namespace Nimble.ViewModels
             var ffplayPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DLL", "ffplay.exe");
             var startInfo = new ProcessStartInfo();
             startInfo.FileName = ffplayPath;
-            //startInfo.WindowStyle = ProcessWindowStyle.Maximized;
+            startInfo.WindowStyle = ProcessWindowStyle.Maximized;
             startInfo.Arguments = $"-loop 0 -fs \"{videoFilePath}\" ";
             startInfo.UseShellExecute = false;
             startInfo.CreateNoWindow = true;
@@ -620,6 +635,7 @@ namespace Nimble.ViewModels
                 WallpaperArray = names;
                 if (WallpaperArray.Count > 0)
                     ShowWallpaper(ConfigHelper.WallpaperPath);
+                    
             }
             #endregion
         }
