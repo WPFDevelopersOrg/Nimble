@@ -26,6 +26,9 @@
 
 ### __效果图预览如下↓↓↓↓↓↓__   
 
+### 新增桌面动态壁纸
+<img src="https://gitee.com/WPFDevelopersOrg/ResourcesCache/raw/main/resources/SoftwareHelperResource/convertNimble-Close.gif"/>  
+
 ### 新增截图  
 <img src="https://gitee.com/WPFDevelopersOrg/ResourcesCache/raw/main/resources/WPFDevelopersResource/DrawInk.gif"/> 
 <img src="https://gitee.com/WPFDevelopersOrg/ResourcesCache/raw/main/resources/WPFDevelopersResource/DrawArrow.gif"/>   
