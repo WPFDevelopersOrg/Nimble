@@ -2,6 +2,11 @@
 
 ##  Welcome to Nimble
 
+Nimble 灵动 是一款非常灵活的软件，推荐将其安装在非系统盘（通常是C盘）上，以避免操作记录的丢失。例如，选择动态壁纸等操作可能无法正常记录。 
+建议将 Nimble 灵动 安装到其他磁盘分区，比如D盘或其他可用磁盘，这样可以确保软件能够正确地记录和保存各项操作。 
+
+运行源码缺少ffplay需要单独[下载](https://mp.weixin.qq.com/s/P42dLcKUZJxfVVsyB0jybQ)放到到运行目录下的`DLL`文件夹中
+
 ### [Github](https://github.com/WPFDevelopersOrg) https://github.com/WPFDevelopersOrg  
 
 ### [码云](https://gitee.com/WPFDevelopersOrg) https://gitee.com/WPFDevelopersOrg  
