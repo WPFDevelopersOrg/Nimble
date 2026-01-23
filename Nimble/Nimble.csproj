@@ -100,8 +100,8 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="WPFDevelopers, Version=1.1.0.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\WPFDevelopers.1.1.0.2-preview3\lib\net40\WPFDevelopers.dll</HintPath>
+    <Reference Include="WPFDevelopers, Version=0.0.0.3, Culture=neutral, PublicKeyToken=aacc48a71bd48519, processorArchitecture=MSIL">
+      <HintPath>..\packages\WPFDevelopers.0.0.0.3-preview2\lib\net40\WPFDevelopers.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

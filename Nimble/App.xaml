@@ -36,9 +36,8 @@
             <helpers:Bool2VisibilityConverter x:Key="bool2VisibilityConverter" />
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Nimble;component/Themes/Dark.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/WPFDevelopers;component/Themes/Light.Blue.xaml" />
-                <!--  需要注意wd:Resources 必须再配色主题后，Theme="Dark" 为黑色皮肤  -->
-                <wd:Resources Theme="Light" />
+                <ResourceDictionary Source="pack://application:,,,/WPFDevelopers;component/Themes/Theme.xaml" />
+                <wd:Resources />
                 <ResourceDictionary Source="pack://application:,,,/WPFDevelopers;component/Themes/Theme.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Nimble;component/Styles/Geometry.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Nimble;component/Styles/Colors.xaml" />

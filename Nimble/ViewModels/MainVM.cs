@@ -17,7 +17,6 @@ using Nimble.Helpers.MouseHelper;
 using Nimble.Models;
 using Nimble.Views;
 using WPFDevelopers.Controls;
-using WPFDevelopers.Controls.ScreenCapturer;
 using WPFDevelopers.Helpers;
 using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 
@@ -376,24 +375,9 @@ namespace Nimble.ViewModels
         {
             IsOpenContextMenu = false;
             Keyboard.ClearFocus();
-            Application.Current.Dispatcher.Invoke(new Action(delegate
-             {
-                 var screenCapturer = new ScreenCapture();
-                 screenCapturer.SnapCompleted += ScreenCapturer_SnapCompleted;
-                 screenCapturer.SnapCanceled += ScreenCapturer_SnapCanceled;
-                 screenCapturer.Capture();
-             }));
-            //var screenCapturer = new ScreenCapture();
-            //screenCapturer.Capture();
+            
+            var screenCaptureExt = new ScreenCaptureExt();
         });
-
-        private void ScreenCapturer_SnapCanceled()
-        {
-        }
-
-        private void ScreenCapturer_SnapCompleted(CroppedBitmap bitmap)
-        {
-        }
 
         /// <summary>
         ///     StartUpCommand

@@ -18,7 +18,6 @@ using Nimble.Models;
 using Nimble.ViewModels;
 using WPFDevelopers.Controls;
 using System.IO;
-using WPFDevelopers.Controls.ScreenCapturer;
 
 namespace Nimble.Views
 {
