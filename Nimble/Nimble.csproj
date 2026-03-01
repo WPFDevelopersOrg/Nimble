@@ -122,6 +122,7 @@
     <Compile Include="Helpers\Log.cs" />
     <Compile Include="Helpers\MouseHelper\GlobalHook.cs" />
     <Compile Include="Helpers\MouseHelper\MouseHook.cs" />
+    <Compile Include="Helpers\OSVersionHelper.cs" />
     <Compile Include="Helpers\PrimaryScreen.cs" />
     <Compile Include="Helpers\RelayCommand.cs" />
     <Compile Include="Helpers\StartupConvert.cs" />
