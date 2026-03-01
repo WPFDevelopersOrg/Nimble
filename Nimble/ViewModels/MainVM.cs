@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Nimble.Helpers;
+using Nimble.Helpers.MouseHelper;
+using Nimble.Models;
+using Nimble.Views;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -6,16 +10,12 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using Nimble.Helpers;
-using Nimble.Helpers.MouseHelper;
-using Nimble.Models;
-using Nimble.Views;
 using WPFDevelopers.Controls;
 using WPFDevelopers.Helpers;
 using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
@@ -30,24 +30,30 @@ namespace Nimble.ViewModels
         {
             _timer.Interval = TimeSpan.FromMilliseconds(MousePullInfoIntervalInMs);
             _timer.Tick += Timer_Tick;
-            mouseHook = new MouseHook();
+            _mouseHook = new MouseHook();
         }
 
         #endregion
 
         #region 字段
 
-        private double currentOpacity;
+        private double _currentOpacity;
         private readonly DispatcherTimer _timer = new DispatcherTimer();
         private const int MousePullInfoIntervalInMs = 10;
-        private readonly MouseHook mouseHook;
-        private WindowColor colorView;
-        private Rect desktopWorkingArea;
-        private MousePoint.POINT point;
-        private IntPtr desktopHandle;
-        private Process ffplayProcess;
-        private IntPtr ffplayWindowHandle;
+        private readonly MouseHook _mouseHook;
+        private WindowColor _colorView;
+        private Rect _desktopWorkingArea;
+        private MousePoint.POINT _point;
+        private Process _ffplayProcess;
+        private IntPtr _ffplayWindowHandle;
         private readonly string _exitWallpaper = "ExitWallpaper";
+        private Color _color;
+        private string _hex;
+        private IntPtr _workerW = IntPtr.Zero;
+        private IntPtr _progman = IntPtr.Zero;
+        private const string WORKERW_CLASS = "WorkerW";
+        private const string PROGMAN_CLASS = "Progman";
+        private const string SHELLDLL_DEFVIEW = "SHELLDLL_DefView";
 
         #endregion
 
@@ -221,10 +227,10 @@ namespace Nimble.ViewModels
             new OpacityItem { Value = 60.00 },
             new OpacityItem { Value = 40.00 }
         };
-            currentOpacity = ConfigHelper.Opacity;
-            MainOpacity = currentOpacity / 100;
-            if (OpacityItemList.Any(x => x.Value == currentOpacity))
-                OpacityItemList.FirstOrDefault(x => x.Value == currentOpacity).IsSelected = true;
+            _currentOpacity = ConfigHelper.Opacity;
+            MainOpacity = _currentOpacity / 100;
+            if (OpacityItemList.Any(x => x.Value == _currentOpacity))
+                OpacityItemList.FirstOrDefault(x => x.Value == _currentOpacity).IsSelected = true;
             foreach (var item in OpacityItemList)
             {
                 item.PropertyChanged -= Item_PropertyChanged;
@@ -251,8 +257,8 @@ namespace Nimble.ViewModels
                 ApplicationList = Common.ApplicationListCache;
             }
 
-            mouseHook.MouseMove += MouseHook_MouseMove;
-            mouseHook.MouseDown += MouseHook_MouseDown;
+            _mouseHook.MouseMove += MouseHook_MouseMove;
+            _mouseHook.MouseDown += MouseHook_MouseDown;
 
             App.Current.Exit += Current_Exit;
         });
@@ -264,17 +270,17 @@ namespace Nimble.ViewModels
 
         private void MouseHook_MouseMove(object sender, MouseEventArgs e)
         {
-            point.X = e.Location.X;
-            point.Y = e.Location.Y;
+            _point.X = e.Location.X;
+            _point.Y = e.Location.Y;
         }
 
         private void Item_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             var model = sender as OpacityItem;
-            if (!currentOpacity.Equals(model.Value))
+            if (!_currentOpacity.Equals(model.Value))
                 if (model.IsSelected)
                 {
-                    currentOpacity = model.Value;
+                    _currentOpacity = model.Value;
                     foreach (var item in OpacityItemList)
                         if (item.Value != model.Value)
                             item.IsSelected = false;
@@ -344,14 +350,14 @@ namespace Nimble.ViewModels
         /// </summary>
         public ICommand ColorCommand => new RelayCommand(obj =>
         {
-            desktopWorkingArea = SystemParameters.WorkArea;
+            _desktopWorkingArea = SystemParameters.WorkArea;
 
-            colorView = new WindowColor();
-            colorView.Show();
+            _colorView = new WindowColor();
+            _colorView.Show();
             if (!_timer.IsEnabled)
             {
                 _timer.Start();
-                mouseHook.Start();
+                _mouseHook.Start();
             }
         });
 
@@ -375,7 +381,7 @@ namespace Nimble.ViewModels
         {
             IsOpenContextMenu = false;
             Keyboard.ClearFocus();
-            
+
             var screenCaptureExt = new ScreenCaptureExt();
         });
 
@@ -433,96 +439,39 @@ namespace Nimble.ViewModels
 
         #region 方法
 
-        void ShowWallpaper(string wallpaperPath)
-        {
-            if(string.IsNullOrWhiteSpace(wallpaperPath))
-            {
-                if(WallpaperArray.Count >= 3 && ConfigHelper.OpenWallpaper)
-                {
-                    WallpaperArray.First().IsSelected = true;
-                    wallpaperPath = WallpaperArray[0].VideoPath;
-                }
-                    
-            }
-            if (!File.Exists(wallpaperPath) || !ConfigHelper.OpenWallpaper) return;
-            StopFFplayProcess();
-            WallpaperArray.Where(x => x.VideoPath != wallpaperPath && x.VideoPath != _exitWallpaper).ToList().ForEach(x =>
-            {
-                x.IsSelected = false;
-            });
-            if(ConfigHelper.OpenWallpaper)
-            {
-                var wallpaper = WallpaperArray.FirstOrDefault(x => x.VideoPath == _exitWallpaper);
-                if (wallpaper != null)
-                {
-                    wallpaper.ItemName = "壁纸已开启";
-                    wallpaper.IsSelected = true;
-                }
-            }
-            
-            StartFFplayProcess(wallpaperPath);
-            if (ffplayWindowHandle != IntPtr.Zero)
-            {
-                SendMsgToProgman();
-                Win32Api.SetParent(ffplayWindowHandle, desktopHandle);
-                if (ConfigHelper.WallpaperPath != wallpaperPath)
-                    ConfigHelper.SaveWallpaperPath(wallpaperPath);
-            }
-        }
-
-        private Color color;
-        private string hex;
-
         private void Timer_Tick(object sender, EventArgs e)
         {
-            //var point = new MousePoint.POINT();
-            //var isMouseDown = MousePoint.GetCursorPos(out point);
-            //color = Win32Api.GetPixelColor(point.X, point.Y);
-            //var source = PresentationSource.FromVisual(colorView);
-            //var dpiX = source.CompositionTarget.TransformToDevice.M11;
-            //var dpiY = source.CompositionTarget.TransformToDevice.M22;
-            //if (point.X / dpiX >= desktopWorkingArea.Width)
-            //    colorView.Left = point.X / dpiX - 40;
-            //else if (point.X <= 10)
-            //    colorView.Left = point.X / dpiX;
-            //else
-            //    colorView.Left = point.X / dpiX;
-            //if (point.Y / dpiY >= desktopWorkingArea.Height - 40)
-            //    colorView.Top = point.Y / dpiY - 40;
-            //else
-            //    colorView.Top = point.Y / dpiY;
-
-            color = Win32Api.GetPixelColor(point.X, point.Y);
-            var source = PresentationSource.FromVisual(colorView);
+            _color = Win32Api.GetPixelColor(_point.X, _point.Y);
+            var source = PresentationSource.FromVisual(_colorView);
             var dpiX = source.CompositionTarget.TransformToDevice.M11;
             var dpiY = source.CompositionTarget.TransformToDevice.M22;
-            if (point.X / dpiX >= desktopWorkingArea.Width)
-                colorView.Left = point.X / dpiX - 40;
-            else if (point.X <= 10)
-                colorView.Left = point.X / dpiX;
+            if (_point.X / dpiX >= _desktopWorkingArea.Width)
+                _colorView.Left = _point.X / dpiX - 40;
+            else if (_point.X <= 10)
+                _colorView.Left = _point.X / dpiX;
             else
-                colorView.Left = point.X / dpiX;
-            if (point.Y / dpiY >= desktopWorkingArea.Height - 40)
-                colorView.Top = point.Y / dpiY - 40;
+                _colorView.Left = _point.X / dpiX;
+            if (_point.Y / dpiY >= _desktopWorkingArea.Height - 40)
+                _colorView.Top = _point.Y / dpiY - 40;
             else
-                colorView.Top = point.Y / dpiY;
-            colorView.MouseColor = new SolidColorBrush(color);
-            hex = color.ToString();
-            if (hex.Length > 7)
-                hex = hex.Remove(1, 2);
-            colorView.MouseColorText = hex;
+                _colorView.Top = _point.Y / dpiY;
+            _colorView.MouseColor = new SolidColorBrush(_color);
+            _hex = _color.ToString();
+            if (_hex.Length > 7)
+                _hex = _hex.Remove(1, 2);
+            _colorView.MouseColorText = _hex;
         }
 
         private void MouseHook_MouseDown(object sender, MouseEventArgs e)
         {
-            Clipboard.SetText(hex);
-            ShowBalloon("提示", $"已复制到剪切板  {hex}  Nimble");
+            Clipboard.SetText(_hex);
+            ShowBalloon("提示", $"已复制到剪切板  {_hex}  Nimble");
             if (_timer.IsEnabled)
             {
                 _timer.Stop();
-                mouseHook.Stop();
-                if (colorView != null)
-                    colorView.Close();
+                _mouseHook.Stop();
+                if (_colorView != null)
+                    _colorView.Close();
             }
         }
 
@@ -531,28 +480,74 @@ namespace Nimble.ViewModels
             NotifyIcon.ShowBalloonTip(title, message, NotifyIconInfoType.None);
         }
 
+        void ShowWallpaper(string wallpaperPath)
+        {
+            if (string.IsNullOrWhiteSpace(wallpaperPath))
+            {
+                if (WallpaperArray.Count >= 3 && ConfigHelper.OpenWallpaper)
+                {
+                    WallpaperArray.First().IsSelected = true;
+                    wallpaperPath = WallpaperArray[0].VideoPath;
+                }
+
+            }
+            if (!File.Exists(wallpaperPath)) return;
+            if (ConfigHelper.WallpaperPath != wallpaperPath)
+                ConfigHelper.SaveWallpaperPath(wallpaperPath);
+            if (!ConfigHelper.OpenWallpaper) return;
+            StopFFplayProcess();
+            WallpaperArray.Where(x => x.VideoPath != wallpaperPath && x.VideoPath != _exitWallpaper).ToList().ForEach(x =>
+            {
+                x.IsSelected = false;
+            });
+            if (ConfigHelper.OpenWallpaper)
+            {
+                var wallpaper = WallpaperArray.FirstOrDefault(x => x.VideoPath == _exitWallpaper);
+                if (wallpaper != null)
+                {
+                    wallpaper.ItemName = "壁纸已开启";
+                    wallpaper.IsSelected = true;
+                }
+            }
+
+            StartFFplayProcess(wallpaperPath);
+            if (_ffplayWindowHandle != IntPtr.Zero)
+            {
+                SendMsgToProgman();
+                Win32Api.SetParent(_ffplayWindowHandle, _progman);
+            }
+        }
+
 
         void SendMsgToProgman()
         {
-            desktopHandle = Win32.FindWindow("Progman", null);
+            _progman = Win32.FindWindow(PROGMAN_CLASS, null);
             IntPtr result = IntPtr.Zero;
-            Win32Api.SendMessageTimeout(desktopHandle, 0x52c, IntPtr.Zero, IntPtr.Zero, 0, 2, result);
+            Win32Api.SendMessageTimeout(_progman, 0x52c, IntPtr.Zero, IntPtr.Zero, 0, 2, result);
+            _workerW = IntPtr.Zero;
             Win32Api.EnumWindows(EnumWindowsCallback, IntPtr.Zero);
         }
 
         bool EnumWindowsCallback(IntPtr hwnd, IntPtr lParam)
         {
-            if (Win32Api.FindWindowEx(hwnd, IntPtr.Zero, "SHELLDLL_DefView", null) != IntPtr.Zero)
+            IntPtr shellView = Win32Api.FindWindowEx(hwnd, IntPtr.Zero, SHELLDLL_DEFVIEW, null);
+            if (shellView != IntPtr.Zero)
             {
-                IntPtr workerW = Win32Api.FindWindowEx(IntPtr.Zero, hwnd, "WorkerW", null);
-                Win32Api.ShowWindow(workerW, 0);
+                _workerW = Win32Api.FindWindowEx(
+                        IntPtr.Zero,
+                        hwnd,
+                        WORKERW_CLASS,
+                        null);
+
+                if (_workerW != IntPtr.Zero)
+                    Win32Api.ShowWindow(_workerW, 0);
             }
             return true;
         }
 
         void StartFFplayProcess(string videoFilePath)
         {
-            var ffplayPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DLL", "ffplay.exe");
+            var ffplayPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Core", "ffplay.exe");
             var startInfo = new ProcessStartInfo();
             startInfo.FileName = ffplayPath;
             startInfo.WindowStyle = ProcessWindowStyle.Maximized;
@@ -561,13 +556,13 @@ namespace Nimble.ViewModels
             startInfo.CreateNoWindow = true;
             try
             {
-                ffplayProcess = new Process();
-                ffplayProcess.StartInfo = startInfo;
+                _ffplayProcess = new Process();
+                _ffplayProcess.StartInfo = startInfo;
 
-                ffplayProcess.Start();
+                _ffplayProcess.Start();
                 var startTime = DateTime.Now;
                 var timeout = TimeSpan.FromSeconds(10);
-                while (ffplayProcess.MainWindowHandle == IntPtr.Zero)
+                while (_ffplayProcess.MainWindowHandle == IntPtr.Zero)
                 {
                     if (DateTime.Now - startTime > timeout)
                     {
@@ -575,23 +570,24 @@ namespace Nimble.ViewModels
                     }
                     Thread.Sleep(500);
                 }
-                ffplayWindowHandle = ffplayProcess.MainWindowHandle;
+                _ffplayWindowHandle = _ffplayProcess.MainWindowHandle;
             }
             catch (Exception ex)
             {
                 Log.Error($"Error: StartFFplayProcess {ex.Message}");
             }
         }
+
         void StopFFplayProcess()
         {
             try
             {
-                if (ffplayProcess != null && !ffplayProcess.HasExited)
+                if (_ffplayProcess != null && !_ffplayProcess.HasExited)
                 {
-                    ffplayProcess.Kill();
-                    ffplayProcess.Dispose();
-                    ffplayProcess = null;
-                    ffplayWindowHandle = IntPtr.Zero;
+                    _ffplayProcess.Kill();
+                    _ffplayProcess.Dispose();
+                    _ffplayProcess = null;
+                    _ffplayWindowHandle = IntPtr.Zero;
                 }
             }
             catch (Exception ex)
@@ -599,11 +595,12 @@ namespace Nimble.ViewModels
                 Log.Error($"Error: StopFFplayProcess {ex.Message}");
             }
         }
+
         void WallpaersFilePlay()
         {
             WallpaperArray = null;
             #region Wallpaper
-            var wallpaersPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Video");
+            var wallpaersPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "LiveWallpapers");
             if (Directory.Exists(wallpaersPath))
             {
                 var names = new List<WallpaperItem>();
@@ -619,7 +616,7 @@ namespace Nimble.ViewModels
                 WallpaperArray = names;
                 if (WallpaperArray.Count > 0)
                     ShowWallpaper(ConfigHelper.WallpaperPath);
-                    
+
             }
             #endregion
         }
