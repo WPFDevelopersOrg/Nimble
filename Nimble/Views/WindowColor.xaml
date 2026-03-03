@@ -23,7 +23,7 @@
     <Border
         Grid.ColumnSpan="2"
         Margin="10"
-        Background="{StaticResource WD.BaseSolidColorBrush}"
+        Background="{StaticResource NormalMenuWhiteBrush}"
         CornerRadius="4"
         Effect="{StaticResource NormalShadowDepth}">
         <Grid Height="30">
@@ -44,9 +44,6 @@
                 FontSize="14"
                 FontWeight="Black"
                 Text="{Binding MouseColorText, RelativeSource={RelativeSource AncestorType={x:Type local:WindowColor}}}" />
-            <!--<Border Background="White"  Effect="{StaticResource NormalShadowDepth}" CornerRadius="40"/>
-        <Ellipse Fill="{Binding MouseColor,RelativeSource={RelativeSource AncestorType={x:Type local:WindowColor}}}"
-                 Stroke="Transparent" StrokeThickness="8"/>-->
         </Grid>
     </Border>
 </Window>
