@@ -1,7 +1,7 @@
-﻿using Nimble.ViewModels;
-using Nimble.Views;
+﻿using Nimble.Views;
 using System;
 using System.Drawing;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -10,15 +10,13 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 
 namespace Nimble.Helpers
 {
     public partial class Win32Api
     {
-        public struct  WINDOWPOS
+        public struct WINDOWPOS
         {
             public IntPtr hwnd;
             public IntPtr hwndInsertAfter;
@@ -160,7 +158,7 @@ namespace Nimble.Helpers
         #region 设置DPI 
         [STAThread]
         [System.Runtime.InteropServices.DllImport("user32.dll")]
-        public static extern bool SetProcessDPIAware(); 
+        public static extern bool SetProcessDPIAware();
         #endregion
 
 
@@ -178,6 +176,10 @@ namespace Nimble.Helpers
         #region 置顶(待定)
         [DllImport("user32.dll")]
         public static extern int SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, int uFlags);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter,
+           int X, int Y, int cx, int cy, uint uFlags);
 
         public const int SWP_SHOWWINDOW = 0x0040;
 
@@ -331,7 +333,7 @@ namespace Nimble.Helpers
                 }
             }, cancelTokenSource.Token);
             task.Start();
-            
+
         }
         [DllImport("gdi32.dll")]
         static extern int GetDeviceCaps(
@@ -511,7 +513,21 @@ namespace Nimble.Helpers
         [DllImport("user32.dll")]
         public static extern IntPtr SetParent(IntPtr hwnd, IntPtr parentHwnd);
 
+        [DllImport("user32.dll")]
+        public static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
+        public const int GWL_STYLE = -16;
+        public const uint WS_CHILD = 0x40000000;
+        public const uint WS_VISIBLE = 0x10000000;
+
+        public const uint SWP_NOZORDER = 0x0004;
+
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
+
+        public const uint SWP_FRAMECHANGED = 0x0020;
+        public const uint SWP_NOACTIVATE = 0x0010;
+        public static readonly IntPtr HWND_BOTTOM = new IntPtr(1);
     }
     public class MousePoint
     {
@@ -529,5 +545,47 @@ namespace Nimble.Helpers
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern bool GetCursorPos(out POINT pt);
+    }
+
+    public static class WallpaperNative
+    {
+        private static IntPtr _dllHandle = IntPtr.Zero;
+        private static SetWindowToDesktopDelegate _func = null;
+
+        static WallpaperNative()
+        {
+            string platform = Environment.Is64BitProcess ? "x64" : "x86";
+            string dllPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, platform, "WindowsDesktopWallpaper.dll");
+
+            if (!File.Exists(dllPath))
+            {
+                Log.Warn($"WindowsDesktopWallpaper.dll does not exist");
+                return;
+            }
+
+            _dllHandle = LoadLibrary(dllPath);
+            if (_dllHandle != IntPtr.Zero)
+            {
+                IntPtr funcPtr = GetProcAddress(_dllHandle, "SetWindowToDesktop");
+                if (funcPtr != IntPtr.Zero)
+                {
+                    _func = (SetWindowToDesktopDelegate)Marshal.GetDelegateForFunctionPointer(
+                        funcPtr, typeof(SetWindowToDesktopDelegate));
+                }
+            }
+        }
+
+        public static bool SetWindowToDesktop(IntPtr hWnd)
+        {
+            if (_func == null) return false;
+            return _func(hWnd);
+        }
+        private delegate bool SetWindowToDesktopDelegate(IntPtr hWnd);
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern IntPtr LoadLibrary(string lpFileName);
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+        private static extern IntPtr GetProcAddress(IntPtr hModule, string lpProcName);
     }
 }

@@ -1,9 +1,12 @@
-﻿using System;
+﻿using Nimble.Helpers;
+using Nimble.Models;
+using Nimble.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -11,13 +14,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
-using Newtonsoft.Json.Linq;
-using System.Xml.Linq;
-using Nimble.Helpers;
-using Nimble.Models;
-using Nimble.ViewModels;
 using WPFDevelopers.Controls;
-using System.IO;
 
 namespace Nimble.Views
 {
@@ -429,8 +426,6 @@ namespace Nimble.Views
             }
             DisposeDrag();
         }
-
-        
 
     }
 }

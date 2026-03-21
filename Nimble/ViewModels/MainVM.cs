@@ -9,15 +9,12 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using WPFDevelopers.Controls;
-using WPFDevelopers.Helpers;
 using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 
 namespace Nimble.ViewModels
@@ -51,11 +48,14 @@ namespace Nimble.ViewModels
         private string _hex;
         private IntPtr _workerW = IntPtr.Zero;
         private IntPtr _progman = IntPtr.Zero;
+        private IntPtr _desktopListView;
         private const string WORKERW_CLASS = "WorkerW";
         private const string PROGMAN_CLASS = "Progman";
         private const string SHELLDLL_DEFVIEW = "SHELLDLL_DefView";
+        private IntPtr _shellView = IntPtr.Zero;
 
         #endregion
+
 
         #region 属性
 
@@ -511,38 +511,15 @@ namespace Nimble.ViewModels
             }
 
             StartFFplayProcess(wallpaperPath);
+
             if (_ffplayWindowHandle != IntPtr.Zero)
             {
-                SendMsgToProgman();
-                Win32Api.SetParent(_ffplayWindowHandle, _progman);
+                bool success = WallpaperNative.SetWindowToDesktop(_ffplayWindowHandle);
+                if (success)
+                    Log.Info("setting wallpaper success ");
+                else
+                    Log.Info("setting wallpaper fail");
             }
-        }
-
-
-        void SendMsgToProgman()
-        {
-            _progman = Win32.FindWindow(PROGMAN_CLASS, null);
-            IntPtr result = IntPtr.Zero;
-            Win32Api.SendMessageTimeout(_progman, 0x52c, IntPtr.Zero, IntPtr.Zero, 0, 2, result);
-            _workerW = IntPtr.Zero;
-            Win32Api.EnumWindows(EnumWindowsCallback, IntPtr.Zero);
-        }
-
-        bool EnumWindowsCallback(IntPtr hwnd, IntPtr lParam)
-        {
-            IntPtr shellView = Win32Api.FindWindowEx(hwnd, IntPtr.Zero, SHELLDLL_DEFVIEW, null);
-            if (shellView != IntPtr.Zero)
-            {
-                _workerW = Win32Api.FindWindowEx(
-                        IntPtr.Zero,
-                        hwnd,
-                        WORKERW_CLASS,
-                        null);
-
-                if (_workerW != IntPtr.Zero)
-                    Win32Api.ShowWindow(_workerW, 0);
-            }
-            return true;
         }
 
         void StartFFplayProcess(string videoFilePath)
@@ -550,8 +527,8 @@ namespace Nimble.ViewModels
             var ffplayPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Core", "ffplay.exe");
             var startInfo = new ProcessStartInfo();
             startInfo.FileName = ffplayPath;
-            startInfo.WindowStyle = ProcessWindowStyle.Maximized;
-            startInfo.Arguments = $"-loop 0 -fs \"{videoFilePath}\" ";
+            startInfo.Arguments = $"-loop 0 -an -noborder \"{videoFilePath}\"";
+            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
             startInfo.UseShellExecute = false;
             startInfo.CreateNoWindow = true;
             try
@@ -600,11 +577,13 @@ namespace Nimble.ViewModels
         {
             WallpaperArray = null;
             #region Wallpaper
-            var wallpaersPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "LiveWallpapers");
-            if (Directory.Exists(wallpaersPath))
+            var wallpapersPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "LiveWallpapers");
+            if (!Directory.Exists(wallpapersPath))
+                wallpapersPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Video");
+            if (Directory.Exists(wallpapersPath))
             {
                 var names = new List<WallpaperItem>();
-                var files = Directory.GetFiles(wallpaersPath);
+                var files = Directory.GetFiles(wallpapersPath);
                 foreach (var filePath in files)
                 {
                     var fileName = Path.GetFileNameWithoutExtension(filePath);
@@ -620,6 +599,7 @@ namespace Nimble.ViewModels
             }
             #endregion
         }
+
         #endregion
     }
 }
