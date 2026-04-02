@@ -254,7 +254,12 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /Y /E "$(ProjectDir)Libs\*" "$(TargetDir)"</PostBuildEvent>
+    <PostBuildEvent>if exist "$(TargetDir)Libs" rd /s /q "$(TargetDir)"
+xcopy "$(ProjectDir)Libs" "$(TargetDir)" /E /I /Y</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
