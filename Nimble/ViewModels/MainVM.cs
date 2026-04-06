@@ -525,6 +525,8 @@ namespace Nimble.ViewModels
         void StartFFplayProcess(string videoFilePath)
         {
             var ffplayPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Core", "ffplay.exe");
+            if (!File.Exists(ffplayPath))
+                ffplayPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Video", "ffplay.exe");
             var startInfo = new ProcessStartInfo();
             startInfo.FileName = ffplayPath;
             startInfo.Arguments = $"-loop 0 -an -noborder \"{videoFilePath}\"";
