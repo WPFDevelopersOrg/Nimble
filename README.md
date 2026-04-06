@@ -2,14 +2,18 @@
 
 ##  Welcome to Nimble
 
-Nimble 灵动 是一款非常灵活的软件，推荐将其安装在非系统盘（通常是C盘）上，以避免操作记录的丢失。例如，选择动态壁纸等操作可能无法正常记录。 
-建议将 Nimble 灵动 安装到其他磁盘分区，比如D盘或其他可用磁盘，这样可以确保软件能够正确地记录和保存各项操作。 
+`Nimble` 灵动 是一款非常灵活的软件，推荐将其安装在非系统盘上，以避免操作记录的丢失。例如，选择动态壁纸等操作可能无法正常记录。 
+建议将 `Nimble` 灵动 安装到其他磁盘分区，比如D盘或其他可用磁盘，这样可以确保软件能够正确地记录和保存各项操作。 
 
-运行源码缺少ffplay需要单独[下载](https://mp.weixin.qq.com/s/P42dLcKUZJxfVVsyB0jybQ)放到到运行目录下的`DLL`文件夹中
+运行源码缺少 `ffplay` 需要单独[下载](https://mp.weixin.qq.com/s/P42dLcKUZJxfVVsyB0jybQ)放到到运行目录下的 `Core` 文件夹中。
+
+添加视频文件需要拷贝到安装目录下的 `LiveWallpapers` 文件夹中，重启 `Nimble` 后托盘菜单可以加载最新的视频文件。
+<img width="687" height="555" alt="image" src="https://github.com/user-attachments/assets/6394cdcf-dd4f-447d-bba8-d800ba9d707e" />
+
 
 ### [Github](https://github.com/WPFDevelopersOrg) https://github.com/WPFDevelopersOrg  
 
-### [码云](https://gitee.com/WPFDevelopersOrg) https://gitee.com/WPFDevelopersOrg  
+### [Gitee](https://gitee.com/WPFDevelopersOrg) https://gitee.com/WPFDevelopersOrg  
 
 ![dotnet-version](https://img.shields.io/badge/.net%20framework-%E2%89%A54.0-blue)  ![Visual Studio 2019](https://img.shields.io/badge/Visual%20Studio%20-2019-blueviolet)  <a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=B61RFy2vvpaKLEDxaW6NsDpPZA-eSyFh&jump_from=webapi"><img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" alt="WPF开发者" title="WPF开发者">1群</a>  <a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=vqNCZyd2q2j0QvLkYYCNosK-TYXpoDyF&jump_from=webapi"><img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" alt="WPFDevelopers.Minimal" title="WPFDevelopers.Minimal">2群</a> [![码云](https://img.shields.io/badge/Gitee-%E7%A0%81%E4%BA%91-orange)](https://gitee.com/yanjinhua/SoftwareHelper.git)   [![Github](https://img.shields.io/badge/%20-github-%2324292e)](https://github.com/yanjinhuagood/SoftwareHelper)   
 
