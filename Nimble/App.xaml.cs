@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Nimble.Helpers;
+using Nimble.Views;
+using System;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,8 +10,6 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
-using Nimble.Helpers;
-using Nimble.Views;
 
 namespace Nimble
 {
@@ -63,12 +62,8 @@ namespace Nimble
             }
 
             base.OnStartup(e);
-
-            //UI线程未捕获异常处理事件
             DispatcherUnhandledException += App_DispatcherUnhandledException;
-            //Task线程内未捕获异常处理事件
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
-            //非UI线程未捕获异常处理事件
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
         }
 
@@ -81,12 +76,11 @@ namespace Nimble
         {
             try
             {
-                e.Handled = true; //把 Handled 属性设为true，表示此异常已处理，程序可以继续运行，不会强制退出      
+                e.Handled = true;   
                 Log.Error("UI线程异常:" + e.Exception.Message);
             }
             catch (Exception ex)
             {
-                //此时程序出现严重异常，将强制结束退出
                 Log.Error("UI线程发生致命错误！" + ex.Message);
             }
         }
@@ -105,11 +99,9 @@ namespace Nimble
 
         private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
         {
-            //task线程内未处理捕获
             Log.Error("Task线程异常：" + e.Exception.Message);
-            e.SetObserved(); //设置该异常已察觉（这样处理后就不会引起程序崩溃）
+            e.SetObserved(); 
         }
 
-        
     }
 }
