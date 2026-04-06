@@ -101,7 +101,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="WPFDevelopers, Version=0.0.0.3, Culture=neutral, PublicKeyToken=aacc48a71bd48519, processorArchitecture=MSIL">
-      <HintPath>..\packages\WPFDevelopers.0.0.0.3-preview3\lib\net40\WPFDevelopers.dll</HintPath>
+      <HintPath>..\packages\WPFDevelopers.0.0.0.3-rc.1\lib\net40\WPFDevelopers.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
